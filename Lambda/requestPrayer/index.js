@@ -1,0 +1,40 @@
+const AWS = require('aws-sdk');
+const ddb = new AWS.DynamoDB.DocumentClient({ apiVersion: '2020-04-16' });
+
+exports.handler = async event => {
+    let connectionData;
+    const room = JSON.parse(event.body).room + '.host';
+
+    try {
+        connectionData = await ddb.query({ TableName: "chat", KeyConditionExpression: "room = :room", ExpressionAttributeValues: { ":room": room }, ProjectionExpression: 'connectionId' }).promise();
+    } catch (e) {
+        return { statusCode: 500, body: e.stack };
+    }
+
+    const apigwManagementApi = new AWS.ApiGatewayManagementApi({
+        apiVersion: '2020-04-16',
+        endpoint: event.requestContext.domainName + '/' + event.requestContext.stage
+    });
+
+    var responseData = JSON.parse(event.body);
+    const postData = JSON.stringify(responseData);
+
+    const postCalls = connectionData.Items.map(async ({ connectionId }) => {
+        try {
+            await apigwManagementApi.postToConnection({ ConnectionId: connectionId, Data: postData }).promise();
+        } catch (e) {
+            await ddb.delete({
+                TableName: "chat",
+                Key: { "room": room, "connectionId": connectionId }
+            }).promise();
+        }
+    });
+
+    try {
+        await Promise.all(postCalls);
+    } catch (e) {
+        return { statusCode: 500, body: e.stack };
+    }
+
+    return { statusCode: 200, body: 'Data sent.' };
+};

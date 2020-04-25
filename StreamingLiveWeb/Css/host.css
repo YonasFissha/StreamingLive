@@ -1,0 +1,22 @@
+﻿.chatContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: #FFF;
+}
+
+.chatReceive {
+    flex: 1 0 0;
+    padding: 10px;
+    overflow-y: scroll;
+}
+
+.chatSend {
+    flex: 0 0 0px;
+}
+
+.message span {
+    float: right;
+}
+
+prayerRequests a {display:block;}

@@ -1,0 +1,34 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/MasterPages/ControlPanel.Master" AutoEventWireup="true" CodeBehind="CpFixed.master.cs" Inherits="StreamingLiveWeb.MasterPages.CpFixed" %>
+
+
+<asp:Content ContentPlaceHolderID="HeadContent" runat="server">
+    <style>
+        #fixedContainer{
+            position:fixed;
+            top:0;
+            bottom:0;
+            right:0;
+            left:0;
+            margin-top:70px;
+            overflow:hidden;
+        }
+        #flexContainer {display:flex;flex-direction:row;width:100%;height:100%;margin-left:-15px;margin-right:-15px;}
+        .flex1 {flex:1 1 0%;padding-left:15px;display:flex;flex-direction:column;}
+        .inputBox {flex: 1 1 0%;display:flex;flex-direction:column;}
+        .inputBox .header {flex:0 0 0px;}
+        .inputBox .content {flex:1 1 0px;}
+    </style>
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
+</asp:Content>
+<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+    <div id="fixedContainer">
+        <div class="row" style="height:100%;">
+            <div class="col-sm-12 ml-sm-auto col-md-10" style="padding-left:40px;padding-right:40px;">
+                <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+            </div>
+        </div>
+    </div>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ScriptBlock" runat="server">
+    <asp:ContentPlaceHolder ID="ScriptBlock" runat="server" />
+</asp:Content>
