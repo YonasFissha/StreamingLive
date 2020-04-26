@@ -25,6 +25,7 @@
                     <li>A host dashboard to allow church leaders to moderate the chat and communicate to one another in real-time.</li>
                     <li>Live callouts to provide useful information along with the service such as verse references, main points, and links to resources, when they are needed.</li>
                     <li>The ability for users to connect with host for one-on-one private prayer.</li>
+                    <li>Completely <a href="https://github.com/LiveChurchSolutions/StreamingLive" target="_blank">open source</a>.</li>
                 </ul>
             </div>
         </div>

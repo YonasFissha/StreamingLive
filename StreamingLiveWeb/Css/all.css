@@ -45,6 +45,7 @@ h2 span {color:#24b9ff;}
 
 #benefits {padding-top: 40px;padding-bottom: 40px;}
 #features {padding-top: 40px;padding-bottom: 40px;background-color:#24b9ff;color:#FFF;}
+#features a, #features a:hover {color:#FFF;text-decoration:underline;}
 #register {padding-top: 40px;padding-bottom: 80px;}
 
 #footer {height:355px;background-color:#222;background-size:cover;background-position:center center;color:#FFF;text-align:center;}
