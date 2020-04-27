@@ -2,8 +2,8 @@
 var keyName = 'master';
 var prayerGuid = '';
 var socket;
-
-var timerID = 0;
+var userGuid = '';
+var timerId = 0;
 
 
 function keepAlive() {
@@ -33,24 +33,31 @@ function claimPrayer(guid, name) {
     $('#prayerChat').show();
     $('#privatePrayerTitle').text('Prayer with ' + name);
     $('#prayerReceive').html('');
-    socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': prayerGuid }));
+    socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': keyName + prayerGuid }));
 }
 
 function chatReceived(data) {
-    var div = '<div id="msg-' + data.ts + '" class="message">';
-    if (data.room==keyName) div += '<span><a href="javascript:deleteMessage(\'' + data.ts + '\')"><i class="far fa-trash-alt"></i></a></span>';
-    div += '<b>' + data.name + ':</b> ' + insertLinks(data.message) + '</div>';
+    if (data.userGuid == userGuid) $('#msg-' + data.userGuid).remove();
+    appendMessage(data.room, data.name, data.message, data.ts);
+}
+
+function appendMessage(room, name, message, ts) {
+    var div = '<div id="msg-' + ts + '" class="message">';
+    if (data.room == keyName) div += '<span><a href="javascript:deleteMessage(\'' + ts + '\')"><i class="far fa-trash-alt"></i></a></span>';
+    div += '<b>' + name + ':</b> ' + insertLinks(message) + '</div>';
 
     var el = null;
-    if (data.room == keyName) el = $("#chatReceive")
-    else if (data.room == keyName + '.host') el = $("#hostChatReceive")
-    else if (data.room == prayerGuid) el = $("#prayerReceive");
+    if (room == keyName) el = $("#chatReceive")
+    else if (room == keyName + '.host') el = $("#hostChatReceive")
+    else if (room == keyName + prayerGuid) el = $("#prayerReceive");
 
     if (el != null) {
         el.append(div);
         el.scrollTop(el[0].scrollHeight);
     }
 }
+
+
 
 function deleteReceived(data) {
     $('#msg-' + data.ts).remove();
@@ -71,25 +78,23 @@ function insertLinks(text) {
     return text.replace(exp, "<a href='$1' target='_blank'>$1</a>");
 }
 
-
+function postMessage(room, textField) {
+    var content = $('#' + textField).val();
+    socket.send(JSON.stringify({ 'action': 'sendMessage', 'room': room, 'userGuid': userGuid, 'name': displayName, 'message': content }));
+    appendMessage(room, displayName, content, userGuid);
+    $('#' + textField).val('');
+}
 
 function sendMessage() {
-    var content = $('#sendText').val();
-    socket.send(JSON.stringify({ 'action': 'sendMessage', 'room': keyName, 'name': displayName, 'message': content }));
-    $('#sendText').val('');
+    postMessage(keyName, 'sendText');
 }
 
 function sendHostMessage() {
-    var content = $('#hostSendText').val();
-    socket.send(JSON.stringify({ 'action': 'sendMessage', 'room': keyName + '.host', 'name': displayName, 'message': content }));
-    $('#hostSendText').val('');
+    postMessage(keyName + '.host', 'hostSendText');
 }
 
-
 function sendPrivate() {
-    var content = $('#sendPrivateText').val();
-    socket.send(JSON.stringify({ 'action': 'sendMessage', 'room': prayerGuid, 'name': displayName, 'message': content }));
-    $('#sendPrivateText').val('');
+    postMessage(keyName + prayerGuid, 'sendPrivateText');
 }
 
 function handleMessage(data) {
@@ -136,9 +141,18 @@ function init() {
     $("#sendText").keypress(function (e) { if (e.which == 13) { e.preventDefault(); sendMessage(); } });
     $("#hostSendText").keypress(function (e) { if (e.which == 13) { e.preventDefault(); sendHostMessage(); } });
     $("#sendPrivateText").keypress(function (e) { if (e.which == 13) { e.preventDefault(); sendPrivate(); } });
+    userGuid = generateGuid();
 }
 
 function getQs(name) {
     if (name = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(location.search))
         return decodeURIComponent(name[1]);
+}
+
+function generateGuid() {
+    return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();;
+}
+
+function S4() {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 }

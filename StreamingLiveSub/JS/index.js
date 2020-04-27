@@ -141,14 +141,9 @@ function updateServiceTimes() {
             s.localStartTime = new Date(s.localCountdownTime.getTime());
             s.localStartTime.setSeconds(s.localStartTime.getSeconds() - getSeconds(s.earlyStart));
 
-            s.localEndTime = new Date(s.localCountdownTime.getTime());
+            s.localEndTime = new Date(s.localStartTime.getTime());
             s.localEndTime.setSeconds(s.localEndTime.getSeconds() + getSeconds(s.duration));
 
-
-
-            //s.localStartTime = new Date(new Date(s.startTime + 'Z').getTime() + offsetMs);
-            //s.localEndTime = new Date(new Date(s.endTime + 'Z').getTime() + offsetMs);
-            
         }
     }
 

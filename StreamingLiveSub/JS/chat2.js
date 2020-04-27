@@ -2,9 +2,8 @@
 var keyName = 'master';
 var prayerGuid = '';
 var socket;
-
-
-var timerID = 0;
+var userGuid = '';
+var timerId = 0;
 
 
 function keepAlive() {
@@ -21,14 +20,19 @@ function catchup(data) {
 }
 
 function chatReceived(data) {
-    var div = '<div id="msg-' + data.ts + '" class="message">';
-    div += '<b>' + data.name + ':</b> ' + insertLinks(data.message) + '</div>';
+    if (data.userGuid == userGuid) $('#msg-' + data.userGuid).remove();
+    appendMessage(data.room, data.name, data.message, data.ts);
+}
 
-    if (data.room == keyName) {
+function appendMessage(room, name, message, ts) {
+    console.log(room);
+    var div = '<div id="msg-' + ts + '" class="message">';
+    div += '<b>' + name + ':</b> ' + insertLinks(message) + '</div>';
+    if (room == keyName) {
         $("#chatReceive").append(div);
         $("#chatReceive").scrollTop($("#chatReceive")[0].scrollHeight);
     }
-    else if (data.room == prayerGuid) {
+    else if (room == keyName + prayerGuid) {
         $("#prayerReceive").append(div);
         $("#prayerReceive").scrollTop($("#prayerReceive")[0].scrollHeight);
     }
@@ -36,7 +40,6 @@ function chatReceived(data) {
 
 
 function calloutReceived(data) {
-    console.log(data);
     if (data.message == '') $('#callout').hide();
     else {
         $('#callout').html(insertLinks(data.message));
@@ -59,6 +62,7 @@ function setName(mode) {
     if (mode == 'prayer') displayName = $('#prayerNameText').val();
     else displayName = $('#nameText').val();
 
+    userGuid = generateGuid();
 
     $('#chatName').hide();
     $('#chatSend').show();
@@ -67,26 +71,25 @@ function setName(mode) {
     $('#prayerSend').show();
 
     $("#sendText").keypress(function (e) { if (e.which == 13) { e.preventDefault(); sendMessage(); } });
-    //$("#prayerSendText").keypress(function (e) { if (e.which == 13) { e.preventDefault(); prayerSendMessage(); } });
-
+    
     if (mode == 'prayer') $("#prayerSendText")[0].focus();
     else $("#sendText")[0].focus();
 }
 
+function postMessage(room, textField) {
+    var content = $('#' + textField).val();
+    if (content.trim() == '') return;
+    socket.send(JSON.stringify({ 'action': 'sendMessage', 'room': room, 'userGuid': userGuid, 'name': displayName, 'message': content }));
+    appendMessage(room, displayName, content, userGuid);
+    $('#' + textField).val('');
+}
 
 function sendMessage() {
-    var content = $('#sendText').val();
-    if (content.trim() == '') return;
-    socket.send(JSON.stringify({ 'action': 'sendMessage', 'room': keyName, 'name': displayName, 'message': content }));
-
-    $('#sendText').val('');
+    postMessage(keyName, 'sendText');
 }
 
 function prayerSendMessage() {
-    var content = $('#prayerSendText').val();
-    if (content.trim() == '') return;
-    socket.send(JSON.stringify({ 'action': 'sendMessage', 'room': prayerGuid, 'name': displayName, 'message': content }));
-    $('#prayerSendText').val('');
+    postMessage(keyName + prayerGuid, 'prayerSendText');
 }
 
 
@@ -94,7 +97,7 @@ function prayerSendMessage() {
 function requestPrayer() {
     prayerGuid = generateGuid();
     socket.send(JSON.stringify({ 'action': 'requestPrayer', 'room': keyName, 'name': displayName, 'guid': prayerGuid }));
-    socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': prayerGuid }));
+    socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': keyName + prayerGuid }));
     $("#prayerSendText").keypress(function (e) { if (e.which == 13) { e.preventDefault(); prayerSendMessage(); } });
     $("#prayerSendText")[0].focus();
     togglePrayer();
@@ -158,7 +161,7 @@ function initChat() {
 function getChatDiv() {
     var result = '<div id="chatContainer">';
 
-    result += '<div id="chatReceive"><div id="callout"></div></div>';
+    result += '<div id="callout"></div><div id="chatReceive"></div>';
 
     result += '<div id="chatSend" style="display:none;">'
         + ' <div class="input-group" id="sendPublic"><input type="text" class="form-control" id="sendText" /><div class="input-group-append"><a class="btn btn-primary" style="border-radius:0px" href="javascript:sendMessage();">Send</a></div></div>'
