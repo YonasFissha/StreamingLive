@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Text.RegularExpressions;
 
 namespace StreamingLiveWeb.CP.Live
 {
@@ -357,6 +358,10 @@ namespace StreamingLiveWeb.CP.Live
                         service["providerKey"] = VimeoKeyText.Text;
                         service["videoUrl"] = $"https://player.vimeo.com/video/{VimeoKeyText.Text}?autoplay=1";
                         break;
+                    case "facebook_live":
+                        service["providerKey"] = FacebookKeyText.Text;
+                        service["videoUrl"] = $"https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fvideo.php%3Fv%3D{FacebookKeyText.Text}&show_text=0&autoplay=1&allowFullScreen=1";
+                        break;
                 }
 
                 //tab["text"] = TabTextText.Text;
@@ -374,13 +379,32 @@ namespace StreamingLiveWeb.CP.Live
             {
                 case "youtube_live":
                 case "youtube_watchparty":
-                    if (YouTubeKeyText.Text=="") errors.Add("Please enter a YouTube key");
-                    if (YouTubeKeyText.Text.Contains(":")) errors.Add("Invalid YouTube key");
+                    if (YouTubeKeyText.Text=="") errors.Add("Please enter a YouTube video id.");
+                    if (YouTubeKeyText.Text.Contains(":"))
+                    {
+                        Match m = Regex.Match(YouTubeKeyText.Text, @"[A-Za-z0-9]{5,20}$");
+                        if (m.Success) YouTubeKeyText.Text = m.Value;
+                        else errors.Add("Invalid YouTube video id.");
+                    }
                     break;
                 case "vimeo_live":
                 case "vimeo_watchparty":
-                    if (VimeoKeyText.Text == "") errors.Add("Please enter a Vimeo key");
-                    if (VimeoKeyText.Text.Contains(":")) errors.Add("Invalid Vimeo key");
+                    if (VimeoKeyText.Text == "") errors.Add("Please enter a Vimeo id.");
+                    if (VimeoKeyText.Text.Contains(":"))
+                    {
+                        Match m = Regex.Match(VimeoKeyText.Text, @"[0-9]{5,15}");
+                        if (m.Success) VimeoKeyText.Text = m.Value;
+                        else errors.Add("Invalid Vimeo id.");
+                    }
+                    break;
+                case "facebook_live":
+                    if (FacebookKeyText.Text == "") errors.Add("Please enter a Facebook video id.");
+                    if (FacebookKeyText.Text.Contains(":"))
+                    {
+                        Match m = Regex.Match(FacebookKeyText.Text, @"[0-9]{10,20}");
+                        if (m.Success) FacebookKeyText.Text = m.Value;
+                        else errors.Add("Invalid Facebook video id.");
+                    }
                     break;
             }
             return errors.ToArray();
@@ -448,6 +472,7 @@ namespace StreamingLiveWeb.CP.Live
                 CountdownTimeText.Text = Convert.ToString(service["serviceTime"]);
                 VimeoKeyText.Text = Convert.ToString(service["providerKey"]);
                 YouTubeKeyText.Text = Convert.ToString(service["providerKey"]);
+                FacebookKeyText.Text = Convert.ToString(service["providerKey"]);
                 try
                 {
                     ProviderList.SelectedValue = Convert.ToString(service["provider"]);
@@ -487,6 +512,7 @@ namespace StreamingLiveWeb.CP.Live
             VideoEmbedHolder.Visible = false;
             YouTubeHolder.Visible = false;
             VimeoHolder.Visible = false;
+            FacebookHolder.Visible = false;
 
             switch (provider)
             {
@@ -501,6 +527,9 @@ namespace StreamingLiveWeb.CP.Live
                 case "vimeo_live":
                 case "vimeo_watchparty":
                     VimeoHolder.Visible = true;
+                    break;
+                case "facebook_live":
+                    FacebookHolder.Visible = true;
                     break;
             }
         }

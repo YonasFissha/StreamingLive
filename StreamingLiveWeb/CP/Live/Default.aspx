@@ -126,6 +126,7 @@
                                     <asp:DropDownList ID="ProviderList" runat="server" CssClass="form-control" AutoPostBack="true" OnSelectedIndexChanged="ProviderList_SelectedIndexChanged">
                                         <asp:ListItem Value="youtube_live" Text="YouTube" OptionGroup="Live Stream" />
                                         <asp:ListItem Value="vimeo_live" Text="Vimeo" OptionGroup="Live Stream" />
+                                        <asp:ListItem Value="facebook_live" Text="Facebook" OptionGroup="Live Stream" />
                                         <asp:ListItem Value="custom_live" Text="Custom Embed Url" OptionGroup="Live Stream" />
                                         <asp:ListItem Value="youtube_watchparty" Text="YouTube" OptionGroup="Prerecorded Video" />
                                         <asp:ListItem Value="vimeo_watchparty" Text="Vimeo" OptionGroup="Prerecorded Video" />
@@ -144,7 +145,7 @@
                             <asp:PlaceHolder ID="YouTubeHolder" runat="server" Visible="false">
                                 <div class="col">
                                     <div class="form-group">
-                                        <label>YouTube Key <span class="description">Ex: https://www.youtube.com/watch?v=<b>abcd1234</b></span></label>
+                                        <label>YouTube Video ID <span class="description">Ex: https://www.youtube.com/watch?v=<b>abcd1234</b></span></label>
                                         <asp:TextBox ID="YouTubeKeyText" runat="server" CssClass="form-control" Placeholder="abcd1234" />
                                     </div>
                                 </div>
@@ -152,8 +153,16 @@
                             <asp:PlaceHolder ID="VimeoHolder" runat="server" Visible="false">
                                 <div class="col">
                                     <div class="form-group">
-                                        <label>Vimeo Key <span class="description">Ex: https://vimeo.com/<b>123456789</b></span></label>
+                                        <label>Vimeo ID <span class="description">Ex: https://vimeo.com/<b>123456789</b></span></label>
                                         <asp:TextBox ID="VimeoKeyText" runat="server" CssClass="form-control" Placeholder="123456789" />
+                                    </div>
+                                </div>
+                            </asp:PlaceHolder>
+                            <asp:PlaceHolder ID="FacebookHolder" runat="server" Visible="false">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Facebook Video ID <span class="description">Ex: https://facebook.com/video.php?v=<b>123456789</b></span></label>
+                                        <asp:TextBox ID="FacebookKeyText" runat="server" CssClass="form-control" Placeholder="123456789" />
                                     </div>
                                 </div>
                             </asp:PlaceHolder>
