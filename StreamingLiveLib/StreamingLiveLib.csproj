@@ -7,6 +7,8 @@
   <ItemGroup>
     <PackageReference Include="AWSSDK.Core" Version="3.3.106.7" />
     <PackageReference Include="AWSSDK.SimpleEmail" Version="3.3.101.133" />
+    <PackageReference Include="Google.Apis" Version="1.45.0" />
+    <PackageReference Include="Google.Apis.AnalyticsReporting.v4" Version="1.45.0.1921" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
   <ItemGroup>

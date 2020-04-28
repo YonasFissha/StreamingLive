@@ -1,4 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPages/ControlPanel.master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="StreamingLiveWeb.CP.Live.Default" MaintainScrollPositionOnPostback="true" ValidateRequest="false" %>
+<%@ Register src="../Controls/Traffic.ascx" tagname="Traffic" tagprefix="uc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
     <style>
         #previewWrapper
@@ -170,7 +171,7 @@
             
 
             
-
+            <uc1:Traffic ID="Traffic1" runat="server" />
             
 
 

@@ -76,6 +76,7 @@
     <Content Include="Controls\HomeFeatures.ascx" />
     <Content Include="Controls\HomeRegister.ascx" />
     <Content Include="CP\Controls\Sidebar.ascx" />
+    <Content Include="CP\Controls\Traffic.ascx" />
     <Content Include="CP\Default.aspx" />
     <Content Include="CP\ForgotPassword.aspx" />
     <Content Include="CP\Host\Default.aspx" />
@@ -92,7 +93,6 @@
     <Content Include="Css\Player.css" />
     <Content Include="Default.aspx" />
     <Content Include="Donate\Default.aspx" />
-    <Content Include="Home.aspx" />
     <Content Include="JS\All.js" />
     <Content Include="JS\Host.js" />
     <Content Include="JS\Player.js" />
@@ -144,6 +144,13 @@
     </Compile>
     <Compile Include="CP\Controls\Sidebar.ascx.designer.cs">
       <DependentUpon>Sidebar.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="CP\Controls\Traffic.ascx.cs">
+      <DependentUpon>Traffic.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CP\Controls\Traffic.ascx.designer.cs">
+      <DependentUpon>Traffic.ascx</DependentUpon>
     </Compile>
     <Compile Include="CP\Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
@@ -228,13 +235,6 @@
     </Compile>
     <Compile Include="Donate\Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Home.aspx.cs">
-      <DependentUpon>Home.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Home.aspx.designer.cs">
-      <DependentUpon>Home.aspx</DependentUpon>
     </Compile>
     <Compile Include="MasterPages\ControlPanel.master.cs">
       <DependentUpon>ControlPanel.master</DependentUpon>

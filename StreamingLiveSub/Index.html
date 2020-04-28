@@ -5,6 +5,23 @@
     <link href="/css/all.css" rel="stylesheet" id="customCss">
     <link href="/css/all.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-164774603-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'UA-164774603-2', { 'custom_map': {'dimension1': 'site'}});
+        gtag('event', 'site_dimension', { 'site': location.hostname });
+
+        setInterval(function () {
+            gtag('event', 'Still Watching', {
+                'non_interaction': true
+            });
+        }, 60000);
+
+    </script>
+
 </head>
 <body>
 
