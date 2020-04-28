@@ -34,13 +34,12 @@ function showVideo() {
     {
         $('#videoFrame').attr('src', currentService.videoUrl);
         var seconds = Math.floor((new Date().getTime() - currentService.localStartTime) / 1000);
-        console.log(currentService.provider);
         if (seconds > 10) {
-            if (currentService.provider = "youtube_embed") $('#videoFrame').attr('src', currentService.videoUrl + '&start=' + seconds.toString());
-            if (currentService.provider = "vimeo_embed") $('#videoFrame').attr('src', currentService.videoUrl + '#t=' + seconds.toString() + "s");
+            if (currentService.provider == "youtube_watchparty") $('#videoFrame').attr('src', currentService.videoUrl + '&start=' + seconds.toString());
+            if (currentService.provider == "vimeo_watchparty") $('#videoFrame').attr('src', currentService.videoUrl + '#t=' + seconds.toString() + "s");
         } else {
-            if (currentService.provider = "youtube_embed") $('#videoFrame').attr('src', currentService.videoUrl + '&start=0');
-            if (currentService.provider = "vimeo_embed") $('#videoFrame').attr('src', currentService.videoUrl + '#t=0m0s');
+            if (currentService.provider == "youtube_watchparty") $('#videoFrame').attr('src', currentService.videoUrl + '&start=0');
+            if (currentService.provider == "vimeo_watchparty") $('#videoFrame').attr('src', currentService.videoUrl + '#t=0m0s');
         }
     }
 }

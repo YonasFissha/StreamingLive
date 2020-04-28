@@ -351,7 +351,7 @@ namespace StreamingLiveWeb.CP.Live
                     case "youtube_live":
                     case "youtube_watchparty":
                         service["providerKey"] = YouTubeKeyText.Text;
-                        service["videoUrl"] = $"https://www.youtube.com/embed/{YouTubeKeyText.Text}?autoplay=1&controls=0&showinfo=0&rel=0";
+                        service["videoUrl"] = $"https://www.youtube.com/embed/{YouTubeKeyText.Text}?autoplay=1&controls=0&showinfo=0&rel=0&modestbranding=1&disablekb=1";
                         break;
                     case "vimeo_live":
                     case "vimeo_watchparty":
@@ -382,7 +382,7 @@ namespace StreamingLiveWeb.CP.Live
                     if (YouTubeKeyText.Text=="") errors.Add("Please enter a YouTube video id.");
                     if (YouTubeKeyText.Text.Contains(":"))
                     {
-                        Match m = Regex.Match(YouTubeKeyText.Text, @"[A-Za-z0-9]{5,20}$");
+                        Match m = Regex.Match(YouTubeKeyText.Text, @"[A-Za-z0-9\-_]{5,20}$");
                         if (m.Success) YouTubeKeyText.Text = m.Value;
                         else errors.Add("Invalid YouTube video id.");
                     }
