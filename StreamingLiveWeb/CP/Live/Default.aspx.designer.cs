@@ -114,24 +114,6 @@ namespace StreamingLiveWeb.CP.Live
         protected global::System.Web.UI.WebControls.HiddenField ServiceIndexHid;
 
         /// <summary>
-        /// EarlyStartMinText control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox EarlyStartMinText;
-
-        /// <summary>
-        /// EarlyStartSecText control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox EarlyStartSecText;
-
-        /// <summary>
         /// DurationMinText control.
         /// </summary>
         /// <remarks>
@@ -148,6 +130,24 @@ namespace StreamingLiveWeb.CP.Live
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox DurationSecText;
+
+        /// <summary>
+        /// EarlyStartMinText control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox EarlyStartMinText;
+
+        /// <summary>
+        /// EarlyStartSecText control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox EarlyStartSecText;
 
         /// <summary>
         /// ProviderList control.

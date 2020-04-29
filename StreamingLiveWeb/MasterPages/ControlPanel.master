@@ -3,6 +3,8 @@
 <%@ Register Src="~/CP/Controls/Sidebar.ascx" TagPrefix="uc1" TagName="Sidebar" %>
 
 <asp:Content ContentPlaceHolderID="HeadContent" runat="server">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" >
+    <link rel="stylesheet" href="/css/datetime-local-polyfill.css" >
     <link rel="stylesheet" href="/css/bootstrap-iconpicker.min.css" >
     <link rel="stylesheet" href="/css/cp.css" >
     <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
@@ -26,6 +28,8 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ScriptBlock" runat="server">
     <script src="/js/bootstrap-iconpicker.bundle.min.js"></script>
-    
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+    <script src="/js/datetime-local-polyfill.min.js"></script>
     <asp:ContentPlaceHolder ID="ScriptBlock" runat="server" />
 </asp:Content>

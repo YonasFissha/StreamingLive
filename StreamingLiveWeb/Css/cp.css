@@ -18,3 +18,4 @@
 #sidebar a { color:#333; }
 
 .description { font-size: 12px; font-style: italic; color: #777; }
+button.datetime-local-datepicker-button {background-color:#FFF;border:0px;width:100%;}

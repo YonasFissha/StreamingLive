@@ -80,25 +80,6 @@
                             </div>
                             <div class="col">
                                 <div class="form-group">
-                                    <label>Start Early<span class="description">For videos with countdowns</span></label>
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="input-group">
-                                                <asp:TextBox ID="EarlyStartMinText" runat="server" TextMode="number" CssClass="form-control" min="0" step="1" />
-                                                <div class="input-group-append"><label class="input-group-text">min</label></div>
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <div class="input-group">
-                                                <asp:TextBox ID="EarlyStartSecText" runat="server" TextMode="number" CssClass="form-control" min="0" step="1" max="59" />
-                                                <div class="input-group-append"><label class="input-group-text">sec</label></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-group">
                                     <label>Duration</label>
                                     <div class="row">
                                         <div class="col">
@@ -115,6 +96,27 @@
                                         </div>
                                     </div>
                                     
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 offset-md-6">
+                                <div class="form-group">
+                                    <label>Start Early <span class="description"> (Optional) For videos with countdowns</span></label>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="input-group">
+                                                <asp:TextBox ID="EarlyStartMinText" runat="server" TextMode="number" CssClass="form-control" min="0" step="1" />
+                                                <div class="input-group-append"><label class="input-group-text">min</label></div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="input-group">
+                                                <asp:TextBox ID="EarlyStartSecText" runat="server" TextMode="number" CssClass="form-control" min="0" step="1" max="59" />
+                                                <div class="input-group-append"><label class="input-group-text">sec</label></div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
