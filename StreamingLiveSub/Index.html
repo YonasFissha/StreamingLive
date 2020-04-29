@@ -15,9 +15,7 @@
         gtag('event', 'site_dimension', { 'site': location.hostname });
 
         setInterval(function () {
-            gtag('event', 'Still Watching', {
-                'non_interaction': true
-            });
+            if ($('#videoFrame').is(':visible')) gtag('event', 'Still Watching', { 'non_interaction': true });
         }, 60000);
 
     </script>
