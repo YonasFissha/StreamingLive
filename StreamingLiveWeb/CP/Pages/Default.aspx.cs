@@ -47,14 +47,18 @@ namespace StreamingLiveWeb.CP.Pages
             StreamingLiveLib.Page page = (pageId == 0) ? new StreamingLiveLib.Page() : StreamingLiveLib.Page.Load(pageId);
             NameText.Text = page.Name;
             PageIdHid.Value = pageId.ToString();
-            if (pageId > 0) {
+            if (pageId > 0)
+            {
                 string htmlFile = Server.MapPath("/data/" + AppUser.Current.Site.KeyName + "/page" + page.Id + ".html");
                 if (System.IO.File.Exists(htmlFile))
                 {
                     BodyHid.Value = System.IO.File.ReadAllText(htmlFile);
                     BodyHid.Value = System.Text.RegularExpressions.Regex.Match(BodyHid.Value, "<body>.*</body>").Value.Replace("<body>", "").Replace("</body>", "");
                 }
+                DeleteButton.Attributes.Add("onclick", "return confirm('Are you sure you wish to delete this page?')");
+                DeleteHolder.Visible = true;
             }
+            else DeleteHolder.Visible = false;
 
             PageListHolder.Visible = false;
             PageEditHolder.Visible = true;
@@ -62,6 +66,11 @@ namespace StreamingLiveWeb.CP.Pages
 
         protected void DeleteButton_Click(object sender, EventArgs e)
         {
+            int pageId = Convert.ToInt32(PageIdHid.Value);
+            StreamingLiveLib.Page page = (pageId == 0) ? new StreamingLiveLib.Page() : StreamingLiveLib.Page.Load(pageId);
+            string htmlFile = Server.MapPath("/data/" + AppUser.Current.Site.KeyName + "/page" + page.Id + ".html");
+            System.IO.File.Delete(htmlFile);
+            StreamingLiveLib.Page.Delete(pageId);
             Populate();
         }
 

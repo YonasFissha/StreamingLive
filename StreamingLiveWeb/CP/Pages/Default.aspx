@@ -44,7 +44,7 @@
                     </div>
                     <div class="footer">
                         <div class="row">
-                            <div class="col"><asp:Button ID="DeleteButton" runat="server" CssClass="btn btn-danger btn-block" Text="Delete" OnClick="DeleteButton_Click" /></div>
+                            <asp:PlaceHolder ID="DeleteHolder" runat="server"><div class="col"><asp:Button ID="DeleteButton" runat="server" CssClass="btn btn-danger btn-block" Text="Delete" OnClick="DeleteButton_Click" /></div></asp:PlaceHolder>
                             <div class="col"><asp:Button ID="CancelButton" runat="server" CssClass="btn btn-warning btn-block" Text="Cancel" OnClick="CancelButton_Click" /></div>
                             <div class="col"><asp:Button ID="SaveButton" runat="server" CssClass="btn btn-primary btn-block" Text="Save" OnClick="SaveButton_Click" /></div>
                         </div>
