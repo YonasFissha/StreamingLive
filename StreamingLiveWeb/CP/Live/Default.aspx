@@ -1,5 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPages/ControlPanel.master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="StreamingLiveWeb.CP.Live.Default" MaintainScrollPositionOnPostback="true" ValidateRequest="false" %>
 <%@ Register src="../Controls/Traffic.ascx" tagname="Traffic" tagprefix="uc1" %>
+<%@ Register src="../Controls/TabEditor.ascx" tagname="TabEditor" tagprefix="uc1" %>
+<%@ Register src="../Controls/ButtonEditor.ascx" tagname="ButtonEditor" tagprefix="uc1" %>
+<%@ Register src="../Controls/AppearanceEditor.ascx" tagname="AppearanceEditor" tagprefix="uc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
     <style>
         #previewWrapper
@@ -188,178 +191,16 @@
 
         </div>
         <div class="col-md-4">
-
-
-            <div class="inputBox">
-                <div class="header"><i class="fas fa-palette"></i> Appearance</div>
-                <div class="content">
-                    <div class="section">Logo</div>
-                    <a href="javascript:uploadLogo()"><asp:Literal ID="LogoLit" runat="server" /></a>
-                    <asp:FileUpload ID="LogoUpload" runat="server" Style="display: none;" accept=".jpg,.png,.gif,.jpeg,.bmp" />
-                    <div class="form-group">
-                        <label>Home Page Url</label>
-                        <asp:TextBox ID="HomePageText" runat="server" CssClass="form-control" />
-                    </div>
-                    <div class="section">Colors</div>
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-group">
-                                <label>Primary</label>
-                                <asp:TextBox ID="PrimaryColorText" runat="server" TextMode="color" value="#005288" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-group">
-                                <label>Contrast</label>
-                                <asp:TextBox ID="ContrastColorText" runat="server" TextMode="color" value="#FFFFFF" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-group">
-                                <label>Header</label>
-                                <asp:TextBox ID="HeaderColorText" runat="server" TextMode="color" value="#F1F0EC" class="form-control" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="row">
-                        <div class="col"><asp:Button ID="SaveAppearanceButton" runat="server" CssClass="btn btn-primary btn-block" Text="Save" OnClick="SaveAppearanceButton_Click" /></div>
-                    </div>
-                </div>
-            </div>
-
-            <asp:PlaceHolder ID="ButtonListHolder" runat="server">
-                <div class="inputBox">
-                    <div class="header"><div class="float-right"><asp:LinkButton ID="AddButtonLink" runat="server" OnClick="AddButtonLink_Click"><i class="fas fa-plus"></i></asp:LinkButton></div> <i class="far fa-square"></i> Buttons</div>
-                    <div class="content">
-                        <table class="table table-sm">
-                            <asp:Literal ID="ButtonsLit" runat="server" />
-                            <asp:Repeater ID="ButtonRepeater" runat="server" OnItemCommand="ButtonRepeater_ItemCommand" >
-                                <ItemTemplate>
-                                    <tr>
-                                        <td><a href="<%#Eval("Url")%>" target="_blank"><%#Eval("Text")%></a></td>
-                                        <td class="text-right"><asp:LinkButton ID="LinkButton1" runat="server" CommandName="Edit"><i class="fas fa-pencil-alt"></i></asp:LinkButton></td>
-                                    </tr>
-                                </ItemTemplate>
-                            </asp:Repeater>
-                        </table>
-                    </div>
-                </div>
-            </asp:PlaceHolder>
-            <asp:PlaceHolder ID="ButtonEditHolder" runat="server" Visible="false">
-                <div class="inputBox">
-                    <div class="header"><i class="far fa-square"></i> Edit Button</div>
-                    <div class="content">
-                        <div class="form-group">
-                            <label>Text</label>
-                            <asp:TextBox ID="ButtonTextText" runat="server" CssClass="form-control" />
-                            <asp:HiddenField ID="ButtonIndexHid" runat="server" />
-                        </div>
-                        <div class="form-group">
-                            <label>Url</label>
-                            <asp:TextBox ID="ButtonUrlText" runat="server" CssClass="form-control" />
-                        </div>
-                    </div>
-                    <div class="footer">
-                        <div class="row">
-                            <asp:PlaceHolder ID="DeleteButtonHolder" runat="server"><div class="col"><asp:Button ID="DeleteButtonButton" runat="server" CssClass="btn btn-danger btn-block" Text="Delete" OnClick="DeleteButtonButton_Click" /></div></asp:PlaceHolder>
-                            <div class="col"><asp:Button ID="CancelButtonButton" runat="server" CssClass="btn btn-warning btn-block" Text="Cancel" OnClick="CancelButtonButton_Click" /></div>
-                            <div class="col"><asp:Button ID="SaveButtonButton" runat="server" CssClass="btn btn-primary btn-block" Text="Save" OnClick="SaveButtonButton_Click" /></div>
-                        </div>
-                    </div>
-                </div>
-            </asp:PlaceHolder>
-
-
-
-            <asp:PlaceHolder ID="TabListHolder" runat="server">
-                <div class="inputBox">
-                    <div class="header"><div class="float-right"><asp:LinkButton ID="AddTabLink" runat="server" OnClick="AddTabLink_Click"><i class="fas fa-plus"></i></asp:LinkButton></div><i class="fas fa-folder"></i> Tabs</div>
-                    <div class="content">
-                        <table class="table table-sm">
-                            <asp:Literal ID="TabsLit" runat="server" />
-                            <asp:Repeater ID="TabRepeater" runat="server" OnItemCommand="TabRepeater_ItemCommand" >
-                                <ItemTemplate>
-                                    <tr>
-                                        <td><a href="<%#Eval("Url")%>" target="_blank"><i class="<%#Eval("Icon")%>"></i> <%#Eval("Text")%></a></td>
-                                        <td class="text-right"><asp:LinkButton ID="LinkButton2" runat="server" CommandName="Edit"><i class="fas fa-pencil-alt"></i></asp:LinkButton></td>
-                                    </tr>
-                                </ItemTemplate>
-                            </asp:Repeater>
-                        </table>
-                    </div>
-                </div>
-            </asp:PlaceHolder>
-            <asp:PlaceHolder ID="TabEditHolder" runat="server" Visible="false">
-                <div class="inputBox">
-                    <div class="header"><i class="fas fa-folder"></i> Edit Tab</div>
-                    <div class="content">
-                        <div class="form-group">
-                            <label>Text</label>
-                            <div class="input-group">
-                                <asp:TextBox ID="TabTextText" runat="server" CssClass="form-control" />
-                                <div class="input-group-append">
-                                    <button class="btn btn-secondary" role="iconpicker" name="TabIcon" id="TabIcon" runat="server" data-iconset="fontawesome5"></button>
-                                </div>
-                            </div>
-                            
-                            <asp:HiddenField ID="TabIndexHid" runat="server" />
-                        </div>
-                        <div class="form-group">
-                            <label>Type</label>
-                            <asp:DropDownList ID="TabType" runat="server" CssClass="form-control" AutoPostBack="true" OnSelectedIndexChanged="TabType_SelectedIndexChanged">
-                                <asp:ListItem Value="url" Text="External Url" />
-                                <asp:ListItem Value="page" Text="Page" />
-                                <asp:ListItem Value="chat" Text="Chat" />
-                                <asp:ListItem Value="prayer" Text="Prayer" />
-                            </asp:DropDownList>
-                        </div>
-                        <asp:PlaceHolder ID="TabUrlHolder" runat="server">
-                            <div class="form-group">
-                                <label>Url</label>
-                                <asp:TextBox ID="TabUrlText" runat="server" CssClass="form-control" />
-                            </div>
-                        </asp:PlaceHolder>
-                        <asp:PlaceHolder ID="PageHolder" runat="server" Visible="false">
-                            <div class="form-group">
-                                <label>Page</label>
-                                <asp:DropDownList ID="PageList" runat="server" CssClass="form-control" DataValueField="Id" DataTextField="Name" />
-                            </div>
-                        </asp:PlaceHolder>
-                    </div>
-                    <div class="footer">
-                        <div class="row">
-                            <asp:PlaceHolder ID="DeleteTabHolder" runat="server"><div class="col"><asp:Button ID="DeleteTabButton" runat="server" CssClass="btn btn-danger btn-block" Text="Delete" OnClick="DeleteTabButton_Click" /></div></asp:PlaceHolder>
-                            <div class="col"><asp:Button ID="CancelTabButton" runat="server" CssClass="btn btn-warning btn-block" Text="Cancel" OnClick="CancelTabButton_Click" /></div>
-                            <div class="col"><asp:Button ID="SaveTabButton" runat="server" CssClass="btn btn-primary btn-block" Text="Save" OnClick="SaveTabButton_Click" /></div>
-                        </div>
-                    </div>
-                </div>
-            </asp:PlaceHolder>
-
-
-            
-
+            <uc1:AppearanceEditor runat="server" Id="AppearanceEditor1" />
+            <uc1:ButtonEditor runat="server" Id="ButtonEditor1" />
+            <uc1:TabEditor runat="server" Id="TabEditor1" />
         </div>
 
         </div>
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ScriptBlock" runat="server">
-    <script>
-
-
-        $(function () {
-            //$('.iconpicker').iconpicker();
-            $('#<%= LogoUpload.ClientID %>').change(function () { $('#<%= SaveAppearanceButton.ClientID %>').click(); });
-        });
-
-        function uploadLogo() {
-            $('#<%=LogoUpload.ClientID%>')[0].click();
-        }
-
-    </script>
+    
 
     <asp:PlaceHolder ID="UpdateConfigHolder" runat="server" Visible="false">
         <script>

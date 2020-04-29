@@ -75,7 +75,10 @@
     <Content Include="Controls\HomeBenefits.ascx" />
     <Content Include="Controls\HomeFeatures.ascx" />
     <Content Include="Controls\HomeRegister.ascx" />
+    <Content Include="CP\Controls\AppearanceEditor.ascx" />
+    <Content Include="CP\Controls\ButtonEditor.ascx" />
     <Content Include="CP\Controls\Sidebar.ascx" />
+    <Content Include="CP\Controls\TabEditor.ascx" />
     <Content Include="CP\Controls\Traffic.ascx" />
     <Content Include="CP\Default.aspx" />
     <Content Include="CP\ForgotPassword.aspx" />
@@ -140,12 +143,33 @@
     <Compile Include="Controls\HomeRegister.ascx.designer.cs">
       <DependentUpon>HomeRegister.ascx</DependentUpon>
     </Compile>
+    <Compile Include="CP\Controls\AppearanceEditor.ascx.cs">
+      <DependentUpon>AppearanceEditor.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CP\Controls\AppearanceEditor.ascx.designer.cs">
+      <DependentUpon>AppearanceEditor.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="CP\Controls\ButtonEditor.ascx.cs">
+      <DependentUpon>ButtonEditor.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CP\Controls\ButtonEditor.ascx.designer.cs">
+      <DependentUpon>ButtonEditor.ascx</DependentUpon>
+    </Compile>
     <Compile Include="CP\Controls\Sidebar.ascx.cs">
       <DependentUpon>Sidebar.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="CP\Controls\Sidebar.ascx.designer.cs">
       <DependentUpon>Sidebar.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="CP\Controls\TabEditor.ascx.cs">
+      <DependentUpon>TabEditor.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CP\Controls\TabEditor.ascx.designer.cs">
+      <DependentUpon>TabEditor.ascx</DependentUpon>
     </Compile>
     <Compile Include="CP\Controls\Traffic.ascx.cs">
       <DependentUpon>Traffic.ascx</DependentUpon>

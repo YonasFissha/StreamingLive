@@ -31,58 +31,35 @@ namespace StreamingLiveWeb.CP.Live
 
             if (!IsPostBack) LoadData();
             data = JObject.Parse(JsonData);
-
             CleanData();
 
             if (CachedData.Environment=="prod") PreviewUrl = "https://" + AppUser.Current.Site.KeyName + ".streaminglive.church/?preview=1";
             string liveUrl = "https://" + AppUser.Current.Site.KeyName + ".streaminglive.church/";
             LiveLinkLit.Text = $"<p style=\"margin-top:10px;margin-bottom:0px;\">View your live site: <a href=\"{liveUrl}\" target=\"_blank\">{liveUrl}</a></p>";
 
+
+            AppearanceEditor1.Data = data;
+            AppearanceEditor1.DataUpdated += AppearanceEditor1_DataUpdated;
+
+            ButtonEditor1.Data = data;
+            ButtonEditor1.DataUpdated += ButtonEditor1_DataUpdated;
+
+            TabEditor1.Data = data;
+            TabEditor1.DataUpdated += TabEditor1_DataUpdated;
+
             if (!IsPostBack) Populate();
         }
 
-        private void Populate()
+        private void AppearanceEditor1_DataUpdated(object sender, EventArgs e)
         {
-
-            UpdateConfigHolder.Visible = false;
-
-            JObject logo = (JObject)data["logo"];
-            LogoLit.Text = "<img src=\"" + logo["image"].ToString() + "\" class=\"img-fluid\" />";
-            HomePageText.Text = logo["url"].ToString();
-
-            JObject colors = (JObject)data["colors"];
-            PrimaryColorText.Text = colors["primary"].ToString();
-            ContrastColorText.Text = colors["contrast"].ToString();
-            HeaderColorText.Text = colors["header"].ToString();
-
-
-            JArray buttons = (JArray)data["buttons"];
-            ButtonRepeater.DataSource = buttons;
-            ButtonRepeater.DataBind();
-
-            JArray tabs = (JArray)data["tabs"];
-            TabRepeater.DataSource = tabs;
-            TabRepeater.DataBind();
-
-            JArray services = (JArray)data["services"];
-            ServiceRepeater.DataSource = services;
-            ServiceRepeater.DataBind();
-            NoServicesLit.Visible = services.Count == 0;
-
-            ButtonEditHolder.Visible = false;
-            ButtonListHolder.Visible = true;
-
-            TabEditHolder.Visible = false;
-            TabListHolder.Visible = true;
-
-            ServiceEditHolder.Visible = false;
-            ServiceListHolder.Visible = true;
+            data = AppearanceEditor1.Data;
+            UpdateData();
         }
 
-
-        private void LoadData()
+        private void ButtonEditor1_DataUpdated(object sender, EventArgs e)
         {
-            JsonData = StreamingLiveLib.Utils.GetJson(CachedData.BaseUrl + "/data/" + AppUser.Current.Site.KeyName + "/preview.json");
+            data = ButtonEditor1.Data;
+            UpdateData();
         }
 
         private void CleanData()
@@ -91,59 +68,48 @@ namespace StreamingLiveWeb.CP.Live
             foreach (JObject tab in tabs) if (tab["icon"] == null) tab["icon"] = "";
         }
 
+        private void TabEditor1_DataUpdated(object sender, EventArgs e)
+        {
+            data = TabEditor1.Data;
+            UpdateData();
+        }
+
+        private void Populate()
+        {
+
+            UpdateConfigHolder.Visible = false;
+
+            
+
+            JArray services = (JArray)data["services"];
+            ServiceRepeater.DataSource = services;
+            ServiceRepeater.DataBind();
+            NoServicesLit.Visible = services.Count == 0;
+
+            ServiceEditHolder.Visible = false;
+            ServiceListHolder.Visible = true;
+
+            AppearanceEditor1.Populate();
+            ButtonEditor1.Populate();
+            TabEditor1.Populate();
+        }
+
+
+        private void LoadData()
+        {
+            JsonData = StreamingLiveLib.Utils.GetJson(CachedData.BaseUrl + "/data/" + AppUser.Current.Site.KeyName + "/preview.json");
+        }
+
+        
+
         private void UpdateData()
         {
             JsonData = data.ToString(Formatting.None);
             System.IO.File.WriteAllText(Server.MapPath("/data/" + AppUser.Current.Site.KeyName + "/preview.json"), JsonData);
-        }
-
-        protected void SaveAppearanceButton_Click(object sender, EventArgs e)
-        {
-            JObject logo = (JObject)data["logo"];
-            logo["url"] = HomePageText.Text;
-
-            JObject colors = (JObject)data["colors"];
-            colors["primary"] = PrimaryColorText.Text;
-            colors["contrast"] = ContrastColorText.Text;
-            colors["header"] = HeaderColorText.Text;
-
-            if (LogoUpload.HasFile)
-            {
-                string tempFile = Server.MapPath("/temp/" + AppUser.Current.UserData.Id.ToString() + ".png");
-                LogoUpload.SaveAs(tempFile);
-                System.Drawing.Image img = System.Drawing.Bitmap.FromFile(tempFile);
-
-                var ratio =  150.0 / Convert.ToDouble(img.Height);
-                System.Drawing.Image outImg = new System.Drawing.Bitmap(Convert.ToInt32(img.Width * ratio), 150);
-                System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(outImg);
-                g.CompositingMode = CompositingMode.SourceCopy;
-                g.CompositingQuality = CompositingQuality.HighQuality;
-                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                g.SmoothingMode = SmoothingMode.HighQuality;
-                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                Rectangle destRect = new Rectangle(0, 0, outImg.Width, outImg.Height);
-
-                ImageAttributes wrapMode = new ImageAttributes();
-                wrapMode.SetWrapMode(WrapMode.TileFlipXY); ;
-
-                g.DrawImage(img, destRect, 0, 0, img.Width, img.Height, GraphicsUnit.Pixel, wrapMode);
-                outImg.Save(Server.MapPath("/data/" + AppUser.Current.Site.KeyName + "/logo.png"));
-                logo["image"] = "/data/" + AppUser.Current.Site.KeyName + "/logo.png?dt=" + DateTime.Now.ToString("Mdyyyyhhmmss");
-
-                g.Dispose();
-                img.Dispose();
-
-                System.IO.File.Delete(tempFile);
-
-            }
-
-            string previewCss = ":root { --primaryColor: " + PrimaryColorText.Text + "; --contrastColor: " + ContrastColorText.Text + "; --headerColor: " + HeaderColorText.Text + "}";
-            System.IO.File.WriteAllText(Server.MapPath("/data/" + AppUser.Current.Site.KeyName + "/preview.css"), previewCss);
-
-
-            UpdateData();
             Populate();
         }
+
+        
 
         protected void PublishButton_Click(object sender, EventArgs e)
         {
@@ -155,169 +121,6 @@ namespace StreamingLiveWeb.CP.Live
 
         }
 
-        #region Buttons
-
-        protected void ButtonRepeater_ItemCommand(object source, RepeaterCommandEventArgs e)
-        {
-            if (e.CommandName == "Edit")
-            {
-                EditButtonShow(e.Item.ItemIndex);
-            }
-        }
-
-        private void EditButtonShow(int idx)
-        {
-            JArray buttons = (JArray)data["buttons"];
-            JObject button = (idx == -1) ? new JObject() : (JObject)buttons[idx];
-            ButtonEditHolder.Visible = true;
-            ButtonListHolder.Visible = false;
-
-            ButtonIndexHid.Value = idx.ToString();
-            ButtonUrlText.Text = Convert.ToString(button["url"]);
-            ButtonTextText.Text = Convert.ToString(button["text"]);
-
-            DeleteButtonHolder.Visible = idx > -1;
-
-        }
-
-        protected void SaveButtonButton_Click(object sender, EventArgs e)
-        {
-            int idx = Convert.ToInt32(ButtonIndexHid.Value);
-            JArray buttons = (JArray)data["buttons"];
-            JObject button = (idx == -1) ? new JObject() : (JObject)buttons[idx];
-            button["url"] = ButtonUrlText.Text;
-            button["text"] = ButtonTextText.Text;
-            if (idx == -1) buttons.Add(button);
-            UpdateData();
-            Populate();
-        }
-
-        protected void DeleteButtonButton_Click(object sender, EventArgs e)
-        {
-            int idx = Convert.ToInt32(ButtonIndexHid.Value);
-            if (idx > -1)
-            {
-                JArray buttons = (JArray)data["buttons"];
-                buttons.RemoveAt(idx);
-                UpdateData();
-            }
-            Populate();
-        }
-
-        protected void CancelButtonButton_Click(object sender, EventArgs e)
-        {
-            Populate();
-        }
-
-        protected void AddButtonLink_Click(object sender, EventArgs e)
-        {
-            EditButtonShow(-1);
-        }
-
-        #endregion
-
-        #region Tabs
-
-        protected void TabRepeater_ItemCommand(object source, RepeaterCommandEventArgs e)
-        {
-            if (e.CommandName == "Edit")
-            {
-                EditTabShow(e.Item.ItemIndex);
-            }
-        }
-
-        private void EditTabShow(int idx)
-        {
-            JArray tabs = (JArray)data["tabs"];
-            JObject tab = (idx == -1) ? new JObject() : (JObject)tabs[idx];
-            TabEditHolder.Visible = true;
-            TabListHolder.Visible = false;
-
-            TabIndexHid.Value = idx.ToString();
-
-            try
-            {
-                TabType.SelectedValue = Convert.ToString(tab["type"]);
-            } catch { }
-            TabTextText.Text = Convert.ToString(tab["text"]);
-            DeleteTabHolder.Visible = idx > -1;
-            
-            PopulateTabDetails(tab);
-        }
-
-        private void PopulateTabDetails(JObject tab)
-        {
-            TabUrlHolder.Visible = false;
-            PageHolder.Visible = false;
-
-            if (tab["icon"]!=null) TabIcon.Attributes["data-icon"] = tab["icon"].ToString();
-
-            if (TabType.SelectedValue == "url")
-            {
-                TabUrlHolder.Visible = true;
-                TabUrlText.Text = Convert.ToString(tab["url"]);
-            }
-            else if (TabType.SelectedValue=="page")
-            {
-                PageHolder.Visible = true;
-                PageList.DataSource = StreamingLiveLib.Pages.LoadBySiteId(AppUser.Current.Site.Id.Value);
-                PageList.DataBind();
-                try
-                {
-                    PageList.SelectedValue = tab["data"].ToString();
-                } catch { }
-            }
-        }
-
-
-        protected void SaveTabButton_Click(object sender, EventArgs e)
-        {
-            int idx = Convert.ToInt32(TabIndexHid.Value);
-            JArray tabs = (JArray)data["tabs"];
-            JObject tab = (idx == -1) ? new JObject() : (JObject)tabs[idx];
-            tab["url"] = TabUrlText.Text;
-            tab["type"] = TabType.SelectedValue;
-            tab["data"] = (TabType.SelectedValue == "page") ? PageList.SelectedValue : "";
-            tab["text"] = TabTextText.Text;
-            tab["icon"] = Request["TabIcon"];
-
-            if (TabType.SelectedValue == "page")
-            {
-                tab["url"] = $"/data/{AppUser.Current.Site.KeyName}/page{PageList.SelectedValue}.html";
-            }
-
-            if (TabType.SelectedValue == "chat") tab["url"] = "/chat.html";
-            if (TabType.SelectedValue == "prayer") tab["url"] = "/prayer.html";
-
-
-            if (idx == -1) tabs.Add(tab);
-            UpdateData();
-            Populate();
-        }
-
-        protected void DeleteTabButton_Click(object sender, EventArgs e)
-        {
-            int idx = Convert.ToInt32(TabIndexHid.Value);
-            if (idx > -1)
-            {
-                JArray tabs = (JArray)data["tabs"];
-                tabs.RemoveAt(idx);
-                UpdateData();
-            }
-            Populate();
-        }
-
-        protected void CancelTabButton_Click(object sender, EventArgs e)
-        {
-            Populate();
-        }
-
-        protected void AddTabLink_Click(object sender, EventArgs e)
-        {
-            EditTabShow(-1);
-        }
-
-        #endregion
 
         protected void SaveServiceButton_Click(object sender, EventArgs e)
         {
@@ -364,7 +167,6 @@ namespace StreamingLiveWeb.CP.Live
                         break;
                 }
 
-                //tab["text"] = TabTextText.Text;
                 if (idx == -1) services.Add(service);
                 UpdateData();
                 Populate();
@@ -481,10 +283,7 @@ namespace StreamingLiveWeb.CP.Live
             }
 
             ShowProviderDetails();
-
-            //TabTextText.Text = Convert.ToString(tab["text"]);
-
-            DeleteTabButton.Visible = idx > -1;
+            DeleteServiceButton.Visible = idx > -1;
 
         }
 
@@ -493,13 +292,7 @@ namespace StreamingLiveWeb.CP.Live
             EditServiceShow(-1);
         }
 
-        protected void TabType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            int idx = Convert.ToInt32(TabIndexHid.Value);
-            JArray tabs = (JArray)data["tabs"];
-            JObject tab = (idx == -1) ? new JObject() : (JObject)tabs[idx];
-            PopulateTabDetails(tab);
-        }
+        
 
         protected void ProviderList_SelectedIndexChanged(object sender, EventArgs e)
         {
