@@ -6,7 +6,8 @@ exports.handler = async (event) => {
         TableName: "chat",
         Item: {
             room: JSON.parse(event.body).room,
-            connectionId: event.requestContext.connectionId
+            connectionId: event.requestContext.connectionId,
+            joinTime: Date.now()
         }
     };
     
