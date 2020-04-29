@@ -59,21 +59,26 @@ function insertLinks(text) {
 }
 
 function setName(mode) {
-    if (mode == 'prayer') displayName = $('#prayerNameText').val();
-    else displayName = $('#nameText').val();
+    var name = '';
+    if (mode == 'prayer') name = $('#prayerNameText').val();
+    else name = $('#nameText').val();
 
-    userGuid = generateGuid();
+    if (confirm('Please confirm.  Would you like to set your name to ' + name + '?'))
+    {
+        displayName = name;
+        userGuid = generateGuid();
 
-    $('#chatName').hide();
-    $('#chatSend').show();
+        $('#chatName').hide();
+        $('#chatSend').show();
 
-    $('#prayerName').hide();
-    $('#prayerSend').show();
+        $('#prayerName').hide();
+        $('#prayerSend').show();
 
-    $("#sendText").keypress(function (e) { if (e.which == 13) { e.preventDefault(); sendMessage(); } });
-    
-    if (mode == 'prayer') $("#prayerSendText")[0].focus();
-    else $("#sendText")[0].focus();
+        $("#sendText").keypress(function (e) { if (e.which == 13) { e.preventDefault(); sendMessage(); } });
+
+        if (mode == 'prayer') $("#prayerSendText")[0].focus();
+        else $("#sendText")[0].focus();
+    }
 }
 
 function postMessage(room, textField) {
@@ -170,7 +175,7 @@ function getChatDiv() {
     result += '<div id="chatName">'
         + ' <div class="form-group">'
         + '     <label>Enter your name to chat:</label>'
-        + '     <div class="input-group"><input type="text" class="form-control" id="nameText" placeholder="Your Name" /><div class="input-group-append"><a class="btn btn-primary" style="border-radius:0px" href="javascript:setName(\'chat\');">Begin</a></div></div>'
+        + '     <div class="input-group"><input type="text" class="form-control" id="nameText" placeholder="Your Name" /><div class="input-group-append"><a class="btn btn-primary" style="border-radius:0px" href="javascript:setName(\'chat\');">Set Name</a></div></div>'
         + ' </div>'
         + '</div>';
 
@@ -190,7 +195,7 @@ function getPrayerDiv() {
     result += '<div id="prayerName">'
         + ' <div class="form-group">'
         + '     <label>Enter your name to chat:</label>'
-        + '     <div class="input-group"><input type="text" class="form-control" id="prayerNameText" placeholder="Your Name" /><div class="input-group-append"><a class="btn btn-primary" style="border-radius:0px" href="javascript:setName(\'prayer\');">Begin</a></div></div>'
+        + '     <div class="input-group"><input type="text" class="form-control" id="prayerNameText" placeholder="Your Name" /><div class="input-group-append"><a class="btn btn-primary" style="border-radius:0px" href="javascript:setName(\'prayer\');">Set Name</a></div></div>'
         + ' </div>'
         + '</div>';
 
