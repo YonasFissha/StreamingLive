@@ -20,12 +20,12 @@ namespace StreamingLiveWeb.CP.Controls
         {
             if (!IsPostBack)
             {
-                StreamingLiveLib.Google.AnalyticsReport data = StreamingLiveLib.Google.AnalyticsHelper.GetDailySessions(DateTime.Today.AddDays(-15), DateTime.Today.AddDays(1), AppUser.Current.Site.KeyName + ".streaminglive.church");
+                StreamingLiveLib.GoogleApis.AnalyticsReport data = StreamingLiveLib.GoogleApis.AnalyticsHelper.GetDailySessions(DateTime.Today.AddDays(-15), DateTime.Today.AddDays(1), AppUser.Current.Site.KeyName + ".streaminglive.church");
                 List<string> records = new List<string>();
-                foreach (StreamingLiveLib.Google.AnalyticsRow row in data)
+                foreach (StreamingLiveLib.GoogleApis.AnalyticsRow row in data)
                 {
-                    DateTime date = Convert.ToDateTime(row.Dimension.Substring(0, 4) + "-" + row.Dimension.Substring(4, 2) + "-" + row.Dimension.Substring(6, 2));
-                    records.Add($"['{date.ToString("M/d")}',{row.Metric},'']");
+                    DateTime date = Convert.ToDateTime(row.Dimensions[0].Substring(0, 4) + "-" + row.Dimensions[0].Substring(4, 2) + "-" + row.Dimensions[0].Substring(6, 2));
+                    records.Add($"['{date.ToString("M/d")}',{row.Metrics[0]},'']");
                 }
                 ChartOutput = String.Join(",", records);
                 this.Visible = data.Count > 0;

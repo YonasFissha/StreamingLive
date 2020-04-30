@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StreamingLiveLib.Google
+namespace StreamingLiveLib.GoogleApis
 {
     public class AnalyticsRow
     {
-        public int Metric;
-        public string Dimension;
+        public List<int> Metrics = new List<int>();
+        public List<string> Dimensions = new List<string>();
     }
 }

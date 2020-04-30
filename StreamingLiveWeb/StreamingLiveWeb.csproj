@@ -88,6 +88,7 @@
     <Content Include="CP\Logout.aspx" />
     <Content Include="CP\Pages\Default.aspx" />
     <Content Include="CP\Register.aspx" />
+    <Content Include="CP\Reports\Default.aspx" />
     <Content Include="CP\UserMenu.aspx" />
     <Content Include="CP\Users\Default.aspx" />
     <Content Include="Css\all.css" />
@@ -233,6 +234,13 @@
     </Compile>
     <Compile Include="CP\Register.aspx.designer.cs">
       <DependentUpon>Register.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="CP\Reports\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CP\Reports\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="CP\UserMenu.aspx.cs">
       <DependentUpon>UserMenu.aspx</DependentUpon>

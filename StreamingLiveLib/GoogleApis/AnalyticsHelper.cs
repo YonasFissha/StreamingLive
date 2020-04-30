@@ -11,7 +11,7 @@ using Google.Apis.Auth.OAuth2;
 using System.IO;
 
 
-namespace StreamingLiveLib.Google
+namespace StreamingLiveLib.GoogleApis
 {
     public class AnalyticsHelper
     {
@@ -51,18 +51,47 @@ namespace StreamingLiveLib.Google
 
             GetReportsRequest grr = new GetReportsRequest() { ReportRequests = new List<ReportRequest>() { rr } };
             GetReportsResponse response = service.Reports.BatchGet(grr).Execute();
+            return ConvertResponse(response.Reports[0]);
+            
+        }
 
+        private static AnalyticsReport ConvertResponse(Google.Apis.AnalyticsReporting.v4.Data.Report report)
+        {
             AnalyticsReport result = new AnalyticsReport();
-            if (response.Reports[0].Data.RowCount > 0)
+            if (report.Data.RowCount > 0)
             {
-                foreach (ReportRow row in response.Reports[0].Data.Rows)
+                foreach (ReportRow rr in report.Data.Rows)
                 {
-                    result.Add(new AnalyticsRow() { Dimension = row.Dimensions[0], Metric = Convert.ToInt32(row.Metrics[0].Values[0]) });
+                    AnalyticsRow row = new AnalyticsRow();
+                    foreach (string d in rr.Dimensions) row.Dimensions.Add(d);
+                    foreach (DateRangeValues m in rr.Metrics) row.Metrics.Add(Convert.ToInt32(m.Values[0]));
+                    result.Add(row);
                 }
             }
             return result;
-            
-
         }
+
+        public static AnalyticsReport LoadStreamMinutes(DateTime startDate, DateTime endDate, string site)
+        {
+            Init();
+            DateRange dateRange = new DateRange() { StartDate = startDate.ToString("yyyy-MM-dd"), EndDate = endDate.ToString("yyyy-MM-dd") };
+            Metric metric = new Metric() { Expression = "ga:totalEvents", Alias = "events" };
+            Dimension dim = new Dimension() { Name = "ga:dateHourMinute" };
+
+            ReportRequest rr = new ReportRequest()
+            {
+                ViewId = System.Configuration.ConfigurationManager.AppSettings["AnalyticsViewId"],
+                DateRanges = new List<DateRange>() { dateRange },
+                Metrics = new List<Metric>() { metric },
+                Dimensions = new List<Dimension>() { dim },
+                FiltersExpression = "ga:dimension1==" + site
+            };
+
+            GetReportsRequest grr = new GetReportsRequest() { ReportRequests = new List<ReportRequest>() { rr } };
+            GetReportsResponse response = service.Reports.BatchGet(grr).Execute();
+
+            return ConvertResponse(response.Reports[0]);
+        }
+
     }
 }

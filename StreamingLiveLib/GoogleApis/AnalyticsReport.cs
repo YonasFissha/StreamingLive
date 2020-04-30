@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StreamingLiveLib.Google
+namespace StreamingLiveLib.GoogleApis
 {
     public class AnalyticsReport:List<AnalyticsRow>
     {

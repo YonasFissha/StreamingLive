@@ -1,5 +1,4 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPages/ControlPanel.master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="StreamingLiveWeb.CP.Live.Default" MaintainScrollPositionOnPostback="true" ValidateRequest="false" %>
-<%@ Register src="../Controls/Traffic.ascx" tagname="Traffic" tagprefix="uc1" %>
 <%@ Register src="../Controls/TabEditor.ascx" tagname="TabEditor" tagprefix="uc1" %>
 <%@ Register src="../Controls/ButtonEditor.ascx" tagname="ButtonEditor" tagprefix="uc1" %>
 <%@ Register src="../Controls/AppearanceEditor.ascx" tagname="AppearanceEditor" tagprefix="uc1" %>
@@ -182,12 +181,6 @@
                     </div>
                 </div>
             </asp:PlaceHolder>
-            
-
-            
-            <uc1:Traffic ID="Traffic1" runat="server" />
-            
-
 
         </div>
         <div class="col-md-4">
