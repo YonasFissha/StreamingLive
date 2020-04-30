@@ -13,7 +13,7 @@
                 <p>The appearance of your platform is fully customizable and the service is completely free.</p>
             </div>
             <div class="col-md-6">
-                <img src="/images/sample.png" class="img-fluid" />
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/HC0B3hHdRew" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
         

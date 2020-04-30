@@ -43,7 +43,7 @@ function chatReceived(data) {
 
 function appendMessage(room, name, message, ts) {
     var div = '<div id="msg-' + ts + '" class="message">';
-    if (data.room == keyName) div += '<span><a href="javascript:deleteMessage(\'' + ts + '\')"><i class="far fa-trash-alt"></i></a></span>';
+    if (room == keyName) div += '<span><a href="javascript:deleteMessage(\'' + ts + '\')"><i class="far fa-trash-alt"></i></a></span>';
     div += '<b>' + name + ':</b> ' + insertLinks(message) + '</div>';
 
     var el = null;
