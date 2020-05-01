@@ -11,6 +11,7 @@ namespace StreamingLiveWeb.CP.Users
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (AppUser.Current.Role.Name != "admin") Response.Redirect("/cp/");
             if (!IsPostBack)
             {
                 Populate();
@@ -20,13 +21,9 @@ namespace StreamingLiveWeb.CP.Users
 
         private void Populate()
         {
-            UserListHolder.Visible = AppUser.Current.Role.Name == "admin";
-            if (UserListHolder.Visible)
-            {
-                UserRepeater.DataSource = StreamingLiveLib.Users.LoadBySiteId(AppUser.Current.Site.Id.Value);
-                UserRepeater.DataBind();
-            }
-            
+            UserRepeater.DataSource = StreamingLiveLib.Users.LoadBySiteId(AppUser.Current.Site.Id.Value);
+            UserRepeater.DataBind();
+            EditHolder.Visible = false;
         }
 
 
@@ -54,23 +51,27 @@ namespace StreamingLiveWeb.CP.Users
             string[] errors = Validate(userId);
             if (errors.Length == 0)
             {
-                StreamingLiveLib.User user = (userId == 0) ? new StreamingLiveLib.User() : StreamingLiveLib.User.Load(userId);
-
-                user.DisplayName = NameText.Text;
-                user.Email = EmailText.Text;
-                if (PasswordText.Text!="") user.Password = StreamingLiveLib.User.HashPassword(PasswordText.Text);
-
-                user.Save();
-
-                if (userId == 0) new StreamingLiveLib.Role() { SiteId = AppUser.Current.Site.Id.Value, Name = RoleList.SelectedValue, UserId = user.Id.Value }.Save();
-                else if (RoleList.Enabled)
+                if (userId == 0)
                 {
-                    StreamingLiveLib.Role role = StreamingLiveLib.Role.Load(user.Id.Value, AppUser.Current.Site.Id.Value);
+                    StreamingLiveLib.User existing = StreamingLiveLib.User.LoadByEmail(EmailText.Text);
+                    if (existing == null)
+                    {
+                        StreamingLiveLib.User user = new StreamingLiveLib.User();
+                        user.DisplayName = NameText.Text;
+                        user.Email = EmailText.Text;
+                        user.Password = StreamingLiveLib.User.HashPassword(PasswordText.Text);
+                        user.Save();
+                        userId = user.Id.Value;
+                    }
+                    else userId = existing.Id.Value;
+                    new StreamingLiveLib.Role() { SiteId = AppUser.Current.Site.Id.Value, Name = RoleList.SelectedValue, UserId = userId }.Save();
+                } else if (RoleList.Enabled)
+                {
+                    StreamingLiveLib.Role role = StreamingLiveLib.Role.Load(userId, AppUser.Current.Site.Id.Value);
                     role.Name = RoleList.SelectedValue;
                     role.Save();
                 }
 
-                if (user.Id == AppUser.Current.UserData.Id.Value) AppUser.Current.UserData.DisplayName = user.DisplayName;
                 Populate();
                 OutputMessage("<b>Success:</b> Changes saved.", false, OutputLit);
             }
@@ -87,15 +88,13 @@ namespace StreamingLiveWeb.CP.Users
         private string[] Validate(int userId)
         {
             List<string> errors = new List<string>();
-            if (NameText.Text.Trim() == "") errors.Add("Name cannot be blank");
-            if (System.Text.RegularExpressions.Regex.Match(NameText.Text, "[A-Za-z0-9\\-_ \\.\\']{1,99}").Value != NameText.Text) errors.Add("Invalid characters in name.");
-            if (!IsValidEmail(EmailText.Text)) errors.Add("Invalid email address.");
-            if (userId == 0 && PasswordText.Text == "") errors.Add("Password cannot be blank");
-            if (PasswordText.Text!="" && PasswordText.Text.Trim().Length < 6) errors.Add("Password must be at least 6 characters.");
-            if (errors.Count == 0)
+            if (userId == 0)
             {
-                StreamingLiveLib.User existing = StreamingLiveLib.User.LoadByEmail(EmailText.Text);
-                if (existing != null && existing.Id.Value!=userId) errors.Add("There is already an account registered with this email address.");
+                if (NameText.Text.Trim() == "") errors.Add("Name cannot be blank");
+                if (System.Text.RegularExpressions.Regex.Match(NameText.Text, "[A-Za-z0-9\\-_ \\.\\']{1,99}").Value != NameText.Text) errors.Add("Invalid characters in name.");
+                if (!IsValidEmail(EmailText.Text)) errors.Add("Invalid email address.");
+                if (userId == 0 && PasswordText.Text == "") errors.Add("Password cannot be blank");
+                if (PasswordText.Text != "" && PasswordText.Text.Trim().Length < 6) errors.Add("Password must be at least 6 characters.");
             }
 
             return errors.ToArray();
@@ -118,23 +117,40 @@ namespace StreamingLiveWeb.CP.Users
         protected void DeleteButton_Click(object sender, EventArgs e)
         {
             int userId = Convert.ToInt32(UserIdHid.Value);
-            StreamingLiveLib.User.Delete(userId);
             StreamingLiveLib.Role r = StreamingLiveLib.Role.Load(userId, AppUser.Current.Site.Id.Value);
             StreamingLiveLib.Role.Delete(r.Id.Value);
+
+            if (StreamingLiveLib.Roles.LoadByUserId(userId).Count==0) StreamingLiveLib.User.Delete(userId);
             Response.Redirect("/cp/users/");
         }
 
 
         private void ShowEditUser(int userId)
         {
+            EditHolder.Visible = true;
             StreamingLiveLib.User user = (userId == 0) ? new StreamingLiveLib.User() : StreamingLiveLib.User.Load(userId);
-            NameText.Text = user.DisplayName;
-            EmailText.Text = user.Email;
-            if (userId>0)
+
+            NameLit.Visible = false;
+            NameText.Visible = false;
+            EmailLit.Visible = false;
+            EmailText.Visible = false;
+
+            if (userId==0)
             {
+                PasswordHolder.Visible = true;
+                NameText.Visible = true;
+                EmailText.Visible = true;
+            } else
+            {
+                PasswordHolder.Visible = false;
+                NameLit.Visible = true;
+                EmailLit.Visible = true;
+                NameLit.Text = "<div>" + user.DisplayName + "</div>";
+                EmailLit.Text = "<div>" + user.Email + "</div>";
                 StreamingLiveLib.Role role = StreamingLiveLib.Role.Load(userId, AppUser.Current.Site.Id.Value);
                 RoleList.SelectedValue = role.Name;
             }
+
 
             DeleteHolder.Visible = (userId != 0 && userId != AppUser.Current.UserData.Id.Value);
 

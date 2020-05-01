@@ -36,6 +36,11 @@ namespace StreamingLiveLib
 			return Load("SELECT * FROM Roles", CommandType.Text, null);
 		}
 
+		public static Roles LoadByUserId(int userId)
+		{
+			return Load("SELECT * FROM Roles WHERE UserId=@UserId", CommandType.Text, new SqlParameter[] { new SqlParameter("@UserId", userId) });
+		}
+
 		public async System.Threading.Tasks.Task SaveAsync(int threadCount)
 		{
 			System.Threading.Semaphore sem = new System.Threading.Semaphore(threadCount, threadCount);

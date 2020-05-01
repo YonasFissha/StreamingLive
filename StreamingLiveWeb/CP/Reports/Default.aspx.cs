@@ -19,6 +19,7 @@ namespace StreamingLiveWeb.CP.Reports
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (AppUser.Current.Role.Name != "admin") Response.Redirect("/cp/");
             if (!IsPostBack)
             {
                 sessions = new StreamingLiveLib.TrafficSessions(StreamingLiveLib.TrafficMinutes.Load(DateTime.Today.AddDays(-5), DateTime.Today.AddDays(1), AppUser.Current.Site.KeyName + ".streaminglive.church"));

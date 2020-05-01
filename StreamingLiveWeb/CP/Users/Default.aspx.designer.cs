@@ -15,6 +15,33 @@ namespace StreamingLiveWeb.CP.Users
     {
 
         /// <summary>
+        /// UserListHolder control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.PlaceHolder UserListHolder;
+
+        /// <summary>
+        /// AddUserLink control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton AddUserLink;
+
+        /// <summary>
+        /// UserRepeater control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater UserRepeater;
+
+        /// <summary>
         /// OutputLit control.
         /// </summary>
         /// <remarks>
@@ -24,6 +51,15 @@ namespace StreamingLiveWeb.CP.Users
         protected global::System.Web.UI.WebControls.Literal OutputLit;
 
         /// <summary>
+        /// EditHolder control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.PlaceHolder EditHolder;
+
+        /// <summary>
         /// NameText control.
         /// </summary>
         /// <remarks>
@@ -31,6 +67,15 @@ namespace StreamingLiveWeb.CP.Users
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox NameText;
+
+        /// <summary>
+        /// NameLit control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal NameLit;
 
         /// <summary>
         /// UserIdHid control.
@@ -49,6 +94,24 @@ namespace StreamingLiveWeb.CP.Users
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox EmailText;
+
+        /// <summary>
+        /// EmailLit control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal EmailLit;
+
+        /// <summary>
+        /// PasswordHolder control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.PlaceHolder PasswordHolder;
 
         /// <summary>
         /// PasswordText control.
@@ -94,32 +157,5 @@ namespace StreamingLiveWeb.CP.Users
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button SaveButton;
-
-        /// <summary>
-        /// UserListHolder control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder UserListHolder;
-
-        /// <summary>
-        /// AddUserLink control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton AddUserLink;
-
-        /// <summary>
-        /// UserRepeater control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater UserRepeater;
     }
 }

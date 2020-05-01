@@ -11,7 +11,7 @@ namespace StreamingLiveWeb.Controls
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (AppUser.Current.IsAuthenticated) LoginLit.Text = "<a href=\"javascript:toggleUserMenu();\"><i class=\"fas fa-user\"></i> &nbsp;" + AppUser.Current.UserData.DisplayName + " <i class=\"fas fa-caret-down\"></i></a>";
+            if (AppUser.Current.IsAuthenticated) LoginLit.Text = $"<a href=\"javascript:toggleUserMenu();\"><i class=\"fas fa-user\"></i> &nbsp;{AppUser.Current.UserData.DisplayName} ({AppUser.Current.Site.KeyName}) <i class=\"fas fa-caret-down\"></i></a>";
         }
     }
 }

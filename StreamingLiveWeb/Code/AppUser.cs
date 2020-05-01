@@ -9,6 +9,7 @@ namespace StreamingLiveWeb
     public class AppUser
     {
         public StreamingLiveLib.User UserData;
+        public StreamingLiveLib.Sites Sites;
         public StreamingLiveLib.Site Site;
         public StreamingLiveLib.Role Role;
 
@@ -52,7 +53,7 @@ namespace StreamingLiveWeb
             if (role == null) return null;
 
 
-            AppUser user = new AppUser { UserData = u, Site = sites[0], Role=role };
+            AppUser user = new AppUser { UserData = u, Sites=sites, Site = sites[0], Role=role };
             AppUser.Current = user;
             return user;
         }

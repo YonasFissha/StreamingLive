@@ -7,3 +7,9 @@
     }
     else $('#userMenu').hide();
 }
+
+function selectSite(id) {
+    $.get('/cp/usermenu.aspx?mode=select&id=' + id.toString(), function (data) {
+        window.location.href = '/cp/';
+    });
+}
