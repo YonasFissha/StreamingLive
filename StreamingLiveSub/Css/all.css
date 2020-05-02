@@ -64,6 +64,9 @@ body {margin:0px;padding:0px;background-color:#000;font-family:Arial;}
 .altTab:hover {text-decoration:none;color:var(--contrastColor);}
 .altTab.active{color:var(--primaryColor); background-color:var(--contrastColor);}
 
+.emojiContent { font-size: 26px; }
+.emojiContent a:hover { text-decoration:none; background-color:var(--primaryColor); }
+
 @media (max-aspect-ratio: 5/3) {
     #body {flex-direction:column;}
     #videoContainer {flex:2;}

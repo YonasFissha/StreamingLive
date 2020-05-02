@@ -62,7 +62,7 @@ function setName(mode) {
     var name = '';
     if (mode == 'prayer') name = $('#prayerNameText').val();
     else name = $('#nameText').val();
-
+    if (name == '') return;
     if (confirm('Please confirm.  Would you like to set your name to ' + name + '?'))
     {
         displayName = name;
@@ -75,6 +75,8 @@ function setName(mode) {
         $('#prayerSend').show();
 
         $("#sendText").keypress(function (e) { if (e.which == 13) { e.preventDefault(); sendMessage(); } });
+
+        initEmoji();
 
         if (mode == 'prayer') $("#prayerSendText")[0].focus();
         else $("#sendText")[0].focus();
@@ -169,7 +171,7 @@ function getChatDiv() {
     result += '<div id="callout"></div><div id="chatReceive"></div>';
 
     result += '<div id="chatSend" style="display:none;">'
-        + ' <div class="input-group" id="sendPublic"><input type="text" class="form-control" id="sendText" /><div class="input-group-append"><a class="btn btn-primary" style="border-radius:0px" href="javascript:sendMessage();">Send</a></div></div>'
+        + ' <div class="input-group" id="sendPublic"><div class="input-group-prepend"><a href="javascript:void();" data-field="sendText" class="btn btn-outline-secondary emojiButton">😀</a></div><input type="text" class="form-control" id="sendText" /><div class="input-group-append"><a class="btn btn-primary" style="border-radius:0px" href="javascript:sendMessage();">Send</a></div></div>'
         + '</div>';
 
     result += '<div id="chatName">'
@@ -188,7 +190,7 @@ function getPrayerDiv() {
     result += '<div id="prayerReceive"><p><i>You are in private prayer mode.  Messages posted here are only visible to you and the host responding to your prayer request.</i></p></div>';
 
     result += '<div id="prayerSend" style="display:none;">'
-        + ' <div class="input-group" id="prayerSendInput" style="display:none;"><input type="text" class="form-control" id="prayerSendText" /><div class="input-group-append"><a class="btn btn-primary" style="border-radius:0px" href="javascript:prayerSendMessage();">Send</a></div></div>'
+        + ' <div class="input-group" id="prayerSendInput" style="display:none;"><div class="input-group-prepend"><a href="javascript:void();" data-field="prayerSendText" class="btn btn-outline-secondary emojiButton">😀</a></div><input type="text" class="form-control" id="prayerSendText" /><div class="input-group-append"><a class="btn btn-primary" style="border-radius:0px" href="javascript:prayerSendMessage();">Send</a></div></div>'
         + '<div id="requestPrayer" style="display:none;"><a class="btn btn-primary btn-block" style="border-radius:0px" href="javascript:requestPrayer();">Request Prayer</a></div>'
         + '</div>';
 
@@ -201,5 +203,31 @@ function getPrayerDiv() {
 
     result += '</div>';
 
+    return result;
+}
+
+
+function initEmoji(el) {
+    $('.emojiButton').each(function () {
+        $(this).popover({
+            html: true,
+            content: getEmojiHtml($(this).data('field'))
+        });
+    }).on('shown.bs.popover', function () {
+        var emojiField = $('#' + $(this).data('field'));
+        $('.emojiContent a').click(function (e) {
+            e.preventDefault();
+            var el = $(e.currentTarget);
+            emojiField.val(emojiField.val() + el.html());
+            $('.emojiButton').popover('hide');
+        })
+    });
+}
+
+function getEmojiHtml(field) {
+    var emojis = ['😀', '😁', '🤣', '😉', '😊', '😇', '😍', '😜', '🤫', '🤨', '🙄', '😬', '😔', '😷', '🤯', '😎', '😲', '❤', '👋', '✋', '🤞', '👍', '👊', '👏', '🙌', '🙏'];
+    var result = '<div class="row emojiContent">';
+    for (i = 0; i < emojis.length; i++) result += '<div class="col-3"><a href="#" data-field="' + field + '">' + emojis[i] + '</a></div>';
+    result += '</div>';
     return result;
 }

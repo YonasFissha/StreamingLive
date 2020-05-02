@@ -18,6 +18,7 @@
                         </div>
                         <div id="chatSend" class="chatSend">
                             <div class="input-group">
+                                <div class="input-group-prepend"><a href="javascript:void();" data-field="sendText" class="btn btn-outline-secondary emojiButton" data-container="#chatContainer">😀</a></div>
                                 <input type="text" class="form-control" id="sendText" />
                                 <div class="input-group-append"><a class="btn btn-primary" style="border-radius:0px" href="javascript:sendMessage();">Send</a></div>
                             </div>
@@ -38,11 +39,12 @@
                 <div id="noPrayerChat" style="flex: 1 1 0%;margin-bottom:30px;"></div>
                 <div class="inputBox" style="display:none;" id="prayerChat">
                     <div class="header"><i  class="fas fa-praying-hands"></i> <span id="privatePrayerTitle">Private Prayer</span></div>
-                    <div class="content chatContainer">
+                    <div id="prayerContainer" class="content chatContainer">
                         <div id="prayerReceive" class="chatReceive">
                         </div>
                         <div id="sendPrivate" class="chatSend">
                             <div class="input-group">
+                                <div class="input-group-prepend"><a href="javascript:void();" data-field="sendPrivateText" class="btn btn-outline-secondary emojiButton" data-container="#prayerContainer">😀</a></div>
                                 <input type="text" class="form-control" id="sendPrivateText" />
                                 <div class="input-group-append"><a class="btn btn-primary" style="border-radius:0px" href="javascript:sendPrivate();">Send</a></div>
                             </div>
@@ -69,11 +71,12 @@
                 </div>
                 <div class="inputBox">
                     <div class="header"><i class="fas fa-comments"></i> Private Host Chat</div>
-                    <div class="content chatContainer">
+                    <div id="hostChatContainer" class="content chatContainer">
                         <div id="hostChatReceive" class="chatReceive">
                         </div>
                         <div id="hostChatSend" class="chatSend">
                             <div class="input-group">
+                                <div class="input-group-prepend"><a href="javascript:void();" data-field="hostSendText" class="btn btn-outline-secondary emojiButton" data-container="#hostChatContainer">😀</a></div>
                                 <input type="text" class="form-control" id="hostSendText" />
                                 <div class="input-group-append"><a class="btn btn-primary" style="border-radius:0px" href="javascript:sendHostMessage();">Send</a></div>
                             </div>

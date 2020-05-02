@@ -20,3 +20,8 @@
 }
 
 prayerRequests a {display:block;}
+
+.emojiContent { font-size: 26px; }
+.emojiContent a:hover { text-decoration:none; background-color:var(--primaryColor); }
+
+.popover {max-width:400px !important;z-index:9999;}

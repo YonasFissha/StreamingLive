@@ -142,6 +142,8 @@ function init() {
     $("#hostSendText").keypress(function (e) { if (e.which == 13) { e.preventDefault(); sendHostMessage(); } });
     $("#sendPrivateText").keypress(function (e) { if (e.which == 13) { e.preventDefault(); sendPrivate(); } });
     userGuid = generateGuid();
+
+    initEmoji();
 }
 
 function getQs(name) {
@@ -155,4 +157,29 @@ function generateGuid() {
 
 function S4() {
     return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+}
+
+function initEmoji(el) {
+    $('.emojiButton').each(function () {
+        $(this).popover({
+            html: true,
+            content: getEmojiHtml($(this).data('field'))
+        });
+    }).on('shown.bs.popover', function () {
+        var emojiField = $('#' + $(this).data('field'));
+        $('.emojiContent a').click(function (e) {
+            e.preventDefault();
+            var el = $(e.currentTarget);
+            emojiField.val(emojiField.val() + el.html());
+            $('.emojiButton').popover('hide');
+        })
+    });
+}
+
+function getEmojiHtml(field) {
+    var emojis = ['😀', '😁', '🤣', '😉', '😊', '😇', '😍', '😜', '🤫', '🤨', '🙄', '😬', '😔', '😷', '🤯', '😎', '😲', '❤', '👋', '✋', '🤞', '👍', '👊', '👏', '🙌', '🙏'];
+    var result = '<div class="row emojiContent">';
+    for (i = 0; i < emojis.length; i++) result += '<div class="col-3"><a href="#" data-field="' + field + '">' + emojis[i] + '</a></div>';
+    result += '</div>';
+    return result;
 }
