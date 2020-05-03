@@ -132,6 +132,24 @@ namespace StreamingLiveWeb.CP.Live
         protected global::System.Web.UI.WebControls.TextBox DurationSecText;
 
         /// <summary>
+        /// ChatBeforeText control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox ChatBeforeText;
+
+        /// <summary>
+        /// ChatAfterText control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox ChatAfterText;
+
+        /// <summary>
         /// EarlyStartMinText control.
         /// </summary>
         /// <remarks>

@@ -76,10 +76,7 @@ namespace StreamingLiveWeb.CP.Live
 
         private void Populate()
         {
-
             UpdateConfigHolder.Visible = false;
-
-            
 
             JArray services = (JArray)data["services"];
             ServiceRepeater.DataSource = services;
@@ -100,7 +97,6 @@ namespace StreamingLiveWeb.CP.Live
             JsonData = StreamingLiveLib.Utils.GetJson(CachedData.BaseUrl + "/data/" + AppUser.Current.Site.KeyName + "/preview.json");
         }
 
-        
 
         private void UpdateData()
         {
@@ -127,6 +123,8 @@ namespace StreamingLiveWeb.CP.Live
 
             string earlyStart = "0:00";
             string duration = "0:00";
+            string chatBefore = "0:00";
+            string chatAfter = "0:00";
 
             try { earlyStart = Convert.ToInt32(EarlyStartMinText.Text).ToString("###0"); }
             catch { earlyStart = "0"; }
@@ -137,6 +135,13 @@ namespace StreamingLiveWeb.CP.Live
             catch { duration = "0"; }
             try { duration += ":" + Convert.ToInt32(DurationSecText.Text).ToString("00"); }
             catch { duration += ":00"; }
+
+            try { chatBefore = Convert.ToInt32(ChatBeforeText.Text).ToString("###0") + ":00"; }
+            catch { chatBefore = "0:00"; }
+
+            try { chatAfter = Convert.ToInt32(ChatAfterText.Text).ToString("###0") + ":00"; }
+            catch { chatAfter = "0:00"; }
+
 
             string[] errors = ValidateService();
             if (errors.Length == 0)
@@ -149,6 +154,10 @@ namespace StreamingLiveWeb.CP.Live
                 service["duration"] = duration;
                 service["serviceTime"] = CountdownTimeText.Text;
                 service["provider"] = ProviderList.SelectedValue;
+
+                service["chatBefore"] = chatBefore;
+                service["chatAfter"] = chatAfter;
+
                 switch (ProviderList.SelectedValue)
                 {
                     case "youtube_live":
@@ -271,6 +280,16 @@ namespace StreamingLiveWeb.CP.Live
                     DurationMinText.Text = parts[0];
                     DurationSecText.Text = parts[1];
                 }
+                if (service["chatBefore"] != null)
+                {
+                    string[] parts = service["chatBefore"].ToString().Split(':');
+                    ChatBeforeText.Text = parts[0];
+                }
+                if (service["chatAfter"] != null)
+                {
+                    string[] parts = service["chatAfter"].ToString().Split(':');
+                    ChatAfterText.Text = parts[0];
+                }
                 CountdownTimeText.Text = Convert.ToString(service["serviceTime"]);
                 VimeoKeyText.Text = Convert.ToString(service["providerKey"]);
                 YouTubeKeyText.Text = Convert.ToString(service["providerKey"]);
@@ -280,6 +299,17 @@ namespace StreamingLiveWeb.CP.Live
                     ProviderList.SelectedValue = Convert.ToString(service["provider"]);
                 }
                 catch { }
+            } else
+            {
+                DateTime serviceTime = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 9, 0, 0);
+                while (serviceTime.DayOfWeek != DayOfWeek.Sunday) serviceTime = serviceTime.AddDays(1);
+                CountdownTimeText.Text = serviceTime.ToString("yyyy-MM-dd") + "T" + serviceTime.ToString("hh:mm");
+                EarlyStartMinText.Text = "15";
+                EarlyStartSecText.Text = "0";
+                DurationMinText.Text = "60";
+                DurationSecText.Text = "0";
+                ChatBeforeText.Text = "15";
+                ChatAfterText.Text = "15";
             }
 
             ShowProviderDetails();

@@ -2,6 +2,7 @@ var videoUrl = 'about:blank';
 var keyName = 'master';
 var currentService = null;
 var data = null;
+var chatEnabled = true;
 
 function init() {
     loadConfig();
@@ -18,6 +19,20 @@ function checkService() {
             else showVideo();
         } else showNoService();
     } else showNoService();
+    toggleChatEnabled();
+}
+
+function toggleChatEnabled() {
+    var currentTime = new Date().getTime();
+    var result = (currentService==null) ? false : currentTime >= currentService.localChatStart && currentTime <= currentService.localChatEnd;
+    if (result != chatEnabled) {
+        if (result) {
+            $('#chatContainer, #prayerContainer').removeClass('chatDisabled');
+        } else {
+            $('#chatContainer, #prayerContainer').addClass('chatDisabled');
+        }
+    }
+    chatEnabled = result;
 }
 
 function showNoService() {
@@ -143,6 +158,13 @@ function updateServiceTimes() {
             s.localEndTime = new Date(s.localStartTime.getTime());
             s.localEndTime.setSeconds(s.localEndTime.getSeconds() + getSeconds(s.duration));
 
+            s.localChatStart = new Date(s.localCountdownTime.getTime());
+            if (s.chatBefore) s.localChatStart.setSeconds(s.localChatStart.getSeconds() - getSeconds(s.chatBefore));
+            else s.localChatStart.setSeconds(s.localChatStart.getSeconds() - (30*60));
+
+            s.localChatEnd = new Date(s.localEndTime.getTime());
+            if (s.chatAfter) s.localChatEnd.setSeconds(s.localEndTime.getSeconds() + getSeconds(s.chatAfter));
+            else s.localChatEnd.setSeconds(s.localEndTime.getSeconds() + (30*60));
         }
     }
 

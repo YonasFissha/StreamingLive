@@ -25,7 +25,6 @@ function chatReceived(data) {
 }
 
 function appendMessage(room, name, message, ts) {
-    console.log(room);
     var div = '<div id="msg-' + ts + '" class="message">';
     div += '<b>' + name + ':</b> ' + insertLinks(message) + '</div>';
     if (room == keyName) {
@@ -59,6 +58,7 @@ function insertLinks(text) {
 }
 
 function setName(mode) {
+    if (!chatEnabled) return;
     var name = '';
     if (mode == 'prayer') name = $('#prayerNameText').val();
     else name = $('#nameText').val();
@@ -84,6 +84,7 @@ function setName(mode) {
 }
 
 function postMessage(room, textField) {
+    if (!chatEnabled) return;
     var content = $('#' + textField).val();
     if (content.trim() == '') return;
     socket.send(JSON.stringify({ 'action': 'sendMessage', 'room': room, 'userGuid': userGuid, 'name': displayName, 'message': content }));
@@ -102,6 +103,7 @@ function prayerSendMessage() {
 
 
 function requestPrayer() {
+    if (!chatEnabled) return;
     prayerGuid = generateGuid();
     socket.send(JSON.stringify({ 'action': 'requestPrayer', 'room': keyName, 'name': displayName, 'guid': prayerGuid }));
     socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': keyName + prayerGuid }));
@@ -161,8 +163,6 @@ function initChat() {
 
     if ($('#prayerContainer').length>0) togglePrayer();
 }
-
-
 
 
 function getChatDiv() {

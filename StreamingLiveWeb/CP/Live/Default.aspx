@@ -82,7 +82,7 @@
                             </div>
                             <div class="col">
                                 <div class="form-group">
-                                    <label>Duration</label>
+                                    <label>Total Service Duration</label>
                                     <div class="row">
                                         <div class="col">
                                             <div class="input-group">
@@ -102,9 +102,28 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6 offset-md-6">
+                            <div class="col">
                                 <div class="form-group">
-                                    <label>Start Early <span class="description"> (Optional) For videos with countdowns</span></label>
+                                    <label>Enable Chat and Prayer</label>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="input-group">
+                                                <asp:TextBox ID="ChatBeforeText" runat="server" TextMode="number" CssClass="form-control" min="0" step="1" />
+                                                <div class="input-group-append"><label class="input-group-text">min before</label></div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="input-group">
+                                                <asp:TextBox ID="ChatAfterText" runat="server" TextMode="number" CssClass="form-control" min="0" step="1" max="59" />
+                                                <div class="input-group-append"><label class="input-group-text">min after</label></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label>Start Video Early <span class="description"> (Optional) For videos with countdowns</span></label>
                                     <div class="row">
                                         <div class="col">
                                             <div class="input-group">
