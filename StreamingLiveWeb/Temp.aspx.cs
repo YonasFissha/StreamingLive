@@ -12,7 +12,7 @@ namespace StreamingLiveWeb
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            foreach (StreamingLiveLib.Site site in StreamingLiveLib.Sites.LoadAll()) MigrateSite(site);
+            //foreach (StreamingLiveLib.Site site in StreamingLiveLib.Sites.LoadAll()) MigrateSite(site);
         }
 
         private void MigrateSite(StreamingLiveLib.Site site)

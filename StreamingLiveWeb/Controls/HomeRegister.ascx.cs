@@ -42,9 +42,12 @@ namespace StreamingLiveWeb.Controls
                 System.IO.File.Copy(Server.MapPath("/data/master/data.json"), Server.MapPath("/data/" + s.KeyName + "/data.json"));
                 System.IO.File.Copy(Server.MapPath("/data/master/data.css"), Server.MapPath("/data/" + s.KeyName + "/data.css"));
 
-                //System.IO.File.Copy(Server.MapPath("/data/master/preview.json"), Server.MapPath("/data/" + s.KeyName + "/preview.json"));
+                try
+                {
+                    string body = "<a href=\"https://" + s.KeyName + ".streaminglive.church/\">https://" + s.KeyName + ".streaminglive.church/</a> - " + u.Email;
+                    StreamingLiveLib.Aws.EmailHelper.SendEmail(CachedData.SupportEmail, CachedData.SupportEmail, "New StreamingLive.church Registration", body);
+                } catch { }
 
-                //System.IO.File.Copy(Server.MapPath("/data/master/preview.css"), Server.MapPath("/data/" + s.KeyName + "/preview.css"));
 
 
                 AppUser.Login(u);

@@ -4,7 +4,7 @@
         <div id="footerLogo">
             <img src="/images/logo-home.png" />
         </div>
-        <p>Phone: 918-994-2638 &nbsp; | &nbsp; support@livechurchsolutions.org</p>
+        <p>Phone: 918-994-2638 &nbsp; | &nbsp; support@streaminglive.church</p>
         <p>2020 &copy; Live Church Solutions.  All rights reserved.</p>
     </div>
 </div>
