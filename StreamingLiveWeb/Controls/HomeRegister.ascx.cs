@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StreamingLiveLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -15,21 +16,35 @@ namespace StreamingLiveWeb.Controls
             string[] errors = Validate();
             if (errors.Length == 0)
             {
-                StreamingLiveLib.Site s = new StreamingLiveLib.Site() { KeyName = KeyNameText.Text.ToLower().Trim() };
+                StreamingLiveLib.Site s = new StreamingLiveLib.Site() { KeyName = KeyNameText.Text.ToLower().Trim(), PrimaryColor="#24b9ff", ContrastColor="#ffffff", HeaderColor= "#24b9ff", HomePageUrl="/", LogoUrl= "/data/master/logo.png" };
                 s.Save();
 
                 StreamingLiveLib.User u = new StreamingLiveLib.User() { Email = EmailText.Text.ToLower().Trim(), Password = StreamingLiveLib.User.HashPassword(PasswordText.Text.Trim()), DisplayName="Admin" };
                 u.ResetGuid = Guid.NewGuid().ToString();
                 u.Save();
 
-                StreamingLiveLib.Role r = new StreamingLiveLib.Role() { Name = "admin", SiteId = s.Id.Value, UserId = u.Id.Value };
+                StreamingLiveLib.Role r = new StreamingLiveLib.Role() { Name = "admin", SiteId = s.Id, UserId = u.Id.Value };
                 r.Save();
+
+
+                new StreamingLiveLib.Button() { SiteId = s.Id, Sort = 1, Text = "Resources", Url = "about:blank" }.Save();
+                new StreamingLiveLib.Button() { SiteId = s.Id, Sort = 2, Text = "Give", Url="about:blank" }.Save();
+
+                new StreamingLiveLib.Tab() { SiteId = s.Id, Sort = 1, TabType="chat", TabData="", Icon= "far fa-comment", Text = "Chat", Url = "" }.Save();
+                new StreamingLiveLib.Tab() { SiteId = s.Id, Sort = 2, TabType = "url", TabData = "", Icon = "fas fa-bible", Text = "Bible", Url = "https://www.bible.com/en-GB/bible/111/GEN.1.NIV" }.Save();
+                new StreamingLiveLib.Tab() { SiteId = s.Id, Sort = 3, TabType = "prayer", TabData = "", Icon = "fas fa-praying-hands", Text = "Prayer", Url = "" }.Save();
+
+                DateTime serviceTime = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 9, 0, 0).AddDays(1);
+                while (serviceTime.DayOfWeek != DayOfWeek.Sunday) serviceTime = serviceTime.AddDays(1);
+                new StreamingLiveLib.Service() { SiteId = s.Id, ChatAfter = 15 * 60, ChatBefore = 15 * 60, Duration = 60 * 60, EarlyStart = 5 * 60, Provider = "youtube_watchparty", ProviderKey = "zFOfmAHFKNw", VideoUrl = "https://www.youtube.com/embed/zFOfmAHFKNw?autoplay=1&controls=0&showinfo=0&rel=0&modestbranding=1&disablekb=1", ServiceTime = serviceTime }.Save();
 
                 System.IO.Directory.CreateDirectory(Server.MapPath("/data/" + s.KeyName));
                 System.IO.File.Copy(Server.MapPath("/data/master/data.json"), Server.MapPath("/data/" + s.KeyName + "/data.json"));
-                System.IO.File.Copy(Server.MapPath("/data/master/preview.json"), Server.MapPath("/data/" + s.KeyName + "/preview.json"));
                 System.IO.File.Copy(Server.MapPath("/data/master/data.css"), Server.MapPath("/data/" + s.KeyName + "/data.css"));
-                System.IO.File.Copy(Server.MapPath("/data/master/preview.css"), Server.MapPath("/data/" + s.KeyName + "/preview.css"));
+
+                //System.IO.File.Copy(Server.MapPath("/data/master/preview.json"), Server.MapPath("/data/" + s.KeyName + "/preview.json"));
+
+                //System.IO.File.Copy(Server.MapPath("/data/master/preview.css"), Server.MapPath("/data/" + s.KeyName + "/preview.css"));
 
 
                 AppUser.Login(u);

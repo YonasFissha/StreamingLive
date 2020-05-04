@@ -11,17 +11,21 @@ namespace StreamingLiveWeb.CP.Controls
     public partial class ButtonEditor : System.Web.UI.UserControl
     {
         public event EventHandler DataUpdated;
-        public JObject Data;
-        JArray buttons;
+        StreamingLiveLib.Buttons buttons;
 
         protected void Page_Load(object sender, EventArgs e)
         {
+        }
 
+        private void LoadData()
+        {
+            buttons = StreamingLiveLib.Buttons.LoadBySiteId(AppUser.Current.Site.Id);
         }
 
         public void Populate()
         {
-            buttons = (JArray)Data["buttons"];
+            LoadData();
+
             ButtonRepeater.DataSource = buttons;
             ButtonRepeater.DataBind();
 
@@ -32,61 +36,67 @@ namespace StreamingLiveWeb.CP.Controls
 
         protected void ButtonRepeater_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
-            buttons = (JArray)Data["buttons"];
             if (e.CommandName == "Edit")
             {
-                EditButtonShow(e.Item.ItemIndex);
+                EditButtonShow(Convert.ToInt32(e.CommandArgument));
             }
             else if (e.CommandName == "Up")
             {
-                JObject button = (JObject)buttons[e.Item.ItemIndex];
-                buttons.RemoveAt(e.Item.ItemIndex);
-                buttons.Insert(e.Item.ItemIndex - 1, button);
+                LoadData();
+                buttons[e.Item.ItemIndex - 1].Sort = buttons[e.Item.ItemIndex - 1].Sort + 1;
+                buttons[e.Item.ItemIndex].Sort = buttons[e.Item.ItemIndex].Sort - 1;
+                buttons[e.Item.ItemIndex - 1].Save();
+                buttons[e.Item.ItemIndex].Save();
                 UpdateData();
             }
             else if (e.CommandName == "Down")
             {
-                JObject button = (JObject)buttons[e.Item.ItemIndex];
-                buttons.RemoveAt(e.Item.ItemIndex);
-                buttons.Insert(e.Item.ItemIndex + 1, button);
+                LoadData();
+                buttons[e.Item.ItemIndex + 1].Sort = buttons[e.Item.ItemIndex + 1].Sort - 1;
+                buttons[e.Item.ItemIndex].Sort = buttons[e.Item.ItemIndex].Sort + 1;
+                buttons[e.Item.ItemIndex + 1].Save();
+                buttons[e.Item.ItemIndex].Save();
                 UpdateData();
             }
         }
 
-        private void EditButtonShow(int idx)
+        private void EditButtonShow(int id)
         {
-            buttons = (JArray)Data["buttons"];
-            JObject button = (idx == -1) ? new JObject() : (JObject)buttons[idx];
+            StreamingLiveLib.Button button = (id == 0) ? new StreamingLiveLib.Button() : StreamingLiveLib.Button.Load(id, AppUser.Current.Site.Id);
+
             ButtonEditHolder.Visible = true;
             ButtonListHolder.Visible = false;
 
-            ButtonIndexHid.Value = idx.ToString();
-            ButtonUrlText.Text = Convert.ToString(button["url"]);
-            ButtonTextText.Text = Convert.ToString(button["text"]);
-
-            DeleteButtonHolder.Visible = idx > -1;
-
+            ButtonIdHid.Value = button.Id.ToString();
+            ButtonUrlText.Text = button.Url;
+            ButtonTextText.Text = button.Text;
+            DeleteButtonHolder.Visible = id > 0;
         }
 
         protected void SaveButtonButton_Click(object sender, EventArgs e)
         {
-            int idx = Convert.ToInt32(ButtonIndexHid.Value);
-            JArray buttons = (JArray)Data["buttons"];
-            JObject button = (idx == -1) ? new JObject() : (JObject)buttons[idx];
-            button["url"] = ButtonUrlText.Text;
-            button["text"] = ButtonTextText.Text;
-            if (idx == -1) buttons.Add(button);
+            int id = Convert.ToInt32(ButtonIdHid.Value);
+            StreamingLiveLib.Button button = (id == 0) ? new StreamingLiveLib.Button() { SiteId = AppUser.Current.Site.Id, Sort=999 } : StreamingLiveLib.Button.Load(id, AppUser.Current.Site.Id);
+            button.Url = ButtonUrlText.Text;
+            button.Text = ButtonTextText.Text;
+            button.Save();
+
+            if (id == 0)
+            {
+                LoadData();
+                buttons.UpdateSort();
+            }
+
             UpdateData();
             Populate();
         }
 
         protected void DeleteButtonButton_Click(object sender, EventArgs e)
         {
-            int idx = Convert.ToInt32(ButtonIndexHid.Value);
-            if (idx > -1)
+            int id = Convert.ToInt32(ButtonIdHid.Value);
+            if (id > 0)
             {
-                JArray buttons = (JArray)Data["buttons"];
-                buttons.RemoveAt(idx);
+                StreamingLiveLib.Button.Delete(id, AppUser.Current.Site.Id);
                 UpdateData();
             }
             Populate();
@@ -99,7 +109,7 @@ namespace StreamingLiveWeb.CP.Controls
 
         protected void AddButtonLink_Click(object sender, EventArgs e)
         {
-            EditButtonShow(-1);
+            EditButtonShow(0);
         }
         private void UpdateData()
         {
@@ -110,6 +120,11 @@ namespace StreamingLiveWeb.CP.Controls
         {
             LinkButton UpButton = (LinkButton)e.Item.FindControl("UpButton");
             LinkButton DownButton = (LinkButton)e.Item.FindControl("DownButton");
+            LinkButton EditButton = (LinkButton)e.Item.FindControl("EditButton");
+            
+            StreamingLiveLib.Button button = (StreamingLiveLib.Button)e.Item.DataItem;
+            EditButton.CommandArgument = button.Id.ToString();
+
             if (e.Item.ItemIndex == 0) UpButton.Visible = false;
             if (e.Item.ItemIndex == buttons.Count - 1) DownButton.Visible = false;
         }

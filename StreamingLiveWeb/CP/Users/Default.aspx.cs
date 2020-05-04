@@ -21,7 +21,7 @@ namespace StreamingLiveWeb.CP.Users
 
         private void Populate()
         {
-            UserRepeater.DataSource = StreamingLiveLib.Users.LoadBySiteId(AppUser.Current.Site.Id.Value);
+            UserRepeater.DataSource = StreamingLiveLib.Users.LoadBySiteId(AppUser.Current.Site.Id);
             UserRepeater.DataBind();
             EditHolder.Visible = false;
         }
@@ -64,10 +64,10 @@ namespace StreamingLiveWeb.CP.Users
                         userId = user.Id.Value;
                     }
                     else userId = existing.Id.Value;
-                    new StreamingLiveLib.Role() { SiteId = AppUser.Current.Site.Id.Value, Name = RoleList.SelectedValue, UserId = userId }.Save();
+                    new StreamingLiveLib.Role() { SiteId = AppUser.Current.Site.Id, Name = RoleList.SelectedValue, UserId = userId }.Save();
                 } else if (RoleList.Enabled)
                 {
-                    StreamingLiveLib.Role role = StreamingLiveLib.Role.Load(userId, AppUser.Current.Site.Id.Value);
+                    StreamingLiveLib.Role role = StreamingLiveLib.Role.Load(userId, AppUser.Current.Site.Id);
                     role.Name = RoleList.SelectedValue;
                     role.Save();
                 }
@@ -117,7 +117,7 @@ namespace StreamingLiveWeb.CP.Users
         protected void DeleteButton_Click(object sender, EventArgs e)
         {
             int userId = Convert.ToInt32(UserIdHid.Value);
-            StreamingLiveLib.Role r = StreamingLiveLib.Role.Load(userId, AppUser.Current.Site.Id.Value);
+            StreamingLiveLib.Role r = StreamingLiveLib.Role.Load(userId, AppUser.Current.Site.Id);
             StreamingLiveLib.Role.Delete(r.Id.Value);
 
             if (StreamingLiveLib.Roles.LoadByUserId(userId).Count==0) StreamingLiveLib.User.Delete(userId);
@@ -147,7 +147,7 @@ namespace StreamingLiveWeb.CP.Users
                 EmailLit.Visible = true;
                 NameLit.Text = "<div>" + user.DisplayName + "</div>";
                 EmailLit.Text = "<div>" + user.Email + "</div>";
-                StreamingLiveLib.Role role = StreamingLiveLib.Role.Load(userId, AppUser.Current.Site.Id.Value);
+                StreamingLiveLib.Role role = StreamingLiveLib.Role.Load(userId, AppUser.Current.Site.Id);
                 RoleList.SelectedValue = role.Name;
             }
 

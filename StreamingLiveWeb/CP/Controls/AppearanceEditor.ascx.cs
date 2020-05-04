@@ -14,7 +14,7 @@ namespace StreamingLiveWeb.CP.Controls
     public partial class AppearanceEditor : System.Web.UI.UserControl
     {
         public event EventHandler DataUpdated;
-        public JObject Data;
+        StreamingLiveLib.Site site;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -23,25 +23,22 @@ namespace StreamingLiveWeb.CP.Controls
 
         public void Populate()
         {
-            JObject logo = (JObject)Data["logo"];
-            LogoLit.Text = "<img src=\"" + logo["image"].ToString() + "\" class=\"img-fluid\" />";
-            HomePageText.Text = logo["url"].ToString();
-
-            JObject colors = (JObject)Data["colors"];
-            PrimaryColorText.Text = colors["primary"].ToString();
-            ContrastColorText.Text = colors["contrast"].ToString();
-            HeaderColorText.Text = colors["header"].ToString();
+            site = AppUser.Current.Site;
+            if (site.LogoUrl == "" || site.LogoUrl==null) LogoLit.Text = "none";
+            else LogoLit.Text = "<img src=\"" +  site.LogoUrl + "\" class=\"img-fluid\" />";
+            HomePageText.Text = site.HomePageUrl;
+            PrimaryColorText.Text = site.PrimaryColor;
+            ContrastColorText.Text = site.ContrastColor;
+            HeaderColorText.Text = site.HeaderColor;
         }
 
         protected void SaveAppearanceButton_Click(object sender, EventArgs e)
         {
-            JObject logo = (JObject)Data["logo"];
-            logo["url"] = HomePageText.Text;
-
-            JObject colors = (JObject)Data["colors"];
-            colors["primary"] = PrimaryColorText.Text;
-            colors["contrast"] = ContrastColorText.Text;
-            colors["header"] = HeaderColorText.Text;
+            site = AppUser.Current.Site;
+            site.HomePageUrl = HomePageText.Text;
+            site.PrimaryColor = PrimaryColorText.Text;
+            site.ContrastColor = ContrastColorText.Text;
+            site.HeaderColor = HeaderColorText.Text;
 
             if (LogoUpload.HasFile)
             {
@@ -64,7 +61,7 @@ namespace StreamingLiveWeb.CP.Controls
 
                 g.DrawImage(img, destRect, 0, 0, img.Width, img.Height, GraphicsUnit.Pixel, wrapMode);
                 outImg.Save(Server.MapPath("/data/" + AppUser.Current.Site.KeyName + "/logo.png"));
-                logo["image"] = "/data/" + AppUser.Current.Site.KeyName + "/logo.png?dt=" + DateTime.Now.ToString("Mdyyyyhhmmss");
+                site.LogoUrl = "/data/" + AppUser.Current.Site.KeyName + "/logo.png?dt=" + DateTime.Now.ToString("Mdyyyyhhmmss");
 
                 g.Dispose();
                 img.Dispose();
@@ -73,10 +70,10 @@ namespace StreamingLiveWeb.CP.Controls
 
             }
 
-            string previewCss = ":root { --primaryColor: " + PrimaryColorText.Text + "; --contrastColor: " + ContrastColorText.Text + "; --headerColor: " + HeaderColorText.Text + "}";
-            System.IO.File.WriteAllText(Server.MapPath("/data/" + AppUser.Current.Site.KeyName + "/preview.css"), previewCss);
+            //string previewCss = ":root { --primaryColor: " + PrimaryColorText.Text + "; --contrastColor: " + ContrastColorText.Text + "; --headerColor: " + HeaderColorText.Text + "}";
+            //System.IO.File.WriteAllText(Server.MapPath("/data/" + AppUser.Current.Site.KeyName + "/preview.css"), previewCss);
 
-
+            site.Save();
             UpdateData();
             Populate();
         }

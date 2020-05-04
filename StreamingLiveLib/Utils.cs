@@ -57,5 +57,40 @@ namespace StreamingLiveLib
             return result;
         }
 
+
+        public static int GetMinutes(int totalSeconds)
+        {
+            return Convert.ToInt32(Math.Floor(Convert.ToDouble(totalSeconds) / 60));
+        }
+
+        public static int GetSeconds(int totalSeconds)
+        {
+            return totalSeconds - (GetMinutes(totalSeconds) * 60);
+        }
+
+        public static string GetDisplayDuration(int totalSeconds)
+        {
+            int min = GetMinutes(totalSeconds);
+            int sec = GetSeconds(totalSeconds);
+            return min.ToString("#####00") + ":" + sec.ToString("00");
+
+        }
+
+        public static int GetTotalSeconds(string timeString)
+        {
+            string[] parts = timeString.Split(':');
+            if (parts.Length == 1) return GetTotalSeconds("", parts[0]);
+            else return GetTotalSeconds(parts[0], parts[1]);
+        }
+
+        public static int GetTotalSeconds(string minText, string secText)
+        {
+            int min = int.TryParse(minText, out min) ? min : 0;
+            int sec = int.TryParse(secText, out sec) ? sec : 0;
+            return min * 60 + sec;
+        }
+
+
+
     }
 }

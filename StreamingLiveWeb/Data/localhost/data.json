@@ -1,1 +1,50 @@
-{"colors":{"primary":"#24b9ff","contrast":"#ffffff","header":"#24b9ff"},"logo":{"url":"/","image":"/data/localhost/logo.png?dt=4292020015740"},"buttons":[{"text":"Resources","url":"about:blank"},{"text":"Give","url":"about:blank"}],"tabs":[{"text":"Chat2","url":"/chat.html","type":"chat","data":"","icon":"far fa-comments"},{"text":"Next Steps","url":"about:blank","type":"url","data":"","icon":"fas fa-clipboard-check"},{"url":"/prayer.html","type":"prayer","data":"","text":"Prayer","icon":"fas fa-praying-hands"},{"url":"about:blank","type":"url","data":"","text":"Bible","icon":"fas fa-bible"}],"services":[{"videoUrl":"https://www.youtube.com/embed/Vjt1-jGV9Eg?autoplay=1&controls=0&showinfo=0&rel=0&modestbranding=1&disablekb=1","earlyStart":"15:00","duration":"60:00","serviceTime":"2020-04-29T11:05","provider":"youtube_watchparty","providerKey":"Vjt1-jGV9Eg"},{"videoUrl":"https://www.youtube.com/embed/rgTBygkQAYk?autoplay=1&controls=0&showinfo=0&rel=0&modestbranding=1&disablekb=1","earlyStart":"15:00","duration":"60:00","serviceTime":"2020-05-02T21:30","provider":"youtube_watchparty","chatBefore":"23:00","chatAfter":"15:00","providerKey":"rgTBygkQAYk"}]}
+{
+  "colors": {
+    "primary": "#ff8040",
+    "contrast": "#ffffff",
+    "header": "#c0c0c0"
+  },
+  "logo": {
+    "url": "/",
+    "image": "/data/localhost/logo.png?dt=542020120805"
+  },
+  "buttons": [
+    {
+      "text": "Test2",
+      "url": "about:blank"
+    },
+    {
+      "text": "Test",
+      "url": "about:blank"
+    },
+    {
+      "text": "Test3",
+      "url": "about:blank"
+    },
+    {
+      "text": "Test4",
+      "url": "about:blank"
+    }
+  ],
+  "tabs": [
+    {
+      "text": "Test2",
+      "icon": "fab fa-adn",
+      "url": "about:blank",
+      "type": "url",
+      "data": ""
+    }
+  ],
+  "services": [
+    {
+      "videoUrl": "https://www.youtube.com/embed/8YYz3jXcUf0?autoplay=1&controls=0&showinfo=0&rel=0&modestbranding=1&disablekb=1",
+      "serviceTime": "2020-05-10T11:01",
+      "duration": "61:01",
+      "earlyStart": "16:08",
+      "chatBefore": "14:00",
+      "chatAfter": "18:00",
+      "provider": "youtube_watchparty",
+      "providerKey": "8YYz3jXcUf0"
+    }
+  ]
+}

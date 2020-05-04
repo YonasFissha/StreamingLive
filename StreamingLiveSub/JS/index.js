@@ -98,7 +98,7 @@ function loadConfig() {
     console.log('load config');
 
     var jsonUrl = '/data/' + keyName + '/data.json?nocache=' + (new Date()).getTime();
-    if (getQs('preview') == 1) jsonUrl = jsonUrl.replace('data.json', 'preview.json');
+    if (getQs('preview') == 1) jsonUrl = '/preview/data.json?key=' + keyName + '&nocache=' + (new Date()).getTime();
 
     $.getJSON(jsonUrl, function (_data) {
         data = _data;
@@ -131,7 +131,7 @@ function loadConfig() {
         //var customCss = ':root { --primaryColor: ' + data.colors.primary + '; --contrastColor: ' + data.colors.contrast + '; --headerColor: ' + data.colors.header + '}\n';
         //$('#customCss').html(customCss);
         var cssUrl = '/data/' + keyName + '/data.css?nocache=' + new Date().getTime();
-        if (getQs('preview') == 1) cssUrl = cssUrl.replace('data.css', 'preview.css');
+        if (getQs('preview') == 1) cssUrl = '/preview/data.css?key=' + keyName + '&nocache=' + new Date().getTime();
         $('#customCss').attr('href', cssUrl);
 
         initChat();

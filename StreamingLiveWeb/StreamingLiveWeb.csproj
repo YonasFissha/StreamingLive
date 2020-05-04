@@ -103,6 +103,9 @@
     <Content Include="JS\datetime-local-polyfill.min.js" />
     <Content Include="JS\Host.js" />
     <Content Include="JS\Player.js" />
+    <Content Include="Preview\Css.aspx" />
+    <Content Include="Preview\Data.aspx" />
+    <Content Include="Temp.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -299,7 +302,28 @@
     <Compile Include="MasterPages\MasterPage.Master.designer.cs">
       <DependentUpon>MasterPage.Master</DependentUpon>
     </Compile>
+    <Compile Include="Preview\Css.aspx.cs">
+      <DependentUpon>Css.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Preview\Css.aspx.designer.cs">
+      <DependentUpon>Css.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Preview\Data.aspx.cs">
+      <DependentUpon>Data.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Preview\Data.aspx.designer.cs">
+      <DependentUpon>Data.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Temp.aspx.cs">
+      <DependentUpon>Temp.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Temp.aspx.designer.cs">
+      <DependentUpon>Temp.aspx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="MasterPages\MasterPage.Master" />

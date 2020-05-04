@@ -79,7 +79,7 @@ namespace StreamingLiveLib
 		public int[] GetIds()
 		{
 			List<int> result = new List<int>();
-			foreach (Site site in this) result.Add(site.Id.Value);
+			foreach (Site site in this) result.Add(site.Id);
 			return result.ToArray();
 		}
 
@@ -93,7 +93,7 @@ namespace StreamingLiveLib
 		{
 			List<int> idList = new List<int>(ids);
 			Sites result = new Sites();
-			foreach (Site site in this) if (idList.Contains(site.Id.Value)) result.Add(site);
+			foreach (Site site in this) if (idList.Contains(site.Id)) result.Add(site);
 			return result;
 		}
 

@@ -12,19 +12,25 @@ namespace StreamingLiveWeb.CP.Controls
     {
 
         public event EventHandler DataUpdated;
-        public JObject Data;
-        JArray tabs;
+        StreamingLiveLib.Tabs tabs;
 
         protected void Page_Load(object sender, EventArgs e)
         {
 
         }
 
+        private void LoadData()
+        {
+            tabs = StreamingLiveLib.Tabs.LoadBySiteId(AppUser.Current.Site.Id);
+        }
+
         public void Populate()
         {
-            tabs = (JArray)Data["tabs"];
+            LoadData();
+
             TabRepeater.DataSource = tabs;
             TabRepeater.DataBind();
+
             TabEditHolder.Visible = false;
             TabListHolder.Visible = true;
         }
@@ -32,68 +38,64 @@ namespace StreamingLiveWeb.CP.Controls
 
         protected void TabRepeater_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
-            tabs = (JArray)Data["tabs"];
-
             if (e.CommandName == "Edit")
             {
-                EditTabShow(e.Item.ItemIndex);
+                EditTabShow(Convert.ToInt32(e.CommandArgument));
             }
             else if (e.CommandName == "Up")
             {
-                JObject tab = (JObject)tabs[e.Item.ItemIndex];
-                tabs.RemoveAt(e.Item.ItemIndex);
-                tabs.Insert(e.Item.ItemIndex - 1, tab);
+                LoadData();
+                tabs[e.Item.ItemIndex - 1].Sort = tabs[e.Item.ItemIndex - 1].Sort + 1;
+                tabs[e.Item.ItemIndex].Sort = tabs[e.Item.ItemIndex].Sort - 1;
+                tabs[e.Item.ItemIndex - 1].Save();
+                tabs[e.Item.ItemIndex].Save();
                 UpdateData();
             }
             else if (e.CommandName == "Down")
             {
-                JObject tab = (JObject)tabs[e.Item.ItemIndex];
-                tabs.RemoveAt(e.Item.ItemIndex);
-                tabs.Insert(e.Item.ItemIndex + 1, tab);
+                LoadData();
+                tabs[e.Item.ItemIndex + 1].Sort = tabs[e.Item.ItemIndex + 1].Sort - 1;
+                tabs[e.Item.ItemIndex].Sort = tabs[e.Item.ItemIndex].Sort + 1;
+                tabs[e.Item.ItemIndex + 1].Save();
+                tabs[e.Item.ItemIndex].Save();
                 UpdateData();
             }
         }
 
-        private void EditTabShow(int idx)
+        private void EditTabShow(int id)
         {
-            tabs = (JArray)Data["tabs"];
-            JObject tab = (idx == -1) ? new JObject() : (JObject)tabs[idx];
+            StreamingLiveLib.Tab tab = (id == 0) ? new StreamingLiveLib.Tab() : StreamingLiveLib.Tab.Load(id, AppUser.Current.Site.Id);
+
             TabEditHolder.Visible = true;
             TabListHolder.Visible = false;
 
-            TabIndexHid.Value = idx.ToString();
-
-            try
-            {
-                TabType.SelectedValue = Convert.ToString(tab["type"]);
-            }
-            catch { }
-            TabTextText.Text = Convert.ToString(tab["text"]);
-            DeleteTabHolder.Visible = idx > -1;
+            TabIdHid.Value = tab.Id.ToString();
+            TabTextText.Text = tab.Text;
+            if (tab.Icon != "") TabIcon.Attributes["data-icon"] = tab.Icon;
+            TabType.SelectedValue = tab.TabType;
+            DeleteTabHolder.Visible = id > 0;
 
             PopulateTabDetails(tab);
         }
 
-        private void PopulateTabDetails(JObject tab)
+        private void PopulateTabDetails(StreamingLiveLib.Tab tab)
         {
             TabUrlHolder.Visible = false;
             PageHolder.Visible = false;
 
-            if (tab["icon"] != null) TabIcon.Attributes["data-icon"] = tab["icon"].ToString();
-
             if (TabType.SelectedValue == "url")
             {
                 TabUrlHolder.Visible = true;
-                TabUrlText.Text = Convert.ToString(tab["url"]);
+                TabUrlText.Text = tab.Url;
             }
             else if (TabType.SelectedValue == "page")
             {
                 PageHolder.Visible = true;
-                PageList.DataSource = StreamingLiveLib.Pages.LoadBySiteId(AppUser.Current.Site.Id.Value);
+                PageList.DataSource = StreamingLiveLib.Pages.LoadBySiteId(AppUser.Current.Site.Id);
                 PageList.DataBind();
                 try
                 {
-                    PageList.SelectedValue = tab["data"].ToString();
+                    PageList.SelectedValue = tab.TabData;
                 }
                 catch { }
             }
@@ -102,36 +104,36 @@ namespace StreamingLiveWeb.CP.Controls
 
         protected void SaveTabButton_Click(object sender, EventArgs e)
         {
-            int idx = Convert.ToInt32(TabIndexHid.Value);
-            JArray tabs = (JArray)Data["tabs"];
-            JObject tab = (idx == -1) ? new JObject() : (JObject)tabs[idx];
-            tab["url"] = TabUrlText.Text;
-            tab["type"] = TabType.SelectedValue;
-            tab["data"] = (TabType.SelectedValue == "page") ? PageList.SelectedValue : "";
-            tab["text"] = TabTextText.Text;
-            tab["icon"] = Request["TabIcon"];
+            int id = Convert.ToInt32(TabIdHid.Value);
+            StreamingLiveLib.Tab tab = (id == 0) ? new StreamingLiveLib.Tab() { SiteId = AppUser.Current.Site.Id, Sort = 999 } : StreamingLiveLib.Tab.Load(id, AppUser.Current.Site.Id);
+            tab.Url = TabUrlText.Text;
+            tab.TabType = TabType.SelectedValue;
+            tab.TabData = (TabType.SelectedValue == "page") ? PageList.SelectedValue : "";
+            tab.Text = TabTextText.Text;
+            tab.Icon = Request["TabIcon"];
 
-            if (TabType.SelectedValue == "page")
+            if (TabType.SelectedValue == "page") tab.Url = $"/data/{AppUser.Current.Site.KeyName}/page{PageList.SelectedValue}.html";
+            else if (TabType.SelectedValue == "chat") tab.Url = "/chat.html";
+            else if (TabType.SelectedValue == "prayer") tab.Url = "/prayer.html";
+
+            tab.Save();
+
+            if (id == 0)
             {
-                tab["url"] = $"/data/{AppUser.Current.Site.KeyName}/page{PageList.SelectedValue}.html";
+                LoadData();
+                tabs.UpdateSort();
             }
 
-            if (TabType.SelectedValue == "chat") tab["url"] = "/chat.html";
-            if (TabType.SelectedValue == "prayer") tab["url"] = "/prayer.html";
-
-
-            if (idx == -1) tabs.Add(tab);
             UpdateData();
             Populate();
         }
 
         protected void DeleteTabButton_Click(object sender, EventArgs e)
         {
-            int idx = Convert.ToInt32(TabIndexHid.Value);
-            if (idx > -1)
+            int id = Convert.ToInt32(TabIdHid.Value);
+            if (id > 0)
             {
-                JArray tabs = (JArray)Data["tabs"];
-                tabs.RemoveAt(idx);
+                StreamingLiveLib.Tab.Delete(id, AppUser.Current.Site.Id);
                 UpdateData();
             }
             Populate();
@@ -144,14 +146,13 @@ namespace StreamingLiveWeb.CP.Controls
 
         protected void AddTabLink_Click(object sender, EventArgs e)
         {
-            EditTabShow(-1);
+            EditTabShow(0);
         }
 
         protected void TabType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int idx = Convert.ToInt32(TabIndexHid.Value);
-            JArray tabs = (JArray)Data["tabs"];
-            JObject tab = (idx == -1) ? new JObject() : (JObject)tabs[idx];
+            int id = Convert.ToInt32(TabIdHid.Value);
+            StreamingLiveLib.Tab tab = StreamingLiveLib.Tab.Load(id, AppUser.Current.Site.Id);
             PopulateTabDetails(tab);
         }
 
@@ -164,6 +165,11 @@ namespace StreamingLiveWeb.CP.Controls
         {
             LinkButton UpButton = (LinkButton)e.Item.FindControl("UpButton");
             LinkButton DownButton = (LinkButton)e.Item.FindControl("DownButton");
+            LinkButton EditButton = (LinkButton)e.Item.FindControl("EditButton");
+
+            StreamingLiveLib.Tab tab = (StreamingLiveLib.Tab)e.Item.DataItem;
+            EditButton.CommandArgument = tab.Id.ToString();
+
             if (e.Item.ItemIndex == 0) UpButton.Visible = false;
             if (e.Item.ItemIndex == tabs.Count - 1) DownButton.Visible = false;
         }

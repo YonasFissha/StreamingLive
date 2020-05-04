@@ -10,75 +10,59 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Text.RegularExpressions;
+using StreamingLiveLib;
 
 namespace StreamingLiveWeb.CP.Live
 {
     public partial class Default : System.Web.UI.Page
     {
         public string PreviewUrl = "http://localhost:201/?preview=1";
+        StreamingLiveLib.Services services;
        
-
-        public string JsonData
-        {
-            get { return (string)ViewState["jsondata"]; }
-            set { ViewState["jsondata"] = value; }
-        }
-        JObject data;
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (AppUser.Current.Role.Name != "admin") Response.Redirect("/cp/");
-
-            if (!IsPostBack) LoadData();
-            data = JObject.Parse(JsonData);
-            CleanData();
 
             if (CachedData.Environment=="prod") PreviewUrl = "https://" + AppUser.Current.Site.KeyName + ".streaminglive.church/?preview=1";
             string liveUrl = "https://" + AppUser.Current.Site.KeyName + ".streaminglive.church/";
             LiveLinkLit.Text = $"<p style=\"margin-top:10px;margin-bottom:0px;\">View your live site: <a href=\"{liveUrl}\" target=\"_blank\">{liveUrl}</a></p>";
 
 
-            AppearanceEditor1.Data = data;
             AppearanceEditor1.DataUpdated += AppearanceEditor1_DataUpdated;
-
-            ButtonEditor1.Data = data;
             ButtonEditor1.DataUpdated += ButtonEditor1_DataUpdated;
-
-            TabEditor1.Data = data;
             TabEditor1.DataUpdated += TabEditor1_DataUpdated;
 
             if (!IsPostBack) Populate();
         }
 
+        private void LoadData()
+        {
+            services = StreamingLiveLib.Services.LoadBySiteId(AppUser.Current.Site.Id);
+        }
+
         private void AppearanceEditor1_DataUpdated(object sender, EventArgs e)
         {
-            data = AppearanceEditor1.Data;
             UpdateData();
         }
 
         private void ButtonEditor1_DataUpdated(object sender, EventArgs e)
         {
-            data = ButtonEditor1.Data;
             UpdateData();
         }
 
-        private void CleanData()
-        {
-            JArray tabs = (JArray)data["tabs"];
-            foreach (JObject tab in tabs) if (tab["icon"] == null) tab["icon"] = "";
-        }
+       
 
         private void TabEditor1_DataUpdated(object sender, EventArgs e)
         {
-            data = TabEditor1.Data;
             UpdateData();
         }
 
         private void Populate()
         {
+            LoadData();
             UpdateConfigHolder.Visible = false;
 
-            JArray services = (JArray)data["services"];
             ServiceRepeater.DataSource = services;
             ServiceRepeater.DataBind();
             NoServicesLit.Visible = services.Count == 0;
@@ -92,16 +76,8 @@ namespace StreamingLiveWeb.CP.Live
         }
 
 
-        private void LoadData()
-        {
-            JsonData = StreamingLiveLib.Utils.GetJson(CachedData.BaseUrl + "/data/" + AppUser.Current.Site.KeyName + "/preview.json");
-        }
-
-
         private void UpdateData()
         {
-            JsonData = data.ToString(Formatting.None);
-            System.IO.File.WriteAllText(Server.MapPath("/data/" + AppUser.Current.Site.KeyName + "/preview.json"), JsonData);
             Populate();
         }
 
@@ -109,76 +85,59 @@ namespace StreamingLiveWeb.CP.Live
 
         protected void PublishButton_Click(object sender, EventArgs e)
         {
-            JsonData = data.ToString(Formatting.None);
-            System.IO.File.WriteAllText(Server.MapPath("/data/" + AppUser.Current.Site.KeyName + "/data.json"), JsonData);
-            System.IO.File.Copy(Server.MapPath("/data/" + AppUser.Current.Site.KeyName + "/preview.css"), Server.MapPath("/data/" + AppUser.Current.Site.KeyName + "/data.css"), true);
+            System.IO.File.WriteAllText(Server.MapPath("/data/" + AppUser.Current.Site.KeyName + "/data.json"), AppUser.Current.Site.LoadJson());
+            System.IO.File.WriteAllText(Server.MapPath("/data/" + AppUser.Current.Site.KeyName + "/data.css"), AppUser.Current.Site.GetCss());
 
             UpdateConfigHolder.Visible = true;
-
+            
         }
-
 
         protected void SaveServiceButton_Click(object sender, EventArgs e)
         {
 
-            string earlyStart = "0:00";
-            string duration = "0:00";
-            string chatBefore = "0:00";
-            string chatAfter = "0:00";
+            int earlyStart = 0;
+            int duration = 0;
+            int chatBefore = 0;
+            int chatAfter = 0;
 
-            try { earlyStart = Convert.ToInt32(EarlyStartMinText.Text).ToString("###0"); }
-            catch { earlyStart = "0"; }
-            try { earlyStart += ":" + Convert.ToInt32(EarlyStartSecText.Text).ToString("00"); }
-            catch { earlyStart += ":00"; }
-
-            try { duration = Convert.ToInt32(DurationMinText.Text).ToString("###0"); }
-            catch { duration = "0"; }
-            try { duration += ":" + Convert.ToInt32(DurationSecText.Text).ToString("00"); }
-            catch { duration += ":00"; }
-
-            try { chatBefore = Convert.ToInt32(ChatBeforeText.Text).ToString("###0") + ":00"; }
-            catch { chatBefore = "0:00"; }
-
-            try { chatAfter = Convert.ToInt32(ChatAfterText.Text).ToString("###0") + ":00"; }
-            catch { chatAfter = "0:00"; }
-
+            earlyStart = StreamingLiveLib.Utils.GetTotalSeconds(EarlyStartMinText.Text, EarlyStartSecText.Text);
+            duration = StreamingLiveLib.Utils.GetTotalSeconds(DurationMinText.Text, DurationSecText.Text);
+            chatBefore = StreamingLiveLib.Utils.GetTotalSeconds(ChatBeforeText.Text, "0");
+            chatAfter = StreamingLiveLib.Utils.GetTotalSeconds(ChatAfterText.Text, "0");
 
             string[] errors = ValidateService();
             if (errors.Length == 0)
             {
-                int idx = Convert.ToInt32(ServiceIndexHid.Value);
-                JArray services = (JArray)data["services"];
-                JObject service = (idx == -1) ? new JObject() : (JObject)services[idx];
-                service["videoUrl"] = VideoUrlText.Text;
-                service["earlyStart"] = earlyStart;
-                service["duration"] = duration;
-                service["serviceTime"] = CountdownTimeText.Text;
-                service["provider"] = ProviderList.SelectedValue;
-
-                service["chatBefore"] = chatBefore;
-                service["chatAfter"] = chatAfter;
+                int id = Convert.ToInt32(ServiceIdHid.Value);
+                StreamingLiveLib.Service service = (id == 0) ? new StreamingLiveLib.Service() { SiteId = AppUser.Current.Site.Id } : StreamingLiveLib.Service.Load(id, AppUser.Current.Site.Id);
+                service.VideoUrl = VideoUrlText.Text;
+                service.EarlyStart = earlyStart;
+                service.Duration = duration;
+                service.ServiceTime = Convert.ToDateTime(CountdownTimeText.Text);
+                service.Provider = ProviderList.SelectedValue;
+                service.ProviderKey = "";
+                service.ChatBefore = chatBefore;
+                service.ChatAfter = chatAfter;
 
                 switch (ProviderList.SelectedValue)
                 {
                     case "youtube_live":
                     case "youtube_watchparty":
-                        service["providerKey"] = YouTubeKeyText.Text;
-                        service["videoUrl"] = $"https://www.youtube.com/embed/{YouTubeKeyText.Text}?autoplay=1&controls=0&showinfo=0&rel=0&modestbranding=1&disablekb=1";
+                        service.ProviderKey = YouTubeKeyText.Text;
+                        service.VideoUrl = $"https://www.youtube.com/embed/{YouTubeKeyText.Text}?autoplay=1&controls=0&showinfo=0&rel=0&modestbranding=1&disablekb=1";
                         break;
                     case "vimeo_live":
                     case "vimeo_watchparty":
-                        service["providerKey"] = VimeoKeyText.Text;
-                        service["videoUrl"] = $"https://player.vimeo.com/video/{VimeoKeyText.Text}?autoplay=1";
+                        service.ProviderKey = VimeoKeyText.Text;
+                        service.VideoUrl = $"https://player.vimeo.com/video/{VimeoKeyText.Text}?autoplay=1";
                         break;
                     case "facebook_live":
-                        service["providerKey"] = FacebookKeyText.Text;
-                        service["videoUrl"] = $"https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fvideo.php%3Fv%3D{FacebookKeyText.Text}&show_text=0&autoplay=1&allowFullScreen=1";
+                        service.ProviderKey = FacebookKeyText.Text;
+                        service.VideoUrl = $"https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fvideo.php%3Fv%3D{FacebookKeyText.Text}&show_text=0&autoplay=1&allowFullScreen=1";
                         break;
                 }
-
-                if (idx == -1) services.Add(service);
+                service.Save();
                 UpdateData();
-                Populate();
             }
             else OutputMessage("<b>Error:</b><ul><li>" + String.Join("</li><li>", errors) + "</li></ul>", true, ServiceOutputLit);
         }
@@ -235,11 +194,10 @@ namespace StreamingLiveWeb.CP.Live
 
         protected void DeleteServiceButton_Click(object sender, EventArgs e)
         {
-            int idx = Convert.ToInt32(ServiceIndexHid.Value);
-            if (idx > -1)
+            int id = Convert.ToInt32(ServiceIdHid.Value);
+            if (id > 0)
             {
-                JArray services = (JArray)data["services"];
-                services.RemoveAt(idx);
+                StreamingLiveLib.Service.Delete(id, AppUser.Current.Site.Id);
                 UpdateData();
             }
             Populate();
@@ -249,61 +207,48 @@ namespace StreamingLiveWeb.CP.Live
         {
             if (e.CommandName == "Edit")
             {
-                EditServiceShow(e.Item.ItemIndex);
+                EditServiceShow(Convert.ToInt32(e.CommandArgument));
             }
         }
 
-        private void EditServiceShow(int idx)
+        private void EditServiceShow(int id)
         {
-            JArray services = (JArray)data["services"];
-            JObject service = (idx == -1) ? new JObject() : (JObject)services[idx];
+            StreamingLiveLib.Service service = (id == 0) ? new StreamingLiveLib.Service() { SiteId = AppUser.Current.Site.Id } : StreamingLiveLib.Service.Load(id, AppUser.Current.Site.Id);
             ServiceEditHolder.Visible = true;
             ServiceListHolder.Visible = false;
-            DeleteServiceHolder.Visible = idx > -1;
+            DeleteServiceHolder.Visible = id != 0;
 
-            ServiceIndexHid.Value = idx.ToString();
+            ServiceIdHid.Value = id.ToString();
 
             ProviderList.SelectedValue = "custom_watchparty";
-            if (idx > -1)
+            if (id > 0)
             {
-                VideoUrlText.Text = Convert.ToString(service["videoUrl"]);
+                VideoUrlText.Text = service.VideoUrl;
 
-                if (service["earlyStart"] != null)
-                {
-                    string[] parts = service["earlyStart"].ToString().Split(':');
-                    EarlyStartMinText.Text = parts[0];
-                    EarlyStartSecText.Text = parts[1];
-                }
-                if (service["duration"] != null)
-                {
-                    string[] parts = service["duration"].ToString().Split(':');
-                    DurationMinText.Text = parts[0];
-                    DurationSecText.Text = parts[1];
-                }
-                if (service["chatBefore"] != null)
-                {
-                    string[] parts = service["chatBefore"].ToString().Split(':');
-                    ChatBeforeText.Text = parts[0];
-                }
-                if (service["chatAfter"] != null)
-                {
-                    string[] parts = service["chatAfter"].ToString().Split(':');
-                    ChatAfterText.Text = parts[0];
-                }
-                CountdownTimeText.Text = Convert.ToString(service["serviceTime"]);
-                VimeoKeyText.Text = Convert.ToString(service["providerKey"]);
-                YouTubeKeyText.Text = Convert.ToString(service["providerKey"]);
-                FacebookKeyText.Text = Convert.ToString(service["providerKey"]);
+                EarlyStartMinText.Text = StreamingLiveLib.Utils.GetMinutes(service.EarlyStart).ToString();
+                EarlyStartSecText.Text = StreamingLiveLib.Utils.GetSeconds(service.EarlyStart).ToString();
+
+                DurationMinText.Text = StreamingLiveLib.Utils.GetMinutes(service.Duration).ToString();
+                DurationSecText.Text = StreamingLiveLib.Utils.GetSeconds(service.Duration).ToString();
+
+                ChatBeforeText.Text = StreamingLiveLib.Utils.GetMinutes(service.ChatBefore).ToString();
+                ChatAfterText.Text = StreamingLiveLib.Utils.GetMinutes(service.ChatAfter).ToString();
+
+
+                CountdownTimeText.Text = service.ServiceTime.ToString("yyyy-MM-dd") + "T" + service.ServiceTime.ToString("HH:mm");
+                VimeoKeyText.Text = service.ProviderKey;
+                YouTubeKeyText.Text = service.ProviderKey;
+                FacebookKeyText.Text = service.ProviderKey;
                 try
                 {
-                    ProviderList.SelectedValue = Convert.ToString(service["provider"]);
+                    ProviderList.SelectedValue = service.Provider;
                 }
                 catch { }
             } else
             {
                 DateTime serviceTime = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 9, 0, 0);
                 while (serviceTime.DayOfWeek != DayOfWeek.Sunday) serviceTime = serviceTime.AddDays(1);
-                CountdownTimeText.Text = serviceTime.ToString("yyyy-MM-dd") + "T" + serviceTime.ToString("hh:mm");
+                CountdownTimeText.Text = serviceTime.ToString("yyyy-MM-dd") + "T" + serviceTime.ToString("HH:mm");
                 EarlyStartMinText.Text = "15";
                 EarlyStartSecText.Text = "0";
                 DurationMinText.Text = "60";
@@ -313,13 +258,13 @@ namespace StreamingLiveWeb.CP.Live
             }
 
             ShowProviderDetails();
-            DeleteServiceButton.Visible = idx > -1;
+            DeleteServiceButton.Visible = id > 0;
 
         }
 
         protected void AddServiceLink_Click(object sender, EventArgs e)
         {
-            EditServiceShow(-1);
+            EditServiceShow(0);
         }
 
         
@@ -357,6 +302,13 @@ namespace StreamingLiveWeb.CP.Live
             }
         }
 
+        protected void ServiceRepeater_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            LinkButton EditButton = (LinkButton)e.Item.FindControl("EditButton");
 
+            StreamingLiveLib.Service service = (StreamingLiveLib.Service)e.Item.DataItem;
+            EditButton.CommandArgument = service.Id.ToString();
+
+        }
     }
 }

@@ -49,7 +49,7 @@ namespace StreamingLiveWeb
         {
             StreamingLiveLib.Sites sites = StreamingLiveLib.Sites.LoadByUserId(u.Id.Value);
             if (sites.Count == 0) return null;
-            StreamingLiveLib.Role role = StreamingLiveLib.Role.Load(u.Id.Value, sites[0].Id.Value);
+            StreamingLiveLib.Role role = StreamingLiveLib.Role.Load(u.Id.Value, sites[0].Id);
             if (role == null) return null;
 
 

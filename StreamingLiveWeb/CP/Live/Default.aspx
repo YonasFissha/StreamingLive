@@ -52,11 +52,11 @@
                     <div class="content">
                         <table class="table table-sm">
                             <asp:Literal ID="ServicesLit" runat="server" />
-                            <asp:Repeater ID="ServiceRepeater" runat="server" OnItemCommand="ServiceRepeater_ItemCommand" >
+                            <asp:Repeater ID="ServiceRepeater" runat="server" OnItemCommand="ServiceRepeater_ItemCommand" OnItemDataBound="ServiceRepeater_ItemDataBound" >
                                 <ItemTemplate>
                                     <tr>
-                                        <td><%#Eval("serviceTime")%></td>
-                                        <td class="text-right"><asp:LinkButton ID="EditLink" runat="server" CommandName="Edit"><i class="fas fa-pencil-alt"></i></asp:LinkButton></td>
+                                        <td><%#Eval("ServiceTime")%></td>
+                                        <td class="text-right"><asp:LinkButton ID="EditButton" runat="server" CommandName="Edit"><i class="fas fa-pencil-alt"></i></asp:LinkButton></td>
                                     </tr>
                                 </ItemTemplate>
                             </asp:Repeater>
@@ -77,7 +77,7 @@
                                 <div class="form-group">
                                     <label>Service Time</label>
                                     <asp:TextBox ID="CountdownTimeText" runat="server" TextMode="DateTimeLocal" CssClass="form-control" />
-                                    <asp:HiddenField ID="ServiceIndexHid" runat="server" />
+                                    <asp:HiddenField ID="ServiceIdHid" runat="server" />
                                 </div>
                             </div>
                             <div class="col">

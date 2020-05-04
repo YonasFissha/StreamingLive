@@ -18,7 +18,7 @@ namespace StreamingLiveWeb.CP.Pages
 
         private void Populate()
         {
-            StreamingLiveLib.Pages pages = StreamingLiveLib.Pages.LoadBySiteId(AppUser.Current.Site.Id.Value);
+            StreamingLiveLib.Pages pages = StreamingLiveLib.Pages.LoadBySiteId(AppUser.Current.Site.Id);
             PageRepeater.DataSource = pages;
             PageRepeater.DataBind();
             NoPagesLit.Visible = pages.Count == 0;

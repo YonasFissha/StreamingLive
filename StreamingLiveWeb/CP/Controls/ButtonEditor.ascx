@@ -28,7 +28,7 @@
             <div class="form-group">
                 <label>Text</label>
                 <asp:TextBox ID="ButtonTextText" runat="server" CssClass="form-control" />
-                <asp:HiddenField ID="ButtonIndexHid" runat="server" />
+                <asp:HiddenField ID="ButtonIdHid" runat="server" />
             </div>
             <div class="form-group">
                 <label>Url</label>

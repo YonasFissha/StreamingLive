@@ -34,7 +34,7 @@
                     </div>
                 </div>
                             
-                <asp:HiddenField ID="TabIndexHid" runat="server" />
+                <asp:HiddenField ID="TabIdHid" runat="server" />
             </div>
             <div class="form-group">
                 <label>Type</label>
