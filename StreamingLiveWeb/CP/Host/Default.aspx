@@ -14,8 +14,8 @@
                 <div class="inputBox">
                     <div class="header"><i class="far fa-comments"></i> Public Chat</div>
                     <div id="chatContainer" class="content chatContainer">
-                        <div id="chatReceive" class="chatReceive">
-                        </div>
+                        <div id="callout"></div>
+                        <div id="chatReceive" class="chatReceive"></div>
                         <div id="chatSend" class="chatSend">
                             <div class="input-group">
                                 <div class="input-group-prepend"><a href="javascript:void();" data-field="sendText" class="btn btn-outline-secondary emojiButton" data-container="#chatContainer">😀</a></div>

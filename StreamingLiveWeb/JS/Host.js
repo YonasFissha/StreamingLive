@@ -19,8 +19,13 @@ function catchup(data) {
 }
 
 function calloutReceived(data) {
-    $('#calloutText').val(data.message);
+    if (data.message == '') $('#callout').hide();
+    else {
+        $('#callout').html(insertLinks(data.message));
+        $('#callout').show();
+    }
 }
+
 
 function prayerRequestReceived(data) {
     $('#prayerRequests').append('<div><a id=\"' + data.guid + '\" href="javascript:claimPrayer(\'' + data.guid + '\', \'' + escape(data.name) + '\');\"">' + data.name + '</a></div>');
@@ -70,7 +75,7 @@ function deleteMessage(ts) {
 function setCallout() {
     var content = $('#calloutText').val();
     socket.send(JSON.stringify({ 'action': 'setCallout', 'room': keyName, 'message': content }));
-    console.log('sent ' + content);
+    $('#calloutText').val('');
 }
 
 function insertLinks(text) {

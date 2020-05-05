@@ -1,50 +1,63 @@
 {
   "colors": {
-    "primary": "#ff8040",
+    "primary": "#24b9ff",
     "contrast": "#ffffff",
-    "header": "#c0c0c0"
+    "header": "#24b9ff"
   },
   "logo": {
     "url": "/",
-    "image": "/data/localhost/logo.png?dt=542020120805"
+    "image": "/data/localhost/logo.png?dt=542020092411"
   },
   "buttons": [
     {
-      "text": "Test2",
+      "text": "Resources",
       "url": "about:blank"
     },
     {
-      "text": "Test",
-      "url": "about:blank"
-    },
-    {
-      "text": "Test3",
-      "url": "about:blank"
-    },
-    {
-      "text": "Test4",
+      "text": "Give",
       "url": "about:blank"
     }
   ],
   "tabs": [
     {
-      "text": "Test2",
-      "icon": "fab fa-adn",
-      "url": "about:blank",
+      "text": "Chat2",
+      "icon": "far fa-comments",
+      "url": "Chat2",
+      "type": "chat",
+      "data": ""
+    },
+    {
+      "text": "Next Steps",
+      "icon": "fas fa-clipboard-check",
+      "url": "Next Steps",
+      "type": "url",
+      "data": ""
+    },
+    {
+      "text": "Prayer",
+      "icon": "fas fa-praying-hands",
+      "url": "Prayer",
+      "type": "prayer",
+      "data": ""
+    },
+    {
+      "text": "Bible",
+      "icon": "fas fa-bible",
+      "url": "Bible",
       "type": "url",
       "data": ""
     }
   ],
   "services": [
     {
-      "videoUrl": "https://www.youtube.com/embed/8YYz3jXcUf0?autoplay=1&controls=0&showinfo=0&rel=0&modestbranding=1&disablekb=1",
-      "serviceTime": "2020-05-10T11:01",
-      "duration": "61:01",
-      "earlyStart": "16:08",
-      "chatBefore": "14:00",
-      "chatAfter": "18:00",
-      "provider": "youtube_watchparty",
-      "providerKey": "8YYz3jXcUf0"
+      "videoUrl": "",
+      "serviceTime": "2020-05-04T21:00",
+      "duration": "160:00",
+      "earlyStart": "15:00",
+      "chatBefore": "15:00",
+      "chatAfter": "15:00",
+      "provider": "custom_watchparty",
+      "providerKey": ""
     }
   ]
 }

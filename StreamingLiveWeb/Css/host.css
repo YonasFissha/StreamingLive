@@ -19,6 +19,7 @@
     float: right;
 }
 
+#callout {font-size:20px;padding-bottom:15px;border-bottom:2px solid #EEE;margin-bottom:15px;display:none;}
 prayerRequests a {display:block;}
 
 .emojiContent { font-size: 26px; }

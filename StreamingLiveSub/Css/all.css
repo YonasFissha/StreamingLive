@@ -35,7 +35,7 @@ body {margin:0px;padding:0px;background-color:#000;font-family:Arial;}
 
 #chatContainer, #prayerContainer {display:flex;flex-direction:column;background-color:#FFF;flex:1;}
 #chatReceive, #prayerReceive {flex:1 0 0; padding:10px;overflow-y:scroll;}
-#callout {font-size:25px;padding-bottom:15px;border-bottom:2px solid #EEE;margin-bottom:15px;display:none;}
+#callout {font-size:20px;padding-bottom:15px;border-bottom:2px solid #EEE;margin-bottom:15px;display:none;padding-left:5px;padding-right:5px;padding-top:5px;}
 #chatSend, prayerSend {flex:0 0 0px;}
 #chatName, #prayerName {flex:0 0 0px;border-top:1px solid #005288;padding:10px;}
 
