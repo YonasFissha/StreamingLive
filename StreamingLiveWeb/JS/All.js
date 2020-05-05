@@ -13,3 +13,8 @@ function selectSite(id) {
         window.location.href = '/cp/';
     });
 }
+
+function sidebarToggle() {
+    if ($('#sidebar').hasClass('d-none')) $('#sidebar').removeClass('d-none').css('margin-top', '10px');
+    else $('#sidebar').addClass('d-none').css('margin-top', '');
+}

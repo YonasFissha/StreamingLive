@@ -16,9 +16,7 @@
         <div class="container-fluid">
             <a href="javascript:sidebarToggle();" class="d-md-none" id="sidebarToggle"><i class="fas fa-bars"></i></a>
             <div class="row">
-                <nav class="col-sm-3 col-md-2 d-none d-md-block bg-dark sidebar" id="sidebar">
-                    <uc1:Sidebar id="Sidebar" runat="server" />
-                </nav>
+                <uc1:Sidebar id="Sidebar" runat="server" />
                 <main role="main" class="col-sm-12 ml-sm-auto col-md-10 pt-3">
                     <asp:ContentPlaceHolder ID="MainContent" runat="server" />
                 </main>
