@@ -67,7 +67,7 @@ namespace StreamingLiveWeb.Controls
             if (KeyNameText.Text.ToLower().Trim() == "admin") errors.Add("Domain name not allowed.");
             if (KeyNameText.Text.ToLower().Trim() == "master") errors.Add("Domain name not allowed.");
 
-            if (!IsValidEmail(EmailText.Text)) errors.Add("Invalid email address.");
+            if (!IsValidEmail(EmailText.Text.Trim())) errors.Add("Invalid email address.");
             if (PasswordText.Text.Trim().Length < 6) errors.Add("Password must be at least 6 characters.");
 
             if (errors.Count == 0)
