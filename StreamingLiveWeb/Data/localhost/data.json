@@ -50,14 +50,14 @@
   ],
   "services": [
     {
-      "videoUrl": "",
-      "serviceTime": "2020-05-04T21:00",
+      "videoUrl": "https://www.youtube.com/embed/90cp19R1AII?autoplay=1&controls=0&showinfo=0&rel=0&modestbranding=1&disablekb=1",
+      "serviceTime": "2020-05-05T12:00",
       "duration": "160:00",
       "earlyStart": "15:00",
       "chatBefore": "15:00",
       "chatAfter": "15:00",
-      "provider": "custom_watchparty",
-      "providerKey": ""
+      "provider": "youtube_live",
+      "providerKey": "90cp19R1AII"
     }
   ]
 }

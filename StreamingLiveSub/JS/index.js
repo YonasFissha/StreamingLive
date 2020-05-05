@@ -2,7 +2,9 @@ var videoUrl = 'about:blank';
 var keyName = 'master';
 var currentService = null;
 var data = null;
+var oldData = null;
 var chatEnabled = true;
+var checkServiceTimer = null;
 
 function init() {
     loadConfig();
@@ -103,39 +105,38 @@ function loadConfig() {
     $.getJSON(jsonUrl, function (_data) {
         data = _data;
         updateServiceTimes();
-        setInterval(checkService, 1000);
+        if (checkServiceTimer==null) checkServiceTimer = setInterval(checkService, 1000);
         var buttonHtml = '';
         for (i = 0; i < data.buttons.length; i++) {
             buttonHtml += '<td><a href="' + data.buttons[i].url + '" target="_blank" class="btn btn-secondary">' + data.buttons[i].text + '</a></td>';
         }
         $('#liveButtons').html('<div><table><tr>' + buttonHtml + '</tr></table></div>');
         $('#logo').html('<a href="' + data.logo.url + '" target="_blank"><img src="' + data.logo.image + '" /></a>')
-        
-        var interactHtml = '';
-        var altTabs = '';
-        for (i = 0; i < data.tabs.length; i++) {
-            var tab = data.tabs[i];
-            interactHtml += '<a id="tab' + i.toString() + '" href="#" onclick="return toggleTab(' + i.toString() + ')" class="tab"><i class="' + tab.icon + '"></i>' + tab.text + '</a>';
 
-            console.log('**' + tab.type);
-            interactHtml += '<div id="frame' + i.toString() + '"  class="frame">';
-            if (tab.type == 'chat') interactHtml += getChatDiv();
-            else if (tab.type == 'prayer') interactHtml += getPrayerDiv();
-            else interactHtml += '<iframe src="' + tab.url + '" frameborder="0"></iframe>';
-            interactHtml += '</div>'
-            altTabs += '<td><a id="altTab' + i.toString() + '" href="#" onclick="return toggleTab(' + i.toString() + ')" class="altTab"><i class="' + tab.icon + '"></i></a></td>';
+        if (oldData == null || oldData.tabs !== data.tabs) {
+            var interactHtml = '';
+            var altTabs = '';
+            for (i = 0; i < data.tabs.length; i++) {
+                var tab = data.tabs[i];
+                interactHtml += '<a id="tab' + i.toString() + '" href="#" onclick="return toggleTab(' + i.toString() + ')" class="tab"><i class="' + tab.icon + '"></i>' + tab.text + '</a>';
+                interactHtml += '<div id="frame' + i.toString() + '"  class="frame">';
+                if (tab.type == 'chat') interactHtml += getChatDiv();
+                else if (tab.type == 'prayer') interactHtml += getPrayerDiv();
+                else interactHtml += '<iframe src="' + tab.url + '" frameborder="0"></iframe>';
+                interactHtml += '</div>'
+                altTabs += '<td><a id="altTab' + i.toString() + '" href="#" onclick="return toggleTab(' + i.toString() + ')" class="altTab"><i class="' + tab.icon + '"></i></a></td>';
+            }
+            $('#interactionContainer').html('<table id="altTabs"><tr>' + altTabs + '</tr></table>' + interactHtml);
+            toggleTab(0);
         }
-        $('#interactionContainer').html('<table id="altTabs"><tr>' + altTabs + '</tr></table>' + interactHtml);
-        toggleTab(0);
 
-        //var customCss = ':root { --primaryColor: ' + data.colors.primary + '; --contrastColor: ' + data.colors.contrast + '; --headerColor: ' + data.colors.header + '}\n';
-        //$('#customCss').html(customCss);
         var cssUrl = '/data/' + keyName + '/data.css?nocache=' + new Date().getTime();
         if (getQs('preview') == 1) cssUrl = '/preview/data.css?key=' + keyName + '&nocache=' + new Date().getTime();
         $('#customCss').attr('href', cssUrl);
 
         initChat();
 
+        oldData = data;
     });
 }
 

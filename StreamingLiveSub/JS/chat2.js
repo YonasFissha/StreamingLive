@@ -132,9 +132,14 @@ function handleMessage(data) {
     if (data.action == "sendMessage") chatReceived(data);
     else if (data.action == "setCallout") calloutReceived(data);
     else if (data.action == "deleteMessage") deleteReceived(data);
-    else if (data.action == "updateConfig") window.location.reload();
+    else if (data.action == "updateConfig") updateConfig();
     else if (data.action == "catchup") catchup(data);
 }
+
+function updateConfig() {
+    loadConfig();
+}
+
 
 function initChat() {
     socket = new WebSocket('wss://i9qa0ppf43.execute-api.us-east-1.amazonaws.com/production');
