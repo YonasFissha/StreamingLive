@@ -17,13 +17,30 @@
         .inputBox {flex: 1 1 0%;display:flex;flex-direction:column;}
         .inputBox .header {flex:0 0 0px;}
         .inputBox .content {flex:1 1 0px;}
+
+        
+        @media (max-width: 600px) {
+            #fixedContainer { margin-top:0px; position:relative; height:1100px; }
+            #fixedContainer>.row { height:1100px !important; }
+            #flexContainer { flex-direction:column; }
+            #videoBox {display:none;}
+        }
+
+        @media (min-width:601px)
+        {
+            #mainContent {
+                padding-left: 40px;
+                padding-right: 40px;
+            }
+        }
+        
     </style>
     <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div id="fixedContainer">
         <div class="row" style="height:100%;">
-            <div class="col-sm-12 ml-sm-auto col-md-10" style="padding-left:40px;padding-right:40px;">
+            <div class="col-sm-12 ml-sm-auto col-md-10" id="mainContent">
                 <asp:ContentPlaceHolder ID="MainContent" runat="server" />
             </div>
         </div>

@@ -53,7 +53,7 @@
                 </div>
             </div>
             <div class="flex1">
-                <div class="inputBox">
+                <div class="inputBox" id="videoBox">
                     <div class="header"><i class="fas fa-video"></i> Video</div>
                     <div class="content" style="display:flex;flex-direction:column;">
                         <div id="videoContainer" style="flex:1 1 0px;">

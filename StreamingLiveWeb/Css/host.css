@@ -26,3 +26,4 @@ prayerRequests a {display:block;}
 .emojiContent a:hover { text-decoration:none; background-color:var(--primaryColor); }
 
 .popover {max-width:400px !important;z-index:9999;}
+
