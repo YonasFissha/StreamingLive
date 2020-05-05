@@ -19,3 +19,17 @@
 
 .description { font-size: 12px; font-style: italic; color: #777; }
 button.datetime-local-datepicker-button {background-color:#FFF;border:0px;width:100%;}
+
+.pulsing {
+    animation-duration: 1.5s;
+    animation-name: pulse;
+    animation-iteration-count: infinite
+}
+
+@keyframes pulse {
+    0% { background-color:#77cc00; }
+
+    50% { background-color:#55aa00; }
+
+    100% { background-color:#77cc00; }
+}

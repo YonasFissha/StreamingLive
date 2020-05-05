@@ -18,22 +18,43 @@ namespace StreamingLiveWeb.CP.Live
     {
         public string PreviewUrl = "http://localhost:201/?preview=1";
         StreamingLiveLib.Services services;
+
+        public bool PendingChanges
+        {
+            get { return Convert.ToBoolean(ViewState["PendingChanges"]); }
+            set { ViewState["PendingChanges"] = value; }
+        }
        
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (AppUser.Current.Role.Name != "admin") Response.Redirect("/cp/");
-
             if (CachedData.Environment=="prod") PreviewUrl = "https://" + AppUser.Current.Site.KeyName + ".streaminglive.church/?preview=1";
             string liveUrl = "https://" + AppUser.Current.Site.KeyName + ".streaminglive.church/";
             LiveLinkLit.Text = $"<p style=\"margin-top:10px;margin-bottom:0px;\">View your live site: <a href=\"{liveUrl}\" target=\"_blank\">{liveUrl}</a></p>";
 
+            if (!IsPostBack) CheckPendingChanges();
 
             AppearanceEditor1.DataUpdated += AppearanceEditor1_DataUpdated;
             ButtonEditor1.DataUpdated += ButtonEditor1_DataUpdated;
             TabEditor1.DataUpdated += TabEditor1_DataUpdated;
 
             if (!IsPostBack) Populate();
+        }
+
+        protected void Page_PreRender(object sender, EventArgs e)
+        {
+            bool isPulsing = PublishButton.CssClass.Contains("pulsing");
+            if (!PendingChanges && isPulsing) PublishButton.CssClass = PublishButton.CssClass.Replace(" pulsing", "");
+            else if (PendingChanges && !isPulsing) PublishButton.CssClass = PublishButton.CssClass + " pulsing";
+        }
+
+
+        private void CheckPendingChanges()
+        {
+            string existing = System.IO.File.ReadAllText(Server.MapPath("/data/" + AppUser.Current.Site.KeyName + "/data.json"));
+            string current = AppUser.Current.Site.LoadJson();
+            PendingChanges = existing != current;
         }
 
         private void LoadData()
@@ -78,6 +99,7 @@ namespace StreamingLiveWeb.CP.Live
 
         private void UpdateData()
         {
+            PendingChanges = true;
             Populate();
         }
 
@@ -89,7 +111,7 @@ namespace StreamingLiveWeb.CP.Live
             System.IO.File.WriteAllText(Server.MapPath("/data/" + AppUser.Current.Site.KeyName + "/data.css"), AppUser.Current.Site.GetCss());
 
             UpdateConfigHolder.Visible = true;
-            
+            PendingChanges = false;
         }
 
         protected void SaveServiceButton_Click(object sender, EventArgs e)
