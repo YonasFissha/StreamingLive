@@ -216,7 +216,7 @@
 
     <asp:PlaceHolder ID="UpdateConfigHolder" runat="server" Visible="false">
         <script>
-            socket = new WebSocket('wss://i9qa0ppf43.execute-api.us-east-1.amazonaws.com/production');
+            socket = new WebSocket('wss://lr6pbsl0ji.execute-api.us-east-2.amazonaws.com/production');
             socket.onopen = function (e) {
                 socket.send(JSON.stringify({ 'action': 'updateConfig', 'room': '<%=StreamingLiveWeb.AppUser.Current.Site.KeyName%>' }));
             };

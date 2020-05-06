@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <AWSProjectType>Lambda</AWSProjectType>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Amazon.Lambda.Core" Version="1.1.0" />
+    <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.0.0" />
+    <PackageReference Include="Amazon.Lambda.DynamoDBEvents" Version="1.1.0" />
+    <PackageReference Include="AWSSDK.ApiGatewayManagementApi" Version="3.3.101.104" />
+    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.3.105.34" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Amazon.Lambda.APIGatewayEvents">
+      <HintPath>..\..\..\Temp\aws-lambda-dotnet-master\Libraries\src\Amazon.Lambda.APIGatewayEvents\bin\Debug\netstandard2.0\Amazon.Lambda.APIGatewayEvents.dll</HintPath>
+    </Reference>
+    <Reference Include="Amazon.Lambda.Core">
+      <HintPath>..\..\..\Temp\aws-lambda-dotnet-master\Libraries\src\Amazon.Lambda.Core\bin\Debug\netstandard2.0\Amazon.Lambda.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Amazon.Lambda.Serialization.Json">
+      <HintPath>..\..\..\Temp\aws-lambda-dotnet-master\Libraries\src\Amazon.Lambda.Serialization.Json\bin\Debug\netstandard2.0\Amazon.Lambda.Serialization.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

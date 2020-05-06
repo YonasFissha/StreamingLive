@@ -1,0 +1,89 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Transform" : "AWS::Serverless-2016-10-31",
+  "Description" : "Starting template for an AWS Serverless Application.",
+  "Parameters" : {
+  },
+  "Resources" : {
+    "joinRoom" : {
+      "Type" : "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "StreamingLiveLambda::StreamingLiveLambda.Connection::Join",
+        "Runtime": "dotnetcore3.1",
+        "CodeUri": "",
+        "Description": "Join a chat room",
+        "MemorySize": 256,
+        "Timeout": 15,
+        "Role": "arn:aws:iam::428019619026:role/StreamingLiveRole",
+        "Policies": [ "AWSLambdaFullAccess" ]
+      }
+    },
+    "sendMessage" : {
+      "Type" : "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "StreamingLiveLambda::StreamingLiveLambda.Message::Send",
+        "Runtime": "dotnetcore3.1",
+        "CodeUri": "",
+        "Description": "Send a message",
+        "MemorySize": 256,
+        "Timeout": 15,
+        "Role": "arn:aws:iam::428019619026:role/StreamingLiveRole",
+        "Policies": [ "AWSLambdaFullAccess" ]
+      }
+    },
+    "requestPrayer" : {
+      "Type" : "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "StreamingLiveLambda::StreamingLiveLambda.Message::RequestPrayer",
+        "Runtime": "dotnetcore3.1",
+        "CodeUri": "",
+        "Description": "Requst Prayer",
+        "MemorySize": 256,
+        "Timeout": 15,
+        "Role": "arn:aws:iam::428019619026:role/StreamingLiveRole",
+        "Policies": [ "AWSLambdaFullAccess" ]
+      }
+    },
+    "setCallout" : {
+      "Type" : "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "StreamingLiveLambda::StreamingLiveLambda.Message::SetCallout",
+        "Runtime": "dotnetcore3.1",
+        "CodeUri": "",
+        "Description": "Set the callout message",
+        "MemorySize": 256,
+        "Timeout": 15,
+        "Role": "arn:aws:iam::428019619026:role/StreamingLiveRole",
+        "Policies": [ "AWSLambdaFullAccess" ]
+      }
+    },
+    "updateConfig" : {
+      "Type" : "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "StreamingLiveLambda::StreamingLiveLambda.Message::UpdateConfig",
+        "Runtime": "dotnetcore3.1",
+        "CodeUri": "",
+        "Description": "Refresh the config settings on clients",
+        "MemorySize": 256,
+        "Timeout": 15,
+        "Role": "arn:aws:iam::428019619026:role/StreamingLiveRole",
+        "Policies": [ "AWSLambdaFullAccess" ]
+      }
+    },
+    "deleteMessage" : {
+      "Type" : "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "StreamingLiveLambda::StreamingLiveLambda.Message::Delete",
+        "Runtime": "dotnetcore3.1",
+        "CodeUri": "",
+        "Description": "Moderation option to remove a message",
+        "MemorySize": 256,
+        "Timeout": 15,
+        "Role": "arn:aws:iam::428019619026:role/StreamingLiveRole",
+        "Policies": [ "AWSLambdaFullAccess" ]
+      }
+    }
+
+
+  }
+}
