@@ -25,7 +25,7 @@ namespace StreamingLiveLambda
             string room = data["room"].ToString();
             StoreConnection(room, req.RequestContext.ConnectionId);
             JArray messages = Catchup.GetCatchup(room);
-            Catchup.SendCatchup("wss://" + req.RequestContext.DomainName + "/" + req.RequestContext.Stage, req.RequestContext.ConnectionId, room, messages);
+            if (messages.Count>0) Catchup.SendCatchup("wss://" + req.RequestContext.DomainName + "/" + req.RequestContext.Stage, req.RequestContext.ConnectionId, room, messages);
             return new APIGatewayProxyResponse() { Body = "success", StatusCode = 200 };
         }
 
