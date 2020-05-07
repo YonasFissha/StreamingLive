@@ -190,6 +190,19 @@
                                 </div>
                             </asp:PlaceHolder>
                         </div>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label>Recurs Weekly</label>
+                                    <asp:DropDownList id="RecurringList" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="False" Text="No" />
+                                        <asp:ListItem Value="True" Text="Yes" />
+                                    </asp:DropDownList>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                     <div class="footer">
                         <div class="row">

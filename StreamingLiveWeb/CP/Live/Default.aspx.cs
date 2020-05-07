@@ -146,6 +146,7 @@ namespace StreamingLiveWeb.CP.Live
                 service.ProviderKey = "";
                 service.ChatBefore = chatBefore;
                 service.ChatAfter = chatAfter;
+                service.Recurring = Convert.ToBoolean(RecurringList.SelectedValue);
 
                 switch (ProviderList.SelectedValue)
                 {
@@ -273,6 +274,9 @@ namespace StreamingLiveWeb.CP.Live
                     ProviderList.SelectedValue = service.Provider;
                 }
                 catch { }
+
+                RecurringList.SelectedValue = service.Recurring.ToString();
+
             } else
             {
                 DateTime serviceTime = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 9, 0, 0);

@@ -104,6 +104,7 @@
     <Content Include="JS\datetime-local-polyfill.min.js" />
     <Content Include="JS\Host.js" />
     <Content Include="JS\Player.js" />
+    <Content Include="Maintenance.aspx" />
     <Content Include="Preview\Css.aspx" />
     <Content Include="Preview\Data.aspx" />
     <Content Include="Temp.aspx" />
@@ -288,6 +289,13 @@
     </Compile>
     <Compile Include="Donate\Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Maintenance.aspx.cs">
+      <DependentUpon>Maintenance.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Maintenance.aspx.designer.cs">
+      <DependentUpon>Maintenance.aspx</DependentUpon>
     </Compile>
     <Compile Include="MasterPages\ControlPanel.master.cs">
       <DependentUpon>ControlPanel.master</DependentUpon>

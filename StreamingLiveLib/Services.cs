@@ -20,6 +20,13 @@ namespace StreamingLiveLib
 		#endregion
 
 		#region Methods
+
+		public static Services LoadExpired()
+		{
+			DateTime threshold = DateTime.UtcNow.AddHours(-12);
+			return Load("SELECT * FROM Services WHERE ServiceTime<@ServiceTime", CommandType.Text, new SqlParameter[] { new SqlParameter("@ServiceTime", threshold) });
+		}
+
 		public static DataTable LoadUpcoming()
 		{
 			string sql = "SELECT TOP 15 s.KeyName, ser.ServiceTime"
