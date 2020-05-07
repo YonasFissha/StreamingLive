@@ -22,7 +22,7 @@ namespace StreamingLiveLib
 		#region Methods
 		public static DataTable LoadUpcoming()
 		{
-			string sql = "SELECT TOP 10 s.KeyName, ser.ServiceTime"
+			string sql = "SELECT TOP 15 s.KeyName, ser.ServiceTime"
 				+ " FROM services ser"
 				+ " INNER JOIN Sites s ON s.id = ser.SiteId"
 				+ " WHERE ServiceTime> getdate() and ProviderKey<>'zFOfmAHFKNw'"

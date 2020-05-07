@@ -55,7 +55,7 @@
                             <asp:Repeater ID="ServiceRepeater" runat="server" OnItemCommand="ServiceRepeater_ItemCommand" OnItemDataBound="ServiceRepeater_ItemDataBound" >
                                 <ItemTemplate>
                                     <tr>
-                                        <td><%#Eval("ServiceTime")%></td>
+                                        <td><asp:Literal ID="ServiceTimeLit" runat="server" /></td>
                                         <td class="text-right"><asp:LinkButton ID="EditButton" runat="server" CommandName="Edit"><i class="fas fa-pencil-alt"></i></asp:LinkButton></td>
                                     </tr>
                                 </ItemTemplate>
@@ -207,12 +207,16 @@
             <uc1:ButtonEditor runat="server" Id="ButtonEditor1" />
             <uc1:TabEditor runat="server" Id="TabEditor1" />
         </div>
-
-        </div>
     </div>
+    <asp:HiddenField ID="TZOffsetHid" runat="server" />
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ScriptBlock" runat="server">
     
+    <script>
+        $(function () {
+            $('#<%=TZOffsetHid.ClientID%>').val(new Date().getTimezoneOffset().toString());
+        });
+    </script>
 
     <asp:PlaceHolder ID="UpdateConfigHolder" runat="server" Visible="false">
         <script>
@@ -222,5 +226,7 @@
             };
         </script>
     </asp:PlaceHolder>
+
+
 </asp:Content>
 

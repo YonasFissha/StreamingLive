@@ -146,12 +146,11 @@ function loadConfig() {
 
 
 function updateServiceTimes() {
-    var timeOffset = new Date().getTimezoneOffset();
-    var offsetMs = timeOffset * 60 * 1000;
     if (data.services != null) {
         for (i = 0; i < data.services.length; i++) {
             var s = data.services[i];
-            s.localCountdownTime = new Date(new Date(s.serviceTime + 'Z').getTime() + offsetMs);
+
+            s.localCountdownTime = new Date(new Date(s.serviceTime + 'Z').getTime());
 
             s.localStartTime = new Date(s.localCountdownTime.getTime());
             s.localStartTime.setSeconds(s.localStartTime.getSeconds() - getSeconds(s.earlyStart));

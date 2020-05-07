@@ -22,6 +22,7 @@ namespace StreamingLiveLib
 		public string Provider { get; set; }
 		public string ProviderKey { get; set; }
 		public string VideoUrl { get; set; }
+		public int TimezoneOffset { get; set; }
 		#endregion
 
 		#region Constructors
@@ -41,6 +42,7 @@ namespace StreamingLiveLib
 			if (row.Table.Columns.Contains("Provider")) Provider = Convert.ToString(row["Provider"]);
 			if (row.Table.Columns.Contains("ProviderKey")) ProviderKey = Convert.ToString(row["ProviderKey"]);
 			if (row.Table.Columns.Contains("VideoUrl")) VideoUrl = Convert.ToString(row["VideoUrl"]);
+			if (row.Table.Columns.Contains("TimezoneOffset")) TimezoneOffset = Convert.ToInt32(row["TimezoneOffset"]);
 		}
 		#endregion
 
@@ -77,6 +79,7 @@ namespace StreamingLiveLib
 			cmd.Parameters.AddWithValue("@Provider", (object)Provider);
 			cmd.Parameters.AddWithValue("@ProviderKey", (object)ProviderKey);
 			cmd.Parameters.AddWithValue("@VideoUrl", (object)VideoUrl);
+			cmd.Parameters.AddWithValue("@TimezoneOffset", (object)TimezoneOffset);
 			return cmd;
 		}
 

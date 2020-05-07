@@ -140,7 +140,8 @@ namespace StreamingLiveWeb.CP.Live
                 service.VideoUrl = VideoUrlText.Text;
                 service.EarlyStart = earlyStart;
                 service.Duration = duration;
-                service.ServiceTime = Convert.ToDateTime(CountdownTimeText.Text);
+                service.TimezoneOffset = Convert.ToInt32(TZOffsetHid.Value);
+                service.ServiceTime = Convert.ToDateTime(CountdownTimeText.Text).AddMinutes(service.TimezoneOffset);
                 service.Provider = ProviderList.SelectedValue;
                 service.ProviderKey = "";
                 service.ChatBefore = chatBefore;
@@ -261,8 +262,9 @@ namespace StreamingLiveWeb.CP.Live
                 ChatBeforeText.Text = StreamingLiveLib.Utils.GetMinutes(service.ChatBefore).ToString();
                 ChatAfterText.Text = StreamingLiveLib.Utils.GetMinutes(service.ChatAfter).ToString();
 
-
-                CountdownTimeText.Text = service.ServiceTime.ToString("yyyy-MM-dd") + "T" + service.ServiceTime.ToString("HH:mm");
+                DateTime localServiceTime = service.ServiceTime;
+                localServiceTime = localServiceTime.AddMinutes(-Convert.ToInt32(TZOffsetHid.Value));
+                CountdownTimeText.Text = localServiceTime.ToString("yyyy-MM-dd") + "T" + localServiceTime.ToString("HH:mm");
                 VimeoKeyText.Text = service.ProviderKey;
                 YouTubeKeyText.Text = service.ProviderKey;
                 FacebookKeyText.Text = service.ProviderKey;
@@ -332,8 +334,13 @@ namespace StreamingLiveWeb.CP.Live
         protected void ServiceRepeater_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
             LinkButton EditButton = (LinkButton)e.Item.FindControl("EditButton");
-
+            Literal ServiceTimeLit = (Literal)e.Item.FindControl("ServiceTimeLit");
             StreamingLiveLib.Service service = (StreamingLiveLib.Service)e.Item.DataItem;
+
+            DateTime localServiceTime = service.ServiceTime.AddMinutes(-service.TimezoneOffset);
+            ServiceTimeLit.Text = localServiceTime.ToString();
+
+            
             EditButton.CommandArgument = service.Id.ToString();
 
         }

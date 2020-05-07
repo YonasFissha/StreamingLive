@@ -27,7 +27,8 @@ namespace StreamingLiveWeb.CP.Admin
             DataTable dt = StreamingLiveLib.Services.LoadUpcoming();
             foreach (DataRow row in dt.Rows)
             {
-                sb.Append($"<tr><td><a href=\"https://{row["KeyName"]}.streaminglive.church/\" target=\"_blank\">{row["KeyName"]}</a></td><td>{row["ServiceTime"]}</td></tr>");
+                DateTime serviceTime = Convert.ToDateTime(row["ServiceTime"]).AddHours(-5);
+                sb.Append($"<tr><td><a href=\"https://{row["KeyName"]}.streaminglive.church/\" target=\"_blank\">{row["KeyName"]}</a></td><td>{serviceTime}</td></tr>");
             }
             UpcomingLit.Text = sb.ToString();
         }

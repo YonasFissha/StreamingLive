@@ -13,6 +13,18 @@ namespace StreamingLiveWeb
         protected void Page_Load(object sender, EventArgs e)
         {
             //foreach (StreamingLiveLib.Site site in StreamingLiveLib.Sites.LoadAll()) MigrateSite(site);
+            //GenerateJson();
+        }
+
+
+        private void GenerateJson()
+        {
+            StreamingLiveLib.Sites sites = StreamingLiveLib.Sites.Load("select * from sites WHERE id in (select distinct(siteid) from services)");
+            foreach (StreamingLiveLib.Site s in sites)
+            {
+                System.IO.File.WriteAllText(Server.MapPath("/data/" + s.KeyName + "/data.json"), s.LoadJson());
+            }
+
         }
 
         private void MigrateSite(StreamingLiveLib.Site site)
