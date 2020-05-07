@@ -20,6 +20,16 @@ namespace StreamingLiveLib
 		#endregion
 
 		#region Methods
+		public static DataTable LoadUpcoming()
+		{
+			string sql = "SELECT TOP 10 s.KeyName, ser.ServiceTime"
+				+ " FROM services ser"
+				+ " INNER JOIN Sites s ON s.id = ser.SiteId"
+				+ " WHERE ServiceTime> getdate() and ProviderKey<>'zFOfmAHFKNw'"
+				+ " order by ServiceTime";
+			return DbHelper.FillDt(sql);
+		}
+
 		public static Services Load(string sql, CommandType commandType = CommandType.Text, SqlParameter[] parameters = null)
 		{
 			return new Services(DbHelper.ExecuteQuery(sql, commandType, parameters));

@@ -20,6 +20,18 @@ namespace StreamingLiveLib
 		#endregion
 
 		#region Methods
+
+		public static Sites Search(string term)
+		{
+			term = "%" + term.Split('.')[0] + "%";
+			return Load("SELECT * FROM Sites WHERE KeyName LIKE @KeyName ORDER BY KeyName", CommandType.Text, new SqlParameter[] { new SqlParameter("@KeyName", term) });
+		}
+
+		public static Sites LoadRecent()
+		{
+			return Load("SELECT TOP 15 * FROM Sites ORDER BY Id Desc");
+		}
+
 		public static Sites LoadByUserId(int userId)
 		{
 			string sql = "SELECT s.* FROM Roles r INNER JOIN Sites s ON s.Id = r.SiteId WHERE r.UserId = @UserId";

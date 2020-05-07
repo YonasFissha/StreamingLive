@@ -52,9 +52,14 @@ namespace StreamingLiveWeb.CP.Live
 
         private void CheckPendingChanges()
         {
-            string existing = System.IO.File.ReadAllText(Server.MapPath("/data/" + AppUser.Current.Site.KeyName + "/data.json"));
-            string current = AppUser.Current.Site.LoadJson();
-            PendingChanges = existing != current;
+            PendingChanges = true;
+            try
+            {
+                string existing = System.IO.File.ReadAllText(Server.MapPath("/data/" + AppUser.Current.Site.KeyName + "/data.json"));
+                string current = AppUser.Current.Site.LoadJson();
+                PendingChanges = existing != current;
+            }
+            catch { }
         }
 
         private void LoadData()

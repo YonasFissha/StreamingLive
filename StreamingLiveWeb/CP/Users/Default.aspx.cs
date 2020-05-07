@@ -148,7 +148,11 @@ namespace StreamingLiveWeb.CP.Users
                 NameLit.Text = "<div>" + user.DisplayName + "</div>";
                 EmailLit.Text = "<div>" + user.Email + "</div>";
                 StreamingLiveLib.Role role = StreamingLiveLib.Role.Load(userId, AppUser.Current.Site.Id);
-                RoleList.SelectedValue = role.Name;
+                try
+                {
+                    RoleList.SelectedValue = role.Name;
+                }
+                catch { };
             }
 
 

@@ -12,6 +12,7 @@ namespace StreamingLiveWeb.CP.Controls
         protected void Page_Load(object sender, EventArgs e)
         {
             AdminHolder.Visible = AppUser.Current.Role.Name == "admin";
+            SiteAdminHolder.Visible = AppUser.Current.IsSiteAdmin;
         }
     }
 }

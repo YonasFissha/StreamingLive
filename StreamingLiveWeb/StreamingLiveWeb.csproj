@@ -75,6 +75,7 @@
     <Content Include="Controls\HomeBenefits.ascx" />
     <Content Include="Controls\HomeFeatures.ascx" />
     <Content Include="Controls\HomeRegister.ascx" />
+    <Content Include="CP\Admin\Default.aspx" />
     <Content Include="CP\Controls\AppearanceEditor.ascx" />
     <Content Include="CP\Controls\ButtonEditor.ascx" />
     <Content Include="CP\Controls\Sidebar.ascx" />
@@ -147,6 +148,13 @@
     </Compile>
     <Compile Include="Controls\HomeRegister.ascx.designer.cs">
       <DependentUpon>HomeRegister.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="CP\Admin\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CP\Admin\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="CP\Controls\AppearanceEditor.ascx.cs">
       <DependentUpon>AppearanceEditor.ascx</DependentUpon>

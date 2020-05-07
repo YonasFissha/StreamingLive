@@ -20,6 +20,20 @@ namespace StreamingLiveLib
 		#endregion
 
 		#region Methods
+
+		public Roles GetByName(string name)
+		{
+			Roles result = new Roles();
+			foreach (Role r in this) if (r.Name == name) result.Add(r);
+			return result;
+		}
+
+		public Role GetBySiteId(int siteId)
+		{
+			foreach (Role r in this) if (r.SiteId == siteId) return r;
+			return null;
+		}
+
 		public static Roles Load(string sql, CommandType commandType = CommandType.Text, SqlParameter[] parameters = null)
 		{
 			return new Roles(DbHelper.ExecuteQuery(sql, commandType, parameters));
