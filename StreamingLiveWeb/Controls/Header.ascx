@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Header.ascx.cs" Inherits="StreamingLiveWeb.Controls.Header" %>
 <nav class="navbar navbar-expand navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="/" style="padding-top:0px;padding-bottom:0px;">
-        <img src="/images/logo.png" style="height:35px;margin-top:5px;margin-bottom:5px;" />
+        <img src="/images/logo.png" id="logo" />
     </a>
     <div class="collapse navbar-collapse" id="navbar">
         <ul class="navbar-nav mr-auto">

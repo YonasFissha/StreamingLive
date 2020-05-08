@@ -93,6 +93,7 @@
     <Content Include="CP\Reports\Default.aspx" />
     <Content Include="CP\UserMenu.aspx" />
     <Content Include="CP\Users\Default.aspx" />
+    <Content Include="CP\Welcome.aspx" />
     <Content Include="Css\all.css" />
     <Content Include="Css\cp.css" />
     <Content Include="Css\datetime-local-polyfill.css" />
@@ -275,6 +276,13 @@
     </Compile>
     <Compile Include="CP\Users\Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="CP\Welcome.aspx.cs">
+      <DependentUpon>Welcome.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CP\Welcome.aspx.designer.cs">
+      <DependentUpon>Welcome.aspx</DependentUpon>
     </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>

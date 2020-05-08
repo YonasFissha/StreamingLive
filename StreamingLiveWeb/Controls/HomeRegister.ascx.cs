@@ -52,7 +52,7 @@ namespace StreamingLiveWeb.Controls
 
                 AppUser.Login(u);
                 FormsAuthentication.SetAuthCookie(u.ResetGuid.ToString(), true);
-                Response.Redirect("/cp/live/");
+                Response.Redirect("/cp/welcome.aspx");
             }
             else OutputMessage("<b>Error:</b><ul><li>" + String.Join("</li><li>", errors) + "</li></ul>", true, OutputLit);
 
