@@ -6,7 +6,7 @@ exports.handler = async event => {
     const room = JSON.parse(event.body).room + '.host';
 
     try {
-        connectionData = await ddb.query({ TableName: "chat", KeyConditionExpression: "room = :room", ExpressionAttributeValues: { ":room": room }, ProjectionExpression: 'connectionId' }).promise();
+        connectionData = await ddb.query({ TableName: "connections", KeyConditionExpression: "room = :room", ExpressionAttributeValues: { ":room": room }, ProjectionExpression: 'connectionId' }).promise();
     } catch (e) {
         return { statusCode: 500, body: e.stack };
     }
@@ -24,7 +24,7 @@ exports.handler = async event => {
             await apigwManagementApi.postToConnection({ ConnectionId: connectionId, Data: postData }).promise();
         } catch (e) {
             await ddb.delete({
-                TableName: "chat",
+                TableName: "connections",
                 Key: { "room": room, "connectionId": connectionId }
             }).promise();
         }

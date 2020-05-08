@@ -6,7 +6,7 @@ exports.handler = async event => {
     const room = JSON.parse(event.body).room;
 
     try {
-        connectionData = await ddb.query({ TableName: "chat", KeyConditionExpression: "room = :room", ExpressionAttributeValues: { ":room": room }, ProjectionExpression: 'connectionId' }).promise();
+        connectionData = await ddb.query({ TableName: "connections", KeyConditionExpression: "room = :room", ExpressionAttributeValues: { ":room": room }, ProjectionExpression: 'connectionId' }).promise();
     } catch (e) {
         return { statusCode: 500, body: e.stack };
     }
@@ -19,17 +19,18 @@ exports.handler = async event => {
     var responseData = JSON.parse(event.body);
     //responseData.ts = Date.now().toString();
     const postData = JSON.stringify(responseData);
+    //const postData = event.body;
 
     const postCalls = connectionData.Items.map(async ({ connectionId }) => {
         try {
             await apigwManagementApi.postToConnection({ ConnectionId: connectionId, Data: postData }).promise();
         } catch (e) {
-            if (e.statusCode === 410) {
-                await ddb.delete({
-                    TableName: "chat",
-                    Key: { "room": room, "connectionId": connectionId }
-                }).promise();
-            }
+            //if (e.statusCode === 410) {
+            await ddb.delete({
+                TableName: "connections",
+                Key: { "room": room, "connectionId": connectionId }
+            }).promise();
+            //}
         }
     });
 

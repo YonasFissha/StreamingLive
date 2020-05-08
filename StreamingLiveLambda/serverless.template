@@ -12,7 +12,7 @@
         "Runtime": "dotnetcore3.1",
         "CodeUri": "",
         "Description": "Join a chat room",
-        "MemorySize": 256,
+        "MemorySize": 512,
         "Timeout": 15,
         "Role": "arn:aws:iam::428019619026:role/StreamingLiveRole",
         "Policies": [ "AWSLambdaFullAccess" ]
@@ -25,7 +25,7 @@
         "Runtime": "dotnetcore3.1",
         "CodeUri": "",
         "Description": "Send a message",
-        "MemorySize": 256,
+        "MemorySize": 512,
         "Timeout": 15,
         "Role": "arn:aws:iam::428019619026:role/StreamingLiveRole",
         "Policies": [ "AWSLambdaFullAccess" ]
@@ -38,7 +38,7 @@
         "Runtime": "dotnetcore3.1",
         "CodeUri": "",
         "Description": "Requst Prayer",
-        "MemorySize": 256,
+        "MemorySize": 512,
         "Timeout": 15,
         "Role": "arn:aws:iam::428019619026:role/StreamingLiveRole",
         "Policies": [ "AWSLambdaFullAccess" ]
@@ -51,7 +51,7 @@
         "Runtime": "dotnetcore3.1",
         "CodeUri": "",
         "Description": "Set the callout message",
-        "MemorySize": 256,
+        "MemorySize": 512,
         "Timeout": 15,
         "Role": "arn:aws:iam::428019619026:role/StreamingLiveRole",
         "Policies": [ "AWSLambdaFullAccess" ]
@@ -64,7 +64,7 @@
         "Runtime": "dotnetcore3.1",
         "CodeUri": "",
         "Description": "Refresh the config settings on clients",
-        "MemorySize": 256,
+        "MemorySize": 512,
         "Timeout": 15,
         "Role": "arn:aws:iam::428019619026:role/StreamingLiveRole",
         "Policies": [ "AWSLambdaFullAccess" ]
@@ -77,7 +77,7 @@
         "Runtime": "dotnetcore3.1",
         "CodeUri": "",
         "Description": "Moderation option to remove a message",
-        "MemorySize": 256,
+        "MemorySize": 512,
         "Timeout": 15,
         "Role": "arn:aws:iam::428019619026:role/StreamingLiveRole",
         "Policies": [ "AWSLambdaFullAccess" ]
