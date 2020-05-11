@@ -98,13 +98,11 @@
     <Content Include="Css\cp.css" />
     <Content Include="Css\datetime-local-polyfill.css" />
     <Content Include="Css\host.css" />
-    <Content Include="Css\Player.css" />
     <Content Include="Default.aspx" />
     <Content Include="Donate\Default.aspx" />
     <Content Include="JS\All.js" />
     <Content Include="JS\datetime-local-polyfill.min.js" />
     <Content Include="JS\Host.js" />
-    <Content Include="JS\Player.js" />
     <Content Include="Maintenance.aspx" />
     <Content Include="Preview\Css.aspx" />
     <Content Include="Preview\Data.aspx" />

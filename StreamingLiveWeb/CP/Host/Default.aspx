@@ -1,8 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPages/CpFixed.master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="StreamingLiveWeb.CP.Host.Default" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
-    <link rel="stylesheet" href="/css/player.css" >
-    <link rel="stylesheet" href="/css/host.css" >
-   
+    <link rel="stylesheet" href="/css/host.css?ver=20200511" >
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <div style="display:flex;flex-direction:column;height:100%;">
@@ -20,7 +18,7 @@
                             <div class="input-group">
                                 <div class="input-group-prepend"><a href="javascript:void();" data-field="sendText" class="btn btn-outline-secondary emojiButton" data-container="#chatContainer">😀</a></div>
                                 <input type="text" class="form-control" id="sendText" />
-                                <div class="input-group-append"><a class="btn btn-primary" style="border-radius:0px" href="javascript:sendMessage();">Send</a></div>
+                                <div class="input-group-append"><a id="sendMessageButton" class="btn btn-primary" style="border-radius:0px" href="javascript:sendMessage();">Send</a></div>
                             </div>
                         </div>
                     </div>
@@ -46,7 +44,7 @@
                             <div class="input-group">
                                 <div class="input-group-prepend"><a href="javascript:void();" data-field="sendPrivateText" class="btn btn-outline-secondary emojiButton" data-container="#prayerContainer">😀</a></div>
                                 <input type="text" class="form-control" id="sendPrivateText" />
-                                <div class="input-group-append"><a class="btn btn-primary" style="border-radius:0px" href="javascript:sendPrivate();">Send</a></div>
+                                <div class="input-group-append"><a id="sendPrivateButton" class="btn btn-primary" style="border-radius:0px" href="javascript:sendPrivate();">Send</a></div>
                             </div>
                         </div>
                     </div>
@@ -64,7 +62,7 @@
                             <label>Call Out Message</label>
                             <div class="input-group">
                                 <input type="text" class="form-control" id="calloutText" />
-                                <div class="input-group-append"><a class="btn btn-primary" style="border-radius:0px" href="javascript:setCallout();">Set</a></div>
+                                <div class="input-group-append"><a id="setCalloutButton" class="btn btn-primary" style="border-radius:0px" href="javascript:setCallout();">Set</a></div>
                             </div>
                         </div>
                     </div>
@@ -78,7 +76,7 @@
                             <div class="input-group">
                                 <div class="input-group-prepend"><a href="javascript:void();" data-field="hostSendText" class="btn btn-outline-secondary emojiButton" data-container="#hostChatContainer">😀</a></div>
                                 <input type="text" class="form-control" id="hostSendText" />
-                                <div class="input-group-append"><a class="btn btn-primary" style="border-radius:0px" href="javascript:sendHostMessage();">Send</a></div>
+                                <div class="input-group-append"><a id="sendHostMessageButton" class="btn btn-primary" style="border-radius:0px" href="javascript:sendHostMessage();">Send</a></div>
                             </div>
                         </div>
                     </div>
@@ -88,8 +86,7 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ScriptBlock" runat="server">
-    <script src="/js/player.js?ver=2a"></script>
-    <script src="/js/host.js?ver=2a"></script>
+    <script src="/js/host.js?ver=20200511"></script>
     <script>
         keyName = '<%=KeyName%>';
         var displayName = '<%=StreamingLiveWeb.AppUser.Current.UserData.DisplayName%>';

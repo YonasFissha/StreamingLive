@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient({ apiVersion: '2020-04-16' });
+const lambda = new AWS.Lambda({ region: "us-east-2" });
 
 exports.handler = async event => {
     let connectionData;
@@ -36,6 +37,10 @@ exports.handler = async event => {
     } catch (e) {
         return { statusCode: 500, body: e.stack };
     }
+
+    var payload = { "action": "storeCatchup", "room": room, "originalMessage": responseData };
+    const params = { FunctionName: "storeCatchup", InvokeArgs: JSON.stringify(payload) };
+    await lambda.invokeAsync(params, function (err, data) { }).promise();
 
     return { statusCode: 200, body: 'Data sent.' };
 };

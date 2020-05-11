@@ -34,7 +34,7 @@ async function cleanCatchup() {
 
 
 async function cleanConnections() {
-    var threshold = Date.now() - (1000 * 60 * 60 * 12); //12 hours
+    var threshold = Date.now() - (1000 * 60 * 60 * 4); //12 hours
     let connectionData;
     try {
         connectionData = await ddb.scan({

@@ -70,7 +70,6 @@
     <Content Include="Css\all.css" />
     <Content Include="Css\page.css" />
     <Content Include="Index.html" />
-    <Content Include="JS\chat2.js" />
     <Content Include="JS\index.js" />
     <Content Include="Web.config" />
   </ItemGroup>
