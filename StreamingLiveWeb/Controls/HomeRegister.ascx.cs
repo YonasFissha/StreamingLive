@@ -16,7 +16,7 @@ namespace StreamingLiveWeb.Controls
             string[] errors = Validate();
             if (errors.Length == 0)
             {
-                StreamingLiveLib.Site s = new StreamingLiveLib.Site() { KeyName = KeyNameText.Text.ToLower().Trim(), PrimaryColor="#24b9ff", ContrastColor="#ffffff", HeaderColor= "#24b9ff", HomePageUrl="/", LogoUrl= "/data/master/logo.png" };
+                StreamingLiveLib.Site s = new StreamingLiveLib.Site() { KeyName = KeyNameText.Text.ToLower().Trim(), PrimaryColor="#24b9ff", ContrastColor="#ffffff", HeaderColor= "#24b9ff", HomePageUrl="/", LogoUrl= "/data/master/logo.png", RegistrationDate=DateTime.UtcNow };
                 s.Save();
 
                 StreamingLiveLib.User u = new StreamingLiveLib.User() { Email = EmailText.Text.ToLower().Trim(), Password = StreamingLiveLib.User.HashPassword(PasswordText.Text.Trim()), DisplayName="Admin" };

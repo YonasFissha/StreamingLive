@@ -23,6 +23,7 @@ namespace StreamingLiveLib
 		public string PrimaryColor { get; set; }
 		public string ContrastColor { get; set; }
 		public string HeaderColor { get; set; }
+		public DateTime RegistrationDate { get; set; }
 		#endregion
 
 		#region Constructors
@@ -104,6 +105,7 @@ namespace StreamingLiveLib
 			if (row.Table.Columns.Contains("PrimaryColor")) PrimaryColor = Convert.ToString(row["PrimaryColor"]);
 			if (row.Table.Columns.Contains("ContrastColor")) ContrastColor = Convert.ToString(row["ContrastColor"]);
 			if (row.Table.Columns.Contains("HeaderColor")) HeaderColor = Convert.ToString(row["HeaderColor"]);
+			if (row.Table.Columns.Contains("RegistrationDate")) RegistrationDate = Convert.ToDateTime(row["RegistrationDate"]);
 		}
 		#endregion
 
@@ -139,6 +141,7 @@ namespace StreamingLiveLib
 			cmd.Parameters.AddWithValue("@PrimaryColor", (object)PrimaryColor);
 			cmd.Parameters.AddWithValue("@ContrastColor", (object)ContrastColor);
 			cmd.Parameters.AddWithValue("@HeaderColor", (object)HeaderColor);
+			cmd.Parameters.AddWithValue("@RegistrationDate", (object)RegistrationDate);
 			return cmd;
 		}
 
