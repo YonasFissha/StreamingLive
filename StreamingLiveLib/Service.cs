@@ -112,7 +112,7 @@ namespace StreamingLiveLib
 
 		public object GetPropertyValue(string propertyName)
 		{
-			return typeof(User).GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance).GetValue(this, null);
+			return typeof(Service).GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance).GetValue(this, null);
 		}
 		#endregion
 	}

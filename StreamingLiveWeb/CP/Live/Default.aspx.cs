@@ -28,10 +28,6 @@ namespace StreamingLiveWeb.CP.Live
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (IsPostBack)
-            {
-                int a = 0;
-            }
             if (AppUser.Current.Role.Name != "admin") Response.Redirect("/cp/");
             if (CachedData.Environment=="prod") PreviewUrl = "https://" + AppUser.Current.Site.KeyName + ".streaminglive.church/?preview=1";
             string liveUrl = "https://" + AppUser.Current.Site.KeyName + ".streaminglive.church/";
@@ -68,7 +64,7 @@ namespace StreamingLiveWeb.CP.Live
 
         private void LoadData()
         {
-            services = StreamingLiveLib.Services.LoadBySiteId(AppUser.Current.Site.Id);
+            services = StreamingLiveLib.Services.LoadBySiteId(AppUser.Current.Site.Id).Sort("ServiceTime", false);
         }
 
         private void AppearanceEditor1_DataUpdated(object sender, EventArgs e)

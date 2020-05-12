@@ -23,7 +23,7 @@ namespace StreamingLiveLib
 
 		public static Services LoadExpired()
 		{
-			DateTime threshold = DateTime.UtcNow.AddHours(-12);
+			DateTime threshold = DateTime.UtcNow.AddHours(-6);
 			return Load("SELECT * FROM Services WHERE ServiceTime<@ServiceTime", CommandType.Text, new SqlParameter[] { new SqlParameter("@ServiceTime", threshold) });
 		}
 

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/MasterPages/MasterPage.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="StreamingLiveWeb.Default" Title="Streaming Live - A free platform for church service streaming." %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPages/MasterPage.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" MaintainScrollPositionOnPostback="true" Inherits="StreamingLiveWeb.Default" Title="Streaming Live - A free platform for church service streaming." %>
 <%@ Register src="Controls/HomeBenefits.ascx" tagname="HomeBenefits" tagprefix="uc1" %>
 <%@ Register src="Controls/HomeFeatures.ascx" tagname="HomeFeatures" tagprefix="uc1" %>
 <%@ Register src="Controls/HomeRegister.ascx" tagname="HomeRegister" tagprefix="uc1" %>
