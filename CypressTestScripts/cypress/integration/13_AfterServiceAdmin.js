@@ -1,4 +1,4 @@
-context('Admin - Post Service Chat', () => {
+context('Admin - Service is Over', () => {
     logIntoAdmin();
     editService();
 });

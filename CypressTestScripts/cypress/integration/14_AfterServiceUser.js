@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 var userName = ''
 
-context('User - Post Service Chat', () => {
+context('User - Service is over', () => {
     before(() => {
         cy.visit(Cypress.env('url'));
         cy.wait(2000);
