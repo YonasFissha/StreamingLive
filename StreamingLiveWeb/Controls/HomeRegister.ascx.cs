@@ -95,15 +95,22 @@ namespace StreamingLiveWeb.Controls
 
         bool IsValidEmail(string email)
         {
+            bool isValid = false;
             try
             {
                 var addr = new System.Net.Mail.MailAddress(email);
-                return addr.Address == email;
-            }
-            catch
+                isValid = addr.Address == email;
+            } catch { }
+            if (isValid)
             {
-                return false;
+                try
+                {
+                    string domain = email.Split('@')[1];
+                    isValid = domain.IndexOf('.') > -1;
+                }
+                catch { isValid = false; };
             }
+            return isValid;
         }
     }
 }
