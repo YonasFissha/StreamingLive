@@ -28,6 +28,10 @@ namespace StreamingLiveWeb.CP.Live
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (IsPostBack)
+            {
+                int a = 0;
+            }
             if (AppUser.Current.Role.Name != "admin") Response.Redirect("/cp/");
             if (CachedData.Environment=="prod") PreviewUrl = "https://" + AppUser.Current.Site.KeyName + ".streaminglive.church/?preview=1";
             string liveUrl = "https://" + AppUser.Current.Site.KeyName + ".streaminglive.church/";

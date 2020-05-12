@@ -47,7 +47,7 @@
             </div>
 
             <asp:PlaceHolder ID="ServiceListHolder" runat="server">
-                <div class="inputBox">
+                <div class="inputBox" id="servicesBox">
                     <div class="header"><div class="float-right"><asp:LinkButton ID="AddServiceLink" runat="server" OnClick="AddServiceLink_Click"><i class="fas fa-plus"></i></asp:LinkButton></div>  <i class="far fa-calendar-alt"></i> Services</div>
                     <div class="content">
                         <table class="table table-sm">

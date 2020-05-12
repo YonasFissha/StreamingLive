@@ -23,9 +23,9 @@ function checkService() {
     if (data.services.length > 0)
     {
         currentService = determineCurrentService();
-        if (currentService != null)
+        var currentTime = new Date().getTime();
+        if (currentService != null && currentTime<currentService.localEndTime)
         {
-            var currentTime = new Date().getTime();
             if (currentTime <= currentService.localStartTime) displayTimeRemaining(currentTime);
             else showVideo();
         } else showNoService();
@@ -35,7 +35,8 @@ function checkService() {
 
 function toggleChatEnabled() {
     var currentTime = new Date().getTime();
-    var result = (currentService==null) ? false : currentTime >= currentService.localChatStart && currentTime <= currentService.localChatEnd;
+    var result = (currentService == null) ? false : currentTime >= currentService.localChatStart && currentTime <= currentService.localChatEnd;
+
     if (result != chatEnabled) {
         if (result) {
             $('#chatContainer, #prayerContainer').removeClass('chatDisabled');
@@ -47,7 +48,6 @@ function toggleChatEnabled() {
 }
 
 function showNoService() {
-    currentService = null;
     $('#noVideoContent').html('<h2>Check Back for New Services</h2>');
     hideVideo();
 }
@@ -94,7 +94,6 @@ function displayTimeRemaining(currentTime) {
         remainingSeconds = remainingSeconds - (hours * 3600);
         var minutes = Math.floor(remainingSeconds / 60);
         seconds = remainingSeconds - (minutes * 60);
-        //console.log(seconds);
         var displayTime = ("0" + hours).slice(-2) + ':' + ("0" + minutes).slice(-2) + ':' + ("0" + seconds).slice(-2);
         $('#noVideoContent').html('<h2>Next Service Time</h2>' + displayTime);
     }
@@ -106,8 +105,6 @@ function displayTimeRemaining(currentTime) {
 
 
 function loadConfig() {
-    console.log('load config');
-
     var jsonUrl = '/data/' + keyName + '/data.json?nocache=' + (new Date()).getTime();
     if (getQs('preview') == 1) jsonUrl = '/preview/data.json?key=' + keyName + '&nocache=' + (new Date()).getTime();
 
@@ -167,13 +164,11 @@ function updateServiceTimes() {
             s.localEndTime = new Date(s.localStartTime.getTime());
             s.localEndTime.setSeconds(s.localEndTime.getSeconds() + getSeconds(s.duration));
 
-            s.localChatStart = new Date(s.localCountdownTime.getTime());
-            if (s.chatBefore) s.localChatStart.setSeconds(s.localChatStart.getSeconds() - getSeconds(s.chatBefore));
-            else s.localChatStart.setSeconds(s.localChatStart.getSeconds() - (30*60));
+            s.localChatStart = new Date(s.localStartTime.getTime());
+            s.localChatStart.setSeconds(s.localChatStart.getSeconds() - getSeconds(s.chatBefore));
 
             s.localChatEnd = new Date(s.localEndTime.getTime());
-            if (s.chatAfter) s.localChatEnd.setSeconds(s.localEndTime.getSeconds() + getSeconds(s.chatAfter));
-            else s.localChatEnd.setSeconds(s.localEndTime.getSeconds() + (30*60));
+            s.localChatEnd.setSeconds(s.localChatEnd.getSeconds() + getSeconds(s.chatAfter));
         }
     }
 
@@ -214,7 +209,7 @@ function determineCurrentService() {
     var currentTime = new Date();
     for (i = 0; i < data.services.length; i++) {
         var s = data.services[i];
-        if (currentTime <= s.localEndTime) {
+        if (currentTime <= s.localChatEnd) {
             if (result == null || s.localEndTime < result.localEndTime) result = s;
         }
     }
