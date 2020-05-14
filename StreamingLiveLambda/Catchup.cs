@@ -8,6 +8,7 @@ using System.IO;
 using Amazon.ApiGatewayManagementApi;
 using Amazon.ApiGatewayManagementApi.Model;
 using Amazon.DynamoDBv2.DocumentModel;
+using System.Threading.Tasks;
 
 namespace StreamingLiveLambda
 {
@@ -16,13 +17,16 @@ namespace StreamingLiveLambda
 
         internal static void Store(string room, JObject message)
         {
+            Logging.LogDebug("Storing Catchup - " + room);
             JArray messages = GetCatchup(room);
-            
+
+            Logging.LogDebug("Catchup Message Count - " + messages.Count.ToString());
             //this just needs to run periodically.  
             if (messages.Count==0)
             {
                 Connection.Cleanup();
                 Catchup.Cleanup();
+                Logging.LogDebug("Cleanup complete");
             }
             messages.Add(message);
 
@@ -31,8 +35,9 @@ namespace StreamingLiveLambda
             Document doc = new Document();
             doc["room"] = room;
             doc["messages"] = messages.ToString(Newtonsoft.Json.Formatting.None);
-            doc["ts"] = DateTime.Now;
-            table.PutItemAsync(doc);
+            doc["ts"] = DateTime.UtcNow.Ticks;
+            Task<Document> t = table.PutItemAsync(doc);
+            t.Wait();
         }
 
         internal static JArray GetCatchup(string room)
@@ -78,6 +83,7 @@ namespace StreamingLiveLambda
 
         internal static void Cleanup()
         {
+            Logging.LogDebug("Cleaning catchup");
             AmazonDynamoDBClient client = new AmazonDynamoDBClient();
             DateTime threshold = DateTime.UtcNow.AddMinutes(-30);
             ScanRequest request = new ScanRequest

@@ -1,15 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <AWSProjectType>Lambda</AWSProjectType>
+    <CrossGenDuringPublish>false</CrossGenDuringPublish>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Amazon.Lambda.APIGatewayEvents" Version="2.1.0" />
     <PackageReference Include="Amazon.Lambda.Core" Version="1.1.0" />
-    <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.0.0" />
     <PackageReference Include="Amazon.Lambda.DynamoDBEvents" Version="1.1.0" />
-    <PackageReference Include="AWSSDK.ApiGatewayManagementApi" Version="3.3.101.104" />
-    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.3.105.34" />
+    <PackageReference Include="Amazon.Lambda.Serialization.Json" Version="1.7.0" />
+    <PackageReference Include="AWS.Logger.Core" Version="1.6.0" />
+    <PackageReference Include="AWS.Logger.NLog" Version="1.5.2" />
+    <PackageReference Include="AWSSDK.ApiGatewayManagementApi" Version="3.3.101.109" />
+    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.3.106.2" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
   <ItemGroup>
@@ -19,8 +24,7 @@
     <Reference Include="Amazon.Lambda.Core">
       <HintPath>..\..\..\Temp\aws-lambda-dotnet-master\Libraries\src\Amazon.Lambda.Core\bin\Debug\netstandard2.0\Amazon.Lambda.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Amazon.Lambda.Serialization.Json">
-      <HintPath>..\..\..\Temp\aws-lambda-dotnet-master\Libraries\src\Amazon.Lambda.Serialization.Json\bin\Debug\netstandard2.0\Amazon.Lambda.Serialization.Json.dll</HintPath>
-    </Reference>
+    
   </ItemGroup>
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 </Project>

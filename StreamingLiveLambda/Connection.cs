@@ -20,13 +20,23 @@ namespace StreamingLiveLambda
         [LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
         public APIGatewayProxyResponse Join(APIGatewayProxyRequest req, ILambdaContext context)
         {
-            
-            JObject data = JObject.Parse(req.Body);
-            string room = data["room"].ToString();
-            StoreConnection(room, req.RequestContext.ConnectionId);
-            JArray messages = Catchup.GetCatchup(room);
-            if (messages.Count>0) Catchup.SendCatchup("wss://" + req.RequestContext.DomainName + "/" + req.RequestContext.Stage, req.RequestContext.ConnectionId, room, messages);
-            return new APIGatewayProxyResponse() { Body = "success", StatusCode = 200 };
+            Logging.Init();
+            try
+            {
+                JObject data = JObject.Parse(req.Body);
+                string room = data["room"].ToString();
+                Logging.LogDebug("Join " + room);
+                StoreConnection(room, req.RequestContext.ConnectionId);
+                JArray messages = Catchup.GetCatchup(room);
+                if (messages.Count > 0) Catchup.SendCatchup("wss://" + req.RequestContext.DomainName + "/" + req.RequestContext.Stage, req.RequestContext.ConnectionId, room, messages);
+                Logging.LogDebug("Catchup sent");
+                return new APIGatewayProxyResponse() { Body = "success", StatusCode = 200 };
+            }
+            catch (Exception ex)
+            {
+                Logging.LogException(ex);
+                return new APIGatewayProxyResponse() { Body = ex.ToString(), StatusCode = 500 };
+            }
         }
 
         private static void StoreConnection(string room, string connectionId)
@@ -69,6 +79,7 @@ namespace StreamingLiveLambda
 
         internal static void Cleanup()
         {
+            Logging.LogDebug("Cleaning connections");
             AmazonDynamoDBClient client = new AmazonDynamoDBClient();
             DateTime threshold = DateTime.UtcNow.AddHours(-12);
             ScanRequest request = new ScanRequest

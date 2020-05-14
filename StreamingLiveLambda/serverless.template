@@ -9,12 +9,13 @@
       "Type" : "AWS::Serverless::Function",
       "Properties": {
         "Handler": "StreamingLiveLambda::StreamingLiveLambda.Connection::Join",
-        "Runtime": "dotnetcore3.1",
+        "Runtime": "dotnetcore2.1",
         "CodeUri": "",
         "Description": "Join a chat room",
         "MemorySize": 512,
         "Timeout": 15,
         "Role": "arn:aws:iam::428019619026:role/StreamingLiveRole",
+        "Layers" : ["arn:aws:lambda:us-east-2:428019619026:layer:StreamingLiveLambdaLayer:3"],
         "Policies": [ "AWSLambdaFullAccess" ]
       }
     },
@@ -22,12 +23,13 @@
       "Type" : "AWS::Serverless::Function",
       "Properties": {
         "Handler": "StreamingLiveLambda::StreamingLiveLambda.Message::Send",
-        "Runtime": "dotnetcore3.1",
+        "Runtime": "dotnetcore2.1",
         "CodeUri": "",
         "Description": "Send a message",
         "MemorySize": 512,
         "Timeout": 15,
         "Role": "arn:aws:iam::428019619026:role/StreamingLiveRole",
+        "Layers" : ["arn:aws:lambda:us-east-2:428019619026:layer:StreamingLiveLambdaLayer:3"],
         "Policies": [ "AWSLambdaFullAccess" ]
       }
     },
@@ -35,12 +37,13 @@
       "Type" : "AWS::Serverless::Function",
       "Properties": {
         "Handler": "StreamingLiveLambda::StreamingLiveLambda.Message::RequestPrayer",
-        "Runtime": "dotnetcore3.1",
+        "Runtime": "dotnetcore2.1",
         "CodeUri": "",
         "Description": "Requst Prayer",
         "MemorySize": 512,
         "Timeout": 15,
         "Role": "arn:aws:iam::428019619026:role/StreamingLiveRole",
+        "Layers" : ["arn:aws:lambda:us-east-2:428019619026:layer:StreamingLiveLambdaLayer:3"],
         "Policies": [ "AWSLambdaFullAccess" ]
       }
     },
@@ -48,12 +51,13 @@
       "Type" : "AWS::Serverless::Function",
       "Properties": {
         "Handler": "StreamingLiveLambda::StreamingLiveLambda.Message::SetCallout",
-        "Runtime": "dotnetcore3.1",
+        "Runtime": "dotnetcore2.1",
         "CodeUri": "",
         "Description": "Set the callout message",
         "MemorySize": 512,
         "Timeout": 15,
         "Role": "arn:aws:iam::428019619026:role/StreamingLiveRole",
+        "Layers" : ["arn:aws:lambda:us-east-2:428019619026:layer:StreamingLiveLambdaLayer:3"],
         "Policies": [ "AWSLambdaFullAccess" ]
       }
     },
@@ -61,12 +65,13 @@
       "Type" : "AWS::Serverless::Function",
       "Properties": {
         "Handler": "StreamingLiveLambda::StreamingLiveLambda.Message::UpdateConfig",
-        "Runtime": "dotnetcore3.1",
+        "Runtime": "dotnetcore2.1",
         "CodeUri": "",
         "Description": "Refresh the config settings on clients",
         "MemorySize": 512,
         "Timeout": 15,
         "Role": "arn:aws:iam::428019619026:role/StreamingLiveRole",
+        "Layers" : ["arn:aws:lambda:us-east-2:428019619026:layer:StreamingLiveLambdaLayer:3"],
         "Policies": [ "AWSLambdaFullAccess" ]
       }
     },
@@ -74,12 +79,13 @@
       "Type" : "AWS::Serverless::Function",
       "Properties": {
         "Handler": "StreamingLiveLambda::StreamingLiveLambda.Message::Delete",
-        "Runtime": "dotnetcore3.1",
+        "Runtime": "dotnetcore2.1",
         "CodeUri": "",
         "Description": "Moderation option to remove a message",
         "MemorySize": 512,
         "Timeout": 15,
         "Role": "arn:aws:iam::428019619026:role/StreamingLiveRole",
+        "Layers" : ["arn:aws:lambda:us-east-2:428019619026:layer:StreamingLiveLambdaLayer:3"],
         "Policies": [ "AWSLambdaFullAccess" ]
       }
     }

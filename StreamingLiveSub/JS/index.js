@@ -355,7 +355,7 @@ function updateConfig() {
 
 
 function initChat() {
-    socket = new WebSocket('wss://lr6pbsl0ji.execute-api.us-east-2.amazonaws.com/production');
+    socket = new WebSocket('wss://lr6pbsl0ji.execute-api.us-east-2.amazonaws.com/test');
     socket.onopen = function (e) {
         socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': keyName }));
         setTimeout(keepAlive, 30 * 1000);

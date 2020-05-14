@@ -9,7 +9,7 @@
     "profile"     : "LiveChurchSolutions",
     "region"      : "us-east-2",
     "configuration" : "Debug",
-    "framework"     : "netcoreapp3.1",
+    "framework"     : "netcoreapp2.1",
     "template"      : "serverless.template",
     "s3-bucket"     : "streaming-live-chat",
     "stack-name"    : "streaminglive"

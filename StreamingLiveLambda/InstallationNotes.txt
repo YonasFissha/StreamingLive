@@ -1,0 +1,13 @@
+#On Amazon Linux (1) EC2
+sudo yum -y update
+sudo yum -y install deltarpm unzip zlib gettext libunwind libicu libcurl-devel openssl-devel libicu-devel
+sudo rpm -Uvh https://packages.microsoft.com/config/rhel/7/packages-microsoft-prod.rpm
+sudo yum -y install dotnet-sdk-2.1
+
+dotnet add package runtime.linux-x64.Microsoft.NETCore.Runtime.CoreCLR --version 2.0.8
+dotnet tool install -g Amazon.Lambda.Tools
+dotnet new -i Amazon.Lambda.Templates
+dotnet lambda publish-layer StreamingLiveLambdaLayer -sb streaming-live-chat --region us-east-2 --layer-type runtime-package-store --enable-package-optimization true -f netcoreapp2.1
+
+dotnet lambda list-layers --region us-east-2
+dotnet lambda get-layer-version arn:aws:lambda:us-east-2:428019619026:layer:StreamingLiveLambdaLayer:3 --region us-east-2
