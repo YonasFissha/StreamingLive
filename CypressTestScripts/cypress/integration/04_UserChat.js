@@ -57,7 +57,7 @@ function postSeveralMessages() {
 function testCatchup() {
     it('Test Catchup', () => {
         cy.visit(Cypress.env('url'));
-        cy.wait(500);
+        cy.wait(2000);
         cy.get('#chatReceive')
             .should('contain', userName)
             .should('contain', 'Hello World');

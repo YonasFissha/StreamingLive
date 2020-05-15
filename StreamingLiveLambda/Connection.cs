@@ -17,26 +17,14 @@ namespace StreamingLiveLambda
 {
     public class Connection
     {
-        [LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
-        public APIGatewayProxyResponse Join(APIGatewayProxyRequest req, ILambdaContext context)
+        
+        public static void Join(string apiUrl, string connectionId, string room, JObject data)
         {
-            Logging.Init();
-            try
-            {
-                JObject data = JObject.Parse(req.Body);
-                string room = data["room"].ToString();
-                Logging.LogDebug("Join " + room);
-                StoreConnection(room, req.RequestContext.ConnectionId);
-                JArray messages = Catchup.GetCatchup(room);
-                if (messages.Count > 0) Catchup.SendCatchup("wss://" + req.RequestContext.DomainName + "/" + req.RequestContext.Stage, req.RequestContext.ConnectionId, room, messages);
-                Logging.LogDebug("Catchup sent");
-                return new APIGatewayProxyResponse() { Body = "success", StatusCode = 200 };
-            }
-            catch (Exception ex)
-            {
-                Logging.LogException(ex);
-                return new APIGatewayProxyResponse() { Body = ex.ToString(), StatusCode = 500 };
-            }
+            Logging.LogDebug("Join " + room);
+            StoreConnection(room, connectionId);
+            JArray messages = Catchup.GetCatchup(room);
+            if (messages.Count > 0) Catchup.SendCatchup(apiUrl, connectionId, room, messages);
+            Logging.LogDebug("Catchup sent");
         }
 
         private static void StoreConnection(string room, string connectionId)

@@ -18,107 +18,46 @@ namespace StreamingLiveLambda
     {
         static string error = "success";
 
-        [LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
-        public APIGatewayProxyResponse UpdateConfig(APIGatewayProxyRequest req, ILambdaContext context)
+        public static void UpdateConfig(string apiUrl, string connectionId, string room, JObject data)
         {
-            Logging.Init();
-            try { 
-                JObject data = JObject.Parse(req.Body);
-                data["ts"] = DateTime.UtcNow.Ticks;
-                string room = data["room"].ToString();
-                Logging.LogDebug("Updating " + room);
-                SendMessages("wss://" + req.RequestContext.DomainName + "/" + req.RequestContext.Stage, Connection.GetConnectionIds(room), room, data);
-                return new APIGatewayProxyResponse() { Body = "success", StatusCode = 200 };
-            } catch (Exception ex) {
-                Logging.LogException(ex);
-                return new APIGatewayProxyResponse() { Body = ex.ToString(), StatusCode = 500 };
-            }
+            Logging.LogDebug("Updating " + room);
+            data["ts"] = DateTime.UtcNow.Ticks;
+            SendMessages(apiUrl, Connection.GetConnectionIds(room), room, data);
         }
 
-        [LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
-        public APIGatewayProxyResponse RequestPrayer(APIGatewayProxyRequest req, ILambdaContext context)
+        public static void RequestPrayer(string apiUrl, string connectionId, string room, JObject data)
         {
-            Logging.Init();
-            try { 
-                JObject data = JObject.Parse(req.Body);
-                string room = data["room"].ToString() + ".host";
-                data["ts"] = DateTime.UtcNow.Ticks;
-                Logging.LogDebug("Request Prayer - " + room);
-                SendMessages("wss://" + req.RequestContext.DomainName + "/" + req.RequestContext.Stage, Connection.GetConnectionIds(room), room, data);
-                Catchup.Store(room, data);
-                return new APIGatewayProxyResponse() { Body = "success", StatusCode = 200 };
-            }
-            catch (Exception ex)
-            {
-                Logging.LogException(ex);
-                return new APIGatewayProxyResponse() { Body = ex.ToString(), StatusCode = 500 };
-            }
+            room += ".host";
+            Logging.LogDebug("Request Prayer - " + room);
+            data["ts"] = DateTime.UtcNow.Ticks;
+            SendMessages(apiUrl, Connection.GetConnectionIds(room), room, data);
+            Catchup.Store(room, data);
         }
 
-        [LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
-        public APIGatewayProxyResponse SetCallout(APIGatewayProxyRequest req, ILambdaContext context)
+        public static void SetCallout(string apiUrl, string connectionId, string room, JObject data)
         {
-            Logging.Init();
-            try
-            {
-                JObject data = JObject.Parse(req.Body);
-                string room = data["room"].ToString();
-                data["ts"] = DateTime.UtcNow.Ticks;
-                Logging.LogDebug("Request Set Callout - " + room);
-                SendMessages("wss://" + req.RequestContext.DomainName + "/" + req.RequestContext.Stage, Connection.GetConnectionIds(room), room, data);
-                Catchup.Store(room, data);
-                return new APIGatewayProxyResponse() { Body = "success", StatusCode = 200 };
-            }
-            catch (Exception ex)
-            {
-                Logging.LogException(ex);
-                return new APIGatewayProxyResponse() { Body = ex.ToString(), StatusCode = 500 };
-            }
+            Logging.LogDebug("Request Set Callout - " + room);
+            data["ts"] = DateTime.UtcNow.Ticks;
+            SendMessages(apiUrl, Connection.GetConnectionIds(room), room, data);
+            Catchup.Store(room, data);
         }
 
-        [LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
-        public APIGatewayProxyResponse Send(APIGatewayProxyRequest req, ILambdaContext context)
+        public static void Send(string apiUrl, string connectionId, string room, JObject data)
         {
-            Logging.Init();
-            try {
-                Logging.LogDebug("Send Message");
-                JObject data = JObject.Parse(req.Body);
-                string room = data["room"].ToString();
-                Logging.LogDebug("Send Message - " + room);
-
-                data["message"] = Utils.ReplaceBadWords(data["message"].ToString());
-                data["ts"] = DateTime.UtcNow.Ticks;
-                Logging.LogDebug("Sending Message - " + data["message"].ToString());
-                SendMessages("wss://" + req.RequestContext.DomainName + "/" + req.RequestContext.Stage, Connection.GetConnectionIds(room), room, data);
-                Catchup.Store(room, data);
-                Logging.LogDebug("Catchup Stored");
-                return new APIGatewayProxyResponse() { Body = error, StatusCode = 200 };
-            }
-            catch (Exception ex)
-            {
-                Logging.LogException(ex);
-                return new APIGatewayProxyResponse() { Body = ex.ToString(), StatusCode = 500 };
-            }
+            Logging.LogDebug("Send Message - " + room);
+            data["message"] = Utils.ReplaceBadWords(data["message"].ToString());
+            data["ts"] = DateTime.UtcNow.Ticks;
+            Logging.LogDebug("Sending Message - " + data["message"].ToString());
+            SendMessages(apiUrl, Connection.GetConnectionIds(room), room, data);
+            Catchup.Store(room, data);
+            Logging.LogDebug("Catchup Stored");
         }
 
-        [LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
-        public APIGatewayProxyResponse Delete(APIGatewayProxyRequest req, ILambdaContext context)
+        public static void Delete(string apiUrl, string connectionId, string room, JObject data)
         {
-            Logging.Init();
-            try
-            {
-                JObject data = JObject.Parse(req.Body);
-                string room = data["room"].ToString();
-                Logging.LogDebug("Delete Message - " + room);
-                SendMessages("wss://" + req.RequestContext.DomainName + "/" + req.RequestContext.Stage, Connection.GetConnectionIds(room), room, data);
-                Catchup.Store(room, data);
-                return new APIGatewayProxyResponse() { Body = "success", StatusCode = 200 };
-            }
-            catch (Exception ex)
-            {
-                Logging.LogException(ex);
-                return new APIGatewayProxyResponse() { Body = ex.ToString(), StatusCode = 500 };
-            }
+            Logging.LogDebug("Delete Message - " + room);
+            SendMessages(apiUrl, Connection.GetConnectionIds(room), room, data);
+            Catchup.Store(room, data);
         }
 
         internal static void SendMessages(string serviceUrl, List<string> connectionIds, string room, JObject message)
