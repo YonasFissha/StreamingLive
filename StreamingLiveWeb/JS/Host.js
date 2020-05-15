@@ -143,7 +143,7 @@ function getSeconds(displayTime) {
 
 function keepAlive() {
     var timeout = 60 * 1000;
-    if (socket.readyState == WebSocket.OPEN) socket.send('{}');
+    if (socket.readyState == WebSocket.OPEN) socket.send('{"action":"keepAlive", "room":""}');
     timerId = setTimeout(keepAlive, timeout);
 }
 

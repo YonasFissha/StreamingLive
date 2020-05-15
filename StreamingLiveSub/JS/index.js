@@ -223,7 +223,7 @@ function determineCurrentService() {
 function keepAlive() {
     var timeout = 60 * 1000;
     console.log(socket.readyState);
-    if (socket.readyState == WebSocket.OPEN) socket.send('{}');
+    if (socket.readyState == WebSocket.OPEN) socket.send('{"action":"keepAlive", "room":""}');
     timerId = setTimeout(keepAlive, timeout);
 }
 

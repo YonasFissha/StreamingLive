@@ -17,7 +17,7 @@ namespace StreamingLiveLambda
 
         public static void LogDebug(string message)
         {
-            if (logLevel >= LogLevel.Debug)
+            if (logLevel >= LogLevel.Info)
             {
                 if (!configured) Configure();
                 Logger logger = LogManager.GetCurrentClassLogger();

@@ -38,6 +38,14 @@ namespace StreamingLiveLambda
             else if (action == "setCallout") Message.SetCallout(apiUrl, connectionId, room, data);
             else if (action == "sendMessage") Message.Send(apiUrl, connectionId, room, data);
             else if (action == "deleteMessage") Message.Delete(apiUrl, connectionId, room, data);
+            else if (action == "cleanup") Cleanup();
+        }
+
+        private void Cleanup()
+        {
+            Connection.Cleanup();
+            Catchup.Cleanup();
+            Logging.LogDebug("Cleanup complete");
         }
 
     }

@@ -86,7 +86,7 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ScriptBlock" runat="server">
-    <script src="/js/host.js?ver=20200515"></script>
+    <script src="/js/host.js?ver=20200515c"></script>
     <script>
         keyName = '<%=KeyName%>';
         var displayName = '<%=StreamingLiveWeb.AppUser.Current.UserData.DisplayName%>';

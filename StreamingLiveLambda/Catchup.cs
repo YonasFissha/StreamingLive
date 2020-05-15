@@ -22,12 +22,6 @@ namespace StreamingLiveLambda
 
             Logging.LogDebug("Catchup Message Count - " + messages.Count.ToString());
             //this just needs to run periodically.  
-            if (messages.Count==0)
-            {
-                Connection.Cleanup();
-                Catchup.Cleanup();
-                Logging.LogDebug("Cleanup complete");
-            }
             messages.Add(message);
 
             AmazonDynamoDBClient client = new AmazonDynamoDBClient();
