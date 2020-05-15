@@ -45,9 +45,9 @@ namespace StreamingLiveLambda
         public static void Send(string apiUrl, string connectionId, string room, JObject data)
         {
             Logging.LogDebug("Send Message - " + room);
-            data["message"] = Utils.ReplaceBadWords(data["message"].ToString());
+            data["msg"] = Utils.ReplaceBadWords(data["msg"].ToString());
             data["ts"] = DateTime.UtcNow.Ticks;
-            Logging.LogDebug("Sending Message - " + data["message"].ToString());
+            Logging.LogDebug("Sending Message - " + data["msg"].ToString());
             SendMessages(apiUrl, Connection.GetConnectionIds(room), room, data);
             Catchup.Store(room, data);
             Logging.LogDebug("Catchup Stored");

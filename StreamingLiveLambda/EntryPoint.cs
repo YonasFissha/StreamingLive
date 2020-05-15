@@ -31,6 +31,7 @@ namespace StreamingLiveLambda
 
         private void RouteChat(string apiUrl, string connectionId, string action, string room, JObject data)
         {
+            Logging.LogDebug(action);
             if (action == "joinRoom") Connection.Join(apiUrl, connectionId, room, data);
             else if (action == "updateConfig") Message.UpdateConfig(apiUrl, connectionId, room, data);
             else if (action == "requestPrayer") Message.RequestPrayer(apiUrl, connectionId, room, data);

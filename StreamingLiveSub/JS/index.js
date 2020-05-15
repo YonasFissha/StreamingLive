@@ -223,7 +223,7 @@ function determineCurrentService() {
 function keepAlive() {
     var timeout = 60 * 1000;
     console.log(socket.readyState);
-    if (socket.readyState == WebSocket.OPEN) socket.send('_');
+    if (socket.readyState == WebSocket.OPEN) socket.send('{}');
     timerId = setTimeout(keepAlive, timeout);
 }
 
@@ -235,7 +235,7 @@ function catchup(data) {
 
 function chatReceived(data) {
     if (data.userGuid == userGuid) $('#msg-' + data.userGuid).remove();
-    appendMessage(data.room, data.name, data.message, data.ts);
+    appendMessage(data.room, data.name, data.msg, data.ts);
 }
 
 function appendMessage(room, name, message, ts) {
@@ -253,9 +253,9 @@ function appendMessage(room, name, message, ts) {
 
 
 function calloutReceived(data) {
-    if (data.message == '') $('#callout').hide();
+    if (data.msg == '') $('#callout').hide();
     else {
-        $('#callout').html(insertLinks(data.message));
+        $('#callout').html(insertLinks(data.msg));
         $('#callout').show();
     }
 }
@@ -300,7 +300,7 @@ function postMessage(room, textField) {
     if (!chatEnabled) return;
     var content = $('#' + textField).val();
     if (content.trim() == '') return;
-    socket.send(JSON.stringify({ 'action': 'sendMessage', 'room': room, 'userGuid': userGuid, 'name': displayName, 'message': content }));
+    socket.send(JSON.stringify({ 'action': 'sendMessage', 'room': room, 'userGuid': userGuid, 'name': displayName, 'msg': content }));
     appendMessage(room, displayName, content, userGuid);
     $('#' + textField).val('');
 }
@@ -355,7 +355,7 @@ function updateConfig() {
 
 
 function initChat() {
-    socket = new WebSocket('wss://lr6pbsl0ji.execute-api.us-east-2.amazonaws.com/test');
+    socket = new WebSocket('wss://lr6pbsl0ji.execute-api.us-east-2.amazonaws.com/production');
     socket.onopen = function (e) {
         socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': keyName }));
         setTimeout(keepAlive, 30 * 1000);

@@ -143,7 +143,7 @@ function getSeconds(displayTime) {
 
 function keepAlive() {
     var timeout = 60 * 1000;
-    if (socket.readyState == WebSocket.OPEN) socket.send('_');
+    if (socket.readyState == WebSocket.OPEN) socket.send('{}');
     timerId = setTimeout(keepAlive, timeout);
 }
 
@@ -154,9 +154,9 @@ function catchup(data) {
 }
 
 function calloutReceived(data) {
-    if (data.message == '') $('#callout').hide();
+    if (data.msg == '') $('#callout').hide();
     else {
-        $('#callout').html(insertLinks(data.message));
+        $('#callout').html(insertLinks(data.msg));
         $('#callout').show();
     }
 }
@@ -178,7 +178,7 @@ function claimPrayer(guid, name) {
 
 function chatReceived(data) {
     if (data.userGuid == userGuid) $('#msg-' + data.userGuid).remove();
-    appendMessage(data.room, data.name, data.message, data.ts);
+    appendMessage(data.room, data.name, data.msg, data.ts);
 }
 
 function appendMessage(room, name, message, ts) {
@@ -209,7 +209,7 @@ function deleteMessage(ts) {
 
 function setCallout() {
     var content = $('#calloutText').val();
-    socket.send(JSON.stringify({ 'action': 'setCallout', 'room': keyName, 'message': content }));
+    socket.send(JSON.stringify({ 'action': 'setCallout', 'room': keyName, 'msg': content }));
     $('#calloutText').val('');
 }
 
@@ -220,7 +220,7 @@ function insertLinks(text) {
 
 function postMessage(room, textField) {
     var content = $('#' + textField).val();
-    socket.send(JSON.stringify({ 'action': 'sendMessage', 'room': room, 'userGuid': userGuid, 'name': displayName, 'message': content }));
+    socket.send(JSON.stringify({ 'action': 'sendMessage', 'room': room, 'userGuid': userGuid, 'name': displayName, 'msg': content }));
     appendMessage(room, displayName, content, userGuid);
     $('#' + textField).val('');
 }
