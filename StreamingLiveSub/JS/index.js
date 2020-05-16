@@ -279,6 +279,12 @@ function setName(mode) {
     if (name == '') return;
     if (confirm('Please confirm.  Would you like to set your name to ' + name + '?')) {
         displayName = name;
+        toggleName(mode);
+    }
+}
+
+function toggleName(mode) {
+    if (displayName != 'Anonymous') {
         userGuid = generateGuid();
 
         $('#chatName').hide();
@@ -295,6 +301,7 @@ function setName(mode) {
         else $("#sendText")[0].focus();
     }
 }
+
 
 function postMessage(room, textField) {
     if (!chatEnabled) return;
@@ -355,31 +362,37 @@ function updateConfig() {
 
 
 function initChat() {
-    socket = new WebSocket('wss://lr6pbsl0ji.execute-api.us-east-2.amazonaws.com/production');
-    socket.onopen = function (e) {
+    if (socket == null) {
+        socket = new WebSocket('wss://lr6pbsl0ji.execute-api.us-east-2.amazonaws.com/production');
+        socket.onopen = function (e) {
+            socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': keyName }));
+            setTimeout(keepAlive, 30 * 1000);
+        };
+
+        socket.onmessage = function (event) {
+            var data = JSON.parse(event.data);
+            handleMessage(data);
+        };
+
+        socket.onclose = function (event) {
+            if (event.wasClean) {
+            } else {
+            }
+        };
+
+        socket.onerror = function (error) {
+            //alert('[error] ${error.message}');
+        };
+    } else {
         socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': keyName }));
-        setTimeout(keepAlive, 30 * 1000);
-    };
-
-    socket.onmessage = function (event) {
-        var data = JSON.parse(event.data);
-        handleMessage(data);
-    };
-
-    socket.onclose = function (event) {
-        if (event.wasClean) {
-        } else {
-        }
-    };
-
-    socket.onerror = function (error) {
-        //alert('[error] ${error.message}');
-    };
+        toggleName('');
+    }
 
     $("#nameText")[0].focus();
     $("#nameText").keypress(function (e) { if (e.which == 13) { e.preventDefault(); setName(); } });
 
     if ($('#prayerContainer').length > 0) togglePrayer();
+    
 }
 
 
