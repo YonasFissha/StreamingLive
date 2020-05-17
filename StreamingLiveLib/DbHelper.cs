@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 using System.Data;
-using System.Data.SqlClient;
+
 
 namespace StreamingLiveLib
 {
@@ -19,54 +20,39 @@ namespace StreamingLiveLib
             set { _connectionString = value; }
         }
 
-        public static SqlConnection Connection
+        public static MySqlConnection Connection
         {
-            get { return new SqlConnection(_connectionString); }
+            get { return new MySqlConnection(_connectionString); }
         }
 
-        public static void BulkInsert(DataTable dt, string tableName)
-        {
-            SqlConnection conn = DbHelper.Connection;
-            try
-            {
-                conn.Open();
-                SqlBulkCopy bc = new SqlBulkCopy(conn);
-                bc.DestinationTableName = tableName;
-                bc.WriteToServer(dt);
-            }
-            finally
-            {
-                conn.Close();
-            }
-        }
 
         public static DataTable FillDt(string sql)
         {
-            SqlDataAdapter adapter = new SqlDataAdapter(sql, Connection);
+            MySqlDataAdapter adapter = new MySqlDataAdapter(sql, Connection);
             DataTable dt = new DataTable();
             adapter.Fill(dt);
             return dt;
         }
 
-        public static DataTable ExecuteQuery(string sql, System.Data.CommandType commandType, SqlParameter[] parameters)
+        public static DataTable ExecuteQuery(string sql, System.Data.CommandType commandType, MySqlParameter[] parameters)
         {
-            SqlDataAdapter adapter = new SqlDataAdapter(sql, Connection);
+            MySqlDataAdapter adapter = new MySqlDataAdapter(sql, Connection);
             adapter.SelectCommand.CommandType = commandType;
             if (parameters != null)
             {
-                foreach (SqlParameter parameter in parameters) adapter.SelectCommand.Parameters.Add(parameter);
+                foreach (MySqlParameter parameter in parameters) adapter.SelectCommand.Parameters.Add(parameter);
             }
             DataTable dt = new DataTable();
             adapter.Fill(dt);
             return dt;
         }
 
-        public static Object ExecuteScalar(string sql, System.Data.CommandType commandType, SqlParameter[] parameters)
+        public static Object ExecuteScalar(string sql, System.Data.CommandType commandType, MySqlParameter[] parameters)
         {
             object result = null;
-            SqlCommand cmd = new SqlCommand(sql, Connection);
+            MySqlCommand cmd = new MySqlCommand(sql, Connection);
             cmd.CommandType = commandType;
-            if (parameters != null) foreach (SqlParameter parameter in parameters) cmd.Parameters.Add(parameter);
+            if (parameters != null) foreach (MySqlParameter parameter in parameters) cmd.Parameters.Add(parameter);
             try
             {
                 cmd.Connection.Open();
@@ -76,11 +62,11 @@ namespace StreamingLiveLib
             return result;
         }
 
-        public static void ExecuteNonQuery(string sql, System.Data.CommandType commandType, SqlParameter[] parameters)
+        public static void ExecuteNonQuery(string sql, System.Data.CommandType commandType, MySqlParameter[] parameters)
         {
-            SqlCommand cmd = new SqlCommand(sql, Connection);
+            MySqlCommand cmd = new MySqlCommand(sql, Connection);
             cmd.CommandType = commandType;
-            if (parameters != null) foreach (SqlParameter parameter in parameters) cmd.Parameters.Add(parameter);
+            if (parameters != null) foreach (MySqlParameter parameter in parameters) cmd.Parameters.Add(parameter);
             try
             {
                 cmd.Connection.Open();
@@ -89,7 +75,7 @@ namespace StreamingLiveLib
             finally { cmd.Connection.Close(); }
         }
 
-        public static void SetContextInfo(SqlConnection con)
+        public static void SetContextInfo(MySqlConnection con)
         {
         }
 

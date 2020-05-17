@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data;
-using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
 
 
 namespace StreamingLiveLib
@@ -25,10 +25,10 @@ namespace StreamingLiveLib
 		public static Users LoadBySiteId(int siteId)
 		{
 			string sql = "SELECT u.*  FROM Roles r INNER JOIN Users u on u.Id=r.UserId WHERE r.SiteId=@SiteId";
-			return Users.Load(sql, CommandType.Text, new SqlParameter[] { new SqlParameter("@SiteId", siteId) });
+			return Users.Load(sql, CommandType.Text, new MySqlParameter[] { new MySqlParameter("@SiteId", siteId) });
 		}
 
-		public static Users Load(string sql, CommandType commandType = CommandType.Text, SqlParameter[] parameters = null)
+		public static Users Load(string sql, CommandType commandType = CommandType.Text, MySqlParameter[] parameters = null)
 		{
 			return new Users(DbHelper.ExecuteQuery(sql, commandType, parameters));
 		}
@@ -63,14 +63,14 @@ namespace StreamingLiveLib
 
 		public void SaveAll(bool waitForId = true)
 		{
-			SqlConnection conn = DbHelper.Connection;
+			MySqlConnection conn = DbHelper.Connection;
 			try
 			{
 				conn.Open();
 				DbHelper.SetContextInfo(conn);
 				foreach (User user in this)
 				{
-					SqlCommand cmd = user.GetSaveCommand(conn);
+					MySqlCommand cmd = user.GetSaveCommand(conn);
 					user.Id = Convert.ToInt32(cmd.ExecuteScalar());
 				}
 			}
@@ -81,7 +81,7 @@ namespace StreamingLiveLib
 		public int[] GetIds()
 		{
 			List<int> result = new List<int>();
-			foreach (User user in this) result.Add(user.Id.Value);
+			foreach (User user in this) result.Add(user.Id);
 			return result.ToArray();
 		}
 
@@ -95,7 +95,7 @@ namespace StreamingLiveLib
 		{
 			List<int> idList = new List<int>(ids);
 			Users result = new Users();
-			foreach (User user in this) if (idList.Contains(user.Id.Value)) result.Add(user);
+			foreach (User user in this) if (idList.Contains(user.Id)) result.Add(user);
 			return result;
 		}
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data;
-using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
 
 namespace StreamingLiveLib
 {
@@ -34,7 +34,7 @@ namespace StreamingLiveLib
 			return null;
 		}
 
-		public static Roles Load(string sql, CommandType commandType = CommandType.Text, SqlParameter[] parameters = null)
+		public static Roles Load(string sql, CommandType commandType = CommandType.Text, MySqlParameter[] parameters = null)
 		{
 			return new Roles(DbHelper.ExecuteQuery(sql, commandType, parameters));
 		}
@@ -52,7 +52,7 @@ namespace StreamingLiveLib
 
 		public static Roles LoadByUserId(int userId)
 		{
-			return Load("SELECT * FROM Roles WHERE UserId=@UserId", CommandType.Text, new SqlParameter[] { new SqlParameter("@UserId", userId) });
+			return Load("SELECT * FROM Roles WHERE UserId=@UserId", CommandType.Text, new MySqlParameter[] { new MySqlParameter("@UserId", userId) });
 		}
 
 		public async System.Threading.Tasks.Task SaveAsync(int threadCount)
@@ -74,14 +74,14 @@ namespace StreamingLiveLib
 
 		public void SaveAll(bool waitForId = true)
 		{
-			SqlConnection conn = DbHelper.Connection;
+			MySqlConnection conn = DbHelper.Connection;
 			try
 			{
 				conn.Open();
 				DbHelper.SetContextInfo(conn);
 				foreach (Role role in this)
 				{
-					SqlCommand cmd = role.GetSaveCommand(conn);
+					MySqlCommand cmd = role.GetSaveCommand(conn);
 					role.Id = Convert.ToInt32(cmd.ExecuteScalar());
 				}
 			}
@@ -92,7 +92,7 @@ namespace StreamingLiveLib
 		public int[] GetIds()
 		{
 			List<int> result = new List<int>();
-			foreach (Role role in this) result.Add(role.Id.Value);
+			foreach (Role role in this) result.Add(role.Id);
 			return result.ToArray();
 		}
 
@@ -106,7 +106,7 @@ namespace StreamingLiveLib
 		{
 			List<int> idList = new List<int>(ids);
 			Roles result = new Roles();
-			foreach (Role role in this) if (idList.Contains(role.Id.Value)) result.Add(role);
+			foreach (Role role in this) if (idList.Contains(role.Id)) result.Add(role);
 			return result;
 		}
 

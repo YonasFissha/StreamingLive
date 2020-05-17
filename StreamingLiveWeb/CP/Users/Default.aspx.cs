@@ -15,7 +15,7 @@ namespace StreamingLiveWeb.CP.Users
             if (!IsPostBack)
             {
                 Populate();
-                ShowEditUser(AppUser.Current.UserData.Id.Value);
+                ShowEditUser(AppUser.Current.UserData.Id);
             }
         }
 
@@ -61,9 +61,9 @@ namespace StreamingLiveWeb.CP.Users
                         user.Email = EmailText.Text;
                         user.Password = StreamingLiveLib.User.HashPassword(PasswordText.Text);
                         user.Save();
-                        userId = user.Id.Value;
+                        userId = user.Id;
                     }
-                    else userId = existing.Id.Value;
+                    else userId = existing.Id;
                     new StreamingLiveLib.Role() { SiteId = AppUser.Current.Site.Id, Name = RoleList.SelectedValue, UserId = userId }.Save();
                 } else if (RoleList.Enabled)
                 {
@@ -118,7 +118,7 @@ namespace StreamingLiveWeb.CP.Users
         {
             int userId = Convert.ToInt32(UserIdHid.Value);
             StreamingLiveLib.Role r = StreamingLiveLib.Role.Load(userId, AppUser.Current.Site.Id);
-            StreamingLiveLib.Role.Delete(r.Id.Value);
+            StreamingLiveLib.Role.Delete(r.Id);
 
             if (StreamingLiveLib.Roles.LoadByUserId(userId).Count==0) StreamingLiveLib.User.Delete(userId);
             Response.Redirect("/cp/users/");
@@ -156,10 +156,10 @@ namespace StreamingLiveWeb.CP.Users
             }
 
 
-            DeleteHolder.Visible = (userId != 0 && userId != AppUser.Current.UserData.Id.Value);
+            DeleteHolder.Visible = (userId != 0 && userId != AppUser.Current.UserData.Id);
 
             RoleList.Enabled = true;
-            if (userId == AppUser.Current.UserData.Id.Value) RoleList.Enabled = false;
+            if (userId == AppUser.Current.UserData.Id) RoleList.Enabled = false;
             UserIdHid.Value = userId.ToString();
             
 

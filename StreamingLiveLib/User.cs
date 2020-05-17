@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data;
-using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
 using System.Reflection;
 using System.Security.Cryptography;
 
@@ -14,7 +14,7 @@ namespace StreamingLiveLib
     {
 		#region Declarations
 
-		public int? Id { get; set; }
+		public int Id { get; set; }
 		public string Email { get; set; }
 		public string DisplayName { get; set; }
 		public string Password { get; set; }
@@ -31,7 +31,7 @@ namespace StreamingLiveLib
 		{
 			if (row.Table.Columns.Contains("Id"))
 			{
-				if (Convert.IsDBNull(row["Id"])) Id = null;
+				if (Convert.IsDBNull(row["Id"])) Id = 0;
 				else Id = Convert.ToInt32(row["Id"]);
 			}
 			if (row.Table.Columns.Contains("Email")) Email = Convert.ToString(row["Email"]);
@@ -66,24 +66,24 @@ namespace StreamingLiveLib
 
 		public static User LoadByEmail(string email)
 		{
-			return Load("SELECT * FROM Users WHERE Email=@Email", CommandType.Text, new SqlParameter[] { new SqlParameter("@Email", email) });
+			return Load("SELECT * FROM Users WHERE Email=@Email", CommandType.Text, new MySqlParameter[] { new MySqlParameter("@Email", email) });
 		}
 
 		public static User LoadByResetGuid(string resetGuid)
 		{
-			return Load("SELECT * FROM Users WHERE ResetGuid=@ResetGuid", CommandType.Text, new SqlParameter[] { new SqlParameter("@ResetGuid", resetGuid) });
+			return Load("SELECT * FROM Users WHERE ResetGuid=@ResetGuid", CommandType.Text, new MySqlParameter[] { new MySqlParameter("@ResetGuid", resetGuid) });
 		}
 
 		public static User Login(string email, string password)
 		{
 			string hashedPassword = HashPassword(password);
-			return Load("SELECT * FROM Users WHERE Email=@Email AND Password=@Password", CommandType.Text, new SqlParameter[] {
-				new SqlParameter("@Email", email),
-				new SqlParameter("@Password", hashedPassword)
+			return Load("SELECT * FROM Users WHERE Email=@Email AND Password=@Password", CommandType.Text, new MySqlParameter[] {
+				new MySqlParameter("@Email", email),
+				new MySqlParameter("@Password", hashedPassword)
 			});
 		}
 
-		public static User Load(string sql, CommandType commandType = CommandType.Text, SqlParameter[] parameters = null)
+		public static User Load(string sql, CommandType commandType = CommandType.Text, MySqlParameter[] parameters = null)
 		{
 			Users users = Users.Load(sql, commandType, parameters);
 			return (users.Count == 0) ? null : users[0];
@@ -91,13 +91,13 @@ namespace StreamingLiveLib
 
 		public static User Load(int id)
 		{
-			return Load("SELECT * FROM Users WHERE Id=@Id", CommandType.Text, new SqlParameter[] { new SqlParameter("@Id", id) });
+			return Load("SELECT * FROM Users WHERE Id=@Id", CommandType.Text, new MySqlParameter[] { new MySqlParameter("@Id", id) });
 		}
 
-		internal SqlCommand GetSaveCommand(SqlConnection conn)
+		internal MySqlCommand GetSaveCommand(MySqlConnection conn)
 		{
-			SqlCommand cmd = new SqlCommand("SaveUser", conn) { CommandType = CommandType.StoredProcedure };
-			cmd.Parameters.AddWithValue("@Id", (Id==null) ? System.DBNull.Value : (object)Id.Value);
+			MySqlCommand cmd = (Id == 0) ? GetInsertCommand(conn) : GetUpdateCommand(conn);
+			cmd.Parameters.AddWithValue("@Id", (object)Id);
 			cmd.Parameters.AddWithValue("@Email", (Email==null) ? System.DBNull.Value : (object)Email);
 			cmd.Parameters.AddWithValue("@DisplayName", (DisplayName == null) ? System.DBNull.Value : (object)DisplayName);
 			cmd.Parameters.AddWithValue("@Password", (Password==null) ? System.DBNull.Value : (object)Password);
@@ -105,9 +105,24 @@ namespace StreamingLiveLib
 			return cmd;
 		}
 
+		internal MySqlCommand GetInsertCommand(MySqlConnection conn)
+		{
+			string sql = "INSERT INTO Users (Email, DisplayName, Password, ResetGuid) VALUES (@Email, @DisplayName, @Password, @ResetGuid); SELECT LAST_INSERT_ID();";
+			MySqlCommand cmd = new MySqlCommand(sql, conn) { CommandType = CommandType.Text };
+			return cmd;
+		}
+
+		internal MySqlCommand GetUpdateCommand(MySqlConnection conn)
+		{
+			string sql = "UPDATE Users SET Email=@Email, DisplayName=@DisplayName, Password=@Password, ResetGuid=@ResetGuid WHERE Id=@Id; SELECT @Id;";
+			MySqlCommand cmd = new MySqlCommand(sql, conn) { CommandType = CommandType.Text };
+			return cmd;
+		}
+
+
 		public int Save()
 		{
-			SqlCommand cmd = GetSaveCommand(DbHelper.Connection);
+			MySqlCommand cmd = GetSaveCommand(DbHelper.Connection);
 			cmd.Connection.Open();
 			try
 			{
@@ -116,12 +131,12 @@ namespace StreamingLiveLib
 			}
 			catch (Exception ex) { throw ex; }
 			finally { cmd.Connection.Close(); }
-			return Id.Value;
+			return Id;
 		}
 
 		public static void Delete(int id)
 		{
-			DbHelper.ExecuteNonQuery("DELETE Users WHERE Id=@Id", CommandType.Text, new SqlParameter[] { new SqlParameter("@Id", id) });
+			DbHelper.ExecuteNonQuery("DELETE FROM Users WHERE Id=@Id", CommandType.Text, new MySqlParameter[] { new MySqlParameter("@Id", id) });
 		}
 
 		public object GetPropertyValue(string propertyName)

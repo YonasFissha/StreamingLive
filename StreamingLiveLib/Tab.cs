@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -42,7 +42,7 @@ namespace StreamingLiveLib
 
 		#region Methods
 
-		public static Tab Load(string sql, CommandType commandType = CommandType.Text, SqlParameter[] parameters = null)
+		public static Tab Load(string sql, CommandType commandType = CommandType.Text, MySqlParameter[] parameters = null)
 		{
 			if (string.IsNullOrEmpty(sql))
 			{
@@ -60,18 +60,18 @@ namespace StreamingLiveLib
 
 		public static Tab Load(int id)
 		{
-			return Load("SELECT * FROM Tabs WHERE Id=@Id", CommandType.Text, new SqlParameter[] { new SqlParameter("@Id", id) });
+			return Load("SELECT * FROM Tabs WHERE Id=@Id", CommandType.Text, new MySqlParameter[] { new MySqlParameter("@Id", id) });
 		}
 
 		public static Tab Load(int id, int siteId)
 		{
-			return Load("SELECT * FROM Tabs WHERE Id=@Id AND SiteId=@SiteId", CommandType.Text, new SqlParameter[] { new SqlParameter("@Id", id), new SqlParameter("@SiteId", siteId) });
+			return Load("SELECT * FROM Tabs WHERE Id=@Id AND SiteId=@SiteId", CommandType.Text, new MySqlParameter[] { new MySqlParameter("@Id", id), new MySqlParameter("@SiteId", siteId) });
 		}
 
 
-		internal SqlCommand GetSaveCommand(SqlConnection conn)
+		internal MySqlCommand GetSaveCommand(MySqlConnection conn)
 		{
-			SqlCommand cmd = new SqlCommand("SaveTab", conn) { CommandType = CommandType.StoredProcedure };
+			MySqlCommand cmd = (Id == 0) ? GetInsertCommand(conn) : GetUpdateCommand(conn);
 			cmd.Parameters.AddWithValue("@Id", (object)Id);
 			cmd.Parameters.AddWithValue("@SiteId", (object)SiteId);
 			cmd.Parameters.AddWithValue("@Url", (object)Url);
@@ -83,9 +83,23 @@ namespace StreamingLiveLib
 			return cmd;
 		}
 
+		internal MySqlCommand GetInsertCommand(MySqlConnection conn)
+		{
+			string sql = "INSERT INTO Tabs (SiteId, Url, Text, TabType, TabData, Icon, Sort) VALUES (@SiteId, @Url, @Text, @TabType, @TabData, @Icon, @Sort); SELECT LAST_INSERT_ID();";
+			MySqlCommand cmd = new MySqlCommand(sql, conn) { CommandType = CommandType.Text };
+			return cmd;
+		}
+
+		internal MySqlCommand GetUpdateCommand(MySqlConnection conn)
+		{
+			string sql = "UPDATE Tabs SET SiteId=@SiteId, Url=@Url, Text=@Text, TabType=@TabType, TabData=@TabData, Icon=@Icon, Sort=@Sort WHERE Id=@Id; SELECT @Id;";
+			MySqlCommand cmd = new MySqlCommand(sql, conn) { CommandType = CommandType.Text };
+			return cmd;
+		}
+
 		public int Save()
 		{
-			SqlCommand cmd = GetSaveCommand(DbHelper.Connection);
+			MySqlCommand cmd = GetSaveCommand(DbHelper.Connection);
 			cmd.Connection.Open();
 			try
 			{
@@ -99,12 +113,12 @@ namespace StreamingLiveLib
 
 		public static void Delete(int id)
 		{
-			DbHelper.ExecuteNonQuery("DELETE Tabs WHERE Id=@Id", CommandType.Text, new SqlParameter[] { new SqlParameter("@Id", id) });
+			DbHelper.ExecuteNonQuery("DELETE FROM Tabs WHERE Id=@Id", CommandType.Text, new MySqlParameter[] { new MySqlParameter("@Id", id) });
 		}
 
 		public static void Delete(int id, int siteId)
 		{
-			DbHelper.ExecuteNonQuery("DELETE Tabs WHERE Id=@Id AND SiteId=@SiteId", CommandType.Text, new SqlParameter[] { new SqlParameter("@Id", id), new SqlParameter("@SiteId", siteId) });
+			DbHelper.ExecuteNonQuery("DELETE FROM Tabs WHERE Id=@Id AND SiteId=@SiteId", CommandType.Text, new MySqlParameter[] { new MySqlParameter("@Id", id), new MySqlParameter("@SiteId", siteId) });
 		}
 
 		public object GetPropertyValue(string propertyName)

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,10 +34,10 @@ namespace StreamingLiveLib
 		public static Tabs LoadBySiteId(int siteId)
 		{
 			string sql = "SELECT * FROM Tabs WHERE SiteId=@SiteId ORDER BY Sort";
-			return Load(sql, CommandType.Text, new SqlParameter[] { new SqlParameter("@SiteId", siteId) });
+			return Load(sql, CommandType.Text, new MySqlParameter[] { new MySqlParameter("@SiteId", siteId) });
 		}
 
-		public static Tabs Load(string sql, CommandType commandType = CommandType.Text, SqlParameter[] parameters = null)
+		public static Tabs Load(string sql, CommandType commandType = CommandType.Text, MySqlParameter[] parameters = null)
 		{
 			return new Tabs(DbHelper.ExecuteQuery(sql, commandType, parameters));
 		}
@@ -72,14 +72,14 @@ namespace StreamingLiveLib
 
 		public void SaveAll(bool waitForId = true)
 		{
-			SqlConnection conn = DbHelper.Connection;
+			MySqlConnection conn = DbHelper.Connection;
 			try
 			{
 				conn.Open();
 				DbHelper.SetContextInfo(conn);
 				foreach (Tab tab in this)
 				{
-					SqlCommand cmd = tab.GetSaveCommand(conn);
+					MySqlCommand cmd = tab.GetSaveCommand(conn);
 					tab.Id = Convert.ToInt32(cmd.ExecuteScalar());
 				}
 			}

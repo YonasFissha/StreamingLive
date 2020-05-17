@@ -49,9 +49,9 @@ namespace StreamingLiveWeb
 
         public static AppUser Login(StreamingLiveLib.User u)
         {
-            StreamingLiveLib.Sites sites = StreamingLiveLib.Sites.LoadByUserId(u.Id.Value);
+            StreamingLiveLib.Sites sites = StreamingLiveLib.Sites.LoadByUserId(u.Id);
             if (sites.Count == 0) return null;
-            StreamingLiveLib.Roles roles = StreamingLiveLib.Roles.LoadByUserId(u.Id.Value);
+            StreamingLiveLib.Roles roles = StreamingLiveLib.Roles.LoadByUserId(u.Id);
             StreamingLiveLib.Role role = roles.GetBySiteId(sites[0].Id);
             if (role == null) return null;
             AppUser user = new AppUser { UserData = u, Sites=sites, Site = sites[0], Role=role, Roles = roles, IsSiteAdmin = roles.GetByName("siteadmin").Count>0 };

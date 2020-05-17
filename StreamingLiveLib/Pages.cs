@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data;
-using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
 
 namespace StreamingLiveLib
 {
@@ -23,10 +23,10 @@ namespace StreamingLiveLib
 		public static Pages LoadBySiteId(int siteId)
 		{
 			string sql = "SELECT * FROM Pages WHERE SiteId=@SiteId ORDER BY Name";
-			return Load(sql, CommandType.Text, new SqlParameter[] { new SqlParameter("@SiteId", siteId) });
+			return Load(sql, CommandType.Text, new MySqlParameter[] { new MySqlParameter("@SiteId", siteId) });
 		}
 
-		public static Pages Load(string sql, CommandType commandType = CommandType.Text, SqlParameter[] parameters = null)
+		public static Pages Load(string sql, CommandType commandType = CommandType.Text, MySqlParameter[] parameters = null)
 		{
 			return new Pages(DbHelper.ExecuteQuery(sql, commandType, parameters));
 		}
@@ -61,14 +61,14 @@ namespace StreamingLiveLib
 
 		public void SaveAll(bool waitForId = true)
 		{
-			SqlConnection conn = DbHelper.Connection;
+			MySqlConnection conn = DbHelper.Connection;
 			try
 			{
 				conn.Open();
 				DbHelper.SetContextInfo(conn);
 				foreach (Page page in this)
 				{
-					SqlCommand cmd = page.GetSaveCommand(conn);
+					MySqlCommand cmd = page.GetSaveCommand(conn);
 					page.Id = Convert.ToInt32(cmd.ExecuteScalar());
 				}
 			}
@@ -79,7 +79,7 @@ namespace StreamingLiveLib
 		public int[] GetIds()
 		{
 			List<int> result = new List<int>();
-			foreach (Page page in this) result.Add(page.Id.Value);
+			foreach (Page page in this) result.Add(page.Id);
 			return result.ToArray();
 		}
 
@@ -93,7 +93,7 @@ namespace StreamingLiveLib
 		{
 			List<int> idList = new List<int>(ids);
 			Pages result = new Pages();
-			foreach (Page page in this) if (idList.Contains(page.Id.Value)) result.Add(page);
+			foreach (Page page in this) if (idList.Contains(page.Id)) result.Add(page);
 			return result;
 		}
 

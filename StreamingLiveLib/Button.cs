@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace StreamingLiveLib
 {
@@ -36,7 +36,7 @@ namespace StreamingLiveLib
 
 		#region Methods
 
-		public static Button Load(string sql, CommandType commandType = CommandType.Text, SqlParameter[] parameters = null)
+		public static Button Load(string sql, CommandType commandType = CommandType.Text, MySqlParameter[] parameters = null)
 		{
 			Buttons buttons = Buttons.Load(sql, commandType, parameters);
 			return (buttons.Count == 0) ? null : buttons[0];
@@ -44,18 +44,18 @@ namespace StreamingLiveLib
 
 		public static Button Load(int id)
 		{
-			return Load("SELECT * FROM Buttons WHERE Id=@Id", CommandType.Text, new SqlParameter[] { new SqlParameter("@Id", id) });
+			return Load("SELECT * FROM Buttons WHERE Id=@Id", CommandType.Text, new MySqlParameter[] { new MySqlParameter("@Id", id) });
 		}
 
 		public static Button Load(int id, int siteId)
 		{
-			return Load("SELECT * FROM Buttons WHERE Id=@Id AND SiteId=@SiteId", CommandType.Text, new SqlParameter[] { new SqlParameter("@Id", id), new SqlParameter("@SiteId", siteId) });
+			return Load("SELECT * FROM Buttons WHERE Id=@Id AND SiteId=@SiteId", CommandType.Text, new MySqlParameter[] { new MySqlParameter("@Id", id), new MySqlParameter("@SiteId", siteId) });
 		}
 
 
-		internal SqlCommand GetSaveCommand(SqlConnection conn)
+		internal MySqlCommand GetSaveCommand(MySqlConnection conn)
 		{
-			SqlCommand cmd = new SqlCommand("SaveButton", conn) { CommandType = CommandType.StoredProcedure };
+			MySqlCommand cmd = (Id == 0) ? GetInsertCommand(conn) : GetUpdateCommand(conn);
 			cmd.Parameters.AddWithValue("@Id", (object)Id);
 			cmd.Parameters.AddWithValue("@SiteId", (object)SiteId);
 			cmd.Parameters.AddWithValue("@Url", (object)Url);
@@ -64,9 +64,24 @@ namespace StreamingLiveLib
 			return cmd;
 		}
 
+		internal MySqlCommand GetInsertCommand(MySqlConnection conn)
+		{
+			string sql = "INSERT INTO Buttons (SiteId, Url, Text, Sort) VALUES (@SiteId, @Url, @Text, @Sort); SELECT LAST_INSERT_ID();";
+			MySqlCommand cmd = new MySqlCommand(sql, conn) { CommandType = CommandType.Text };
+			return cmd;
+		}
+
+		internal MySqlCommand GetUpdateCommand(MySqlConnection conn)
+		{
+			string sql = "UPDATE Buttons SET SiteId=@SiteId, Url=@Url, Text=@Text, Sort=@Sort WHERE Id=@Id; SELECT @Id;";
+			MySqlCommand cmd = new MySqlCommand(sql, conn) { CommandType = CommandType.Text };
+			return cmd;
+		}
+
+
 		public int Save()
 		{
-			SqlCommand cmd = GetSaveCommand(DbHelper.Connection);
+			MySqlCommand cmd = GetSaveCommand(DbHelper.Connection);
 			cmd.Connection.Open();
 			try
 			{
@@ -80,12 +95,12 @@ namespace StreamingLiveLib
 
 		public static void Delete(int id)
 		{
-			DbHelper.ExecuteNonQuery("DELETE Buttons WHERE Id=@Id", CommandType.Text, new SqlParameter[] { new SqlParameter("@Id", id) });
+			DbHelper.ExecuteNonQuery("DELETE FROM Buttons WHERE Id=@Id", CommandType.Text, new MySqlParameter[] { new MySqlParameter("@Id", id) });
 		}
 
 		public static void Delete(int id, int siteId)
 		{
-			DbHelper.ExecuteNonQuery("DELETE Buttons WHERE Id=@Id AND SiteId=@SiteId", CommandType.Text, new SqlParameter[] { new SqlParameter("@Id", id), new SqlParameter("@SiteId", siteId) });
+			DbHelper.ExecuteNonQuery("DELETE FROM Buttons WHERE Id=@Id AND SiteId=@SiteId", CommandType.Text, new MySqlParameter[] { new MySqlParameter("@Id", id), new MySqlParameter("@SiteId", siteId) });
 		}
 
 		public object GetPropertyValue(string propertyName)

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data;
-using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
 
 namespace StreamingLiveLib
 {
@@ -24,21 +24,21 @@ namespace StreamingLiveLib
 		public static Sites Search(string term)
 		{
 			term = "%" + term.Split('.')[0] + "%";
-			return Load("SELECT * FROM Sites WHERE KeyName LIKE @KeyName ORDER BY KeyName", CommandType.Text, new SqlParameter[] { new SqlParameter("@KeyName", term) });
+			return Load("SELECT * FROM Sites WHERE KeyName LIKE @KeyName ORDER BY KeyName", CommandType.Text, new MySqlParameter[] { new MySqlParameter("@KeyName", term) });
 		}
 
 		public static Sites LoadRecent()
 		{
-			return Load("SELECT TOP 15 * FROM Sites ORDER BY Id Desc");
+			return Load("SELECT * FROM Sites ORDER BY Id Desc LIMIT 15");
 		}
 
 		public static Sites LoadByUserId(int userId)
 		{
 			string sql = "SELECT s.* FROM Roles r INNER JOIN Sites s ON s.Id = r.SiteId WHERE r.UserId = @UserId";
-			return Load(sql, CommandType.Text, new SqlParameter[] { new SqlParameter("@UserId", userId) });
+			return Load(sql, CommandType.Text, new MySqlParameter[] { new MySqlParameter("@UserId", userId) });
 		}
 
-		public static Sites Load(string sql, CommandType commandType = CommandType.Text, SqlParameter[] parameters = null)
+		public static Sites Load(string sql, CommandType commandType = CommandType.Text, MySqlParameter[] parameters = null)
 		{
 			return new Sites(DbHelper.ExecuteQuery(sql, commandType, parameters));
 		}
@@ -73,14 +73,14 @@ namespace StreamingLiveLib
 
 		public void SaveAll(bool waitForId = true)
 		{
-			SqlConnection conn = DbHelper.Connection;
+			MySqlConnection conn = DbHelper.Connection;
 			try
 			{
 				conn.Open();
 				DbHelper.SetContextInfo(conn);
 				foreach (Site site in this)
 				{
-					SqlCommand cmd = site.GetSaveCommand(conn);
+					MySqlCommand cmd = site.GetSaveCommand(conn);
 					site.Id = Convert.ToInt32(cmd.ExecuteScalar());
 				}
 			}

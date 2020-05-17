@@ -23,7 +23,7 @@ namespace StreamingLiveWeb.Controls
                 u.ResetGuid = Guid.NewGuid().ToString();
                 u.Save();
 
-                StreamingLiveLib.Role r = new StreamingLiveLib.Role() { Name = "admin", SiteId = s.Id, UserId = u.Id.Value };
+                StreamingLiveLib.Role r = new StreamingLiveLib.Role() { Name = "admin", SiteId = s.Id, UserId = u.Id };
                 r.Save();
 
 

@@ -53,7 +53,7 @@ namespace StreamingLiveWeb.CP.Profile
             if (errors.Count == 0)
             {
                 StreamingLiveLib.User existing = StreamingLiveLib.User.LoadByEmail(EmailText.Text);
-                if (existing != null && existing.Id.Value != AppUser.Current.UserData.Id) errors.Add("There is already an account registered with this email address.");
+                if (existing != null && existing.Id != AppUser.Current.UserData.Id) errors.Add("There is already an account registered with this email address.");
             }
             return errors.ToArray();
         }

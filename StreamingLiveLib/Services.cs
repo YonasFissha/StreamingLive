@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data;
-using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
 
 namespace StreamingLiveLib
 {
@@ -24,20 +24,20 @@ namespace StreamingLiveLib
 		public static Services LoadExpired()
 		{
 			DateTime threshold = DateTime.UtcNow.AddHours(-6);
-			return Load("SELECT * FROM Services WHERE ServiceTime<@ServiceTime", CommandType.Text, new SqlParameter[] { new SqlParameter("@ServiceTime", threshold) });
+			return Load("SELECT * FROM Services WHERE ServiceTime<@ServiceTime", CommandType.Text, new MySqlParameter[] { new MySqlParameter("@ServiceTime", threshold) });
 		}
 
 		public static DataTable LoadUpcoming()
 		{
-			string sql = "SELECT TOP 15 s.KeyName, ser.ServiceTime"
-				+ " FROM services ser"
+			string sql = "SELECT s.KeyName, ser.ServiceTime"
+				+ " FROM Services ser"
 				+ " INNER JOIN Sites s ON s.id = ser.SiteId"
 				+ " WHERE ServiceTime> getdate() and ProviderKey<>'zFOfmAHFKNw'"
-				+ " order by ServiceTime";
+				+ " order by ServiceTime Limit 15";
 			return DbHelper.FillDt(sql);
 		}
 
-		public static Services Load(string sql, CommandType commandType = CommandType.Text, SqlParameter[] parameters = null)
+		public static Services Load(string sql, CommandType commandType = CommandType.Text, MySqlParameter[] parameters = null)
 		{
 			return new Services(DbHelper.ExecuteQuery(sql, commandType, parameters));
 		}
@@ -55,7 +55,7 @@ namespace StreamingLiveLib
 
 		public static Services LoadBySiteId(int siteId)
 		{
-			return Load("SELECT * FROM Services WHERE SiteId=@SiteId", CommandType.Text, new SqlParameter[] { new SqlParameter("@SiteId", siteId) });
+			return Load("SELECT * FROM Services WHERE SiteId=@SiteId", CommandType.Text, new MySqlParameter[] { new MySqlParameter("@SiteId", siteId) });
 		}
 
 		public async System.Threading.Tasks.Task SaveAsync(int threadCount)
@@ -77,14 +77,14 @@ namespace StreamingLiveLib
 
 		public void SaveAll(bool waitForId = true)
 		{
-			SqlConnection conn = DbHelper.Connection;
+			MySqlConnection conn = DbHelper.Connection;
 			try
 			{
 				conn.Open();
 				DbHelper.SetContextInfo(conn);
 				foreach (Service service in this)
 				{
-					SqlCommand cmd = service.GetSaveCommand(conn);
+					MySqlCommand cmd = service.GetSaveCommand(conn);
 					service.Id = Convert.ToInt32(cmd.ExecuteScalar());
 				}
 			}

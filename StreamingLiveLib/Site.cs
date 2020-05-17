@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data;
-using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
 using System.Reflection;
 using System.Security.Cryptography;
 using Newtonsoft.Json.Linq;
@@ -109,18 +109,14 @@ namespace StreamingLiveLib
 		}
 		#endregion
 
-
-
-
-
 		#region Methods
 
 		public static Site LoadByKeyName(string keyName)
 		{
-			return Load("SELECT * FROM Sites WHERE KeyName=@KeyName", CommandType.Text, new SqlParameter[] { new SqlParameter("@KeyName", keyName) });
+			return Load("SELECT * FROM Sites WHERE KeyName=@KeyName", CommandType.Text, new MySqlParameter[] { new MySqlParameter("@KeyName", keyName) });
 		}
 
-		public static Site Load(string sql, CommandType commandType = CommandType.Text, SqlParameter[] parameters = null)
+		public static Site Load(string sql, CommandType commandType = CommandType.Text, MySqlParameter[] parameters = null)
 		{
 			Sites sites = Sites.Load(sql, commandType, parameters);
 			return (sites.Count == 0) ? null : sites[0];
@@ -128,12 +124,12 @@ namespace StreamingLiveLib
 
 		public static Site Load(int id)
 		{
-			return Load("SELECT * FROM Sites WHERE Id=@Id", CommandType.Text, new SqlParameter[] { new SqlParameter("@Id", id) });
+			return Load("SELECT * FROM Sites WHERE Id=@Id", CommandType.Text, new MySqlParameter[] { new MySqlParameter("@Id", id) });
 		}
 
-		internal SqlCommand GetSaveCommand(SqlConnection conn)
+		internal MySqlCommand GetSaveCommand(MySqlConnection conn)
 		{
-			SqlCommand cmd = new SqlCommand("SaveSite", conn) { CommandType = CommandType.StoredProcedure };
+			MySqlCommand cmd = (Id == 0) ? GetInsertCommand(conn) : GetUpdateCommand(conn);
 			cmd.Parameters.AddWithValue("@Id", (object)Id);
 			cmd.Parameters.AddWithValue("@KeyName", (object)KeyName);
 			cmd.Parameters.AddWithValue("@HomePageUrl", (object)HomePageUrl);
@@ -145,9 +141,23 @@ namespace StreamingLiveLib
 			return cmd;
 		}
 
+		internal MySqlCommand GetInsertCommand(MySqlConnection conn)
+		{
+			string sql = "INSERT INTO Sites (KeyName, HomePageUrl, LogoUrl, PrimaryColor, ContrastColor, HeaderColor, RegistrationDate) VALUES (@KeyName, @HomePageUrl, @LogoUrl, @PrimaryColor, @ContrastColor, @HeaderColor, @RegistrationDate); SELECT LAST_INSERT_ID();";
+			MySqlCommand cmd = new MySqlCommand(sql, conn) { CommandType = CommandType.Text };
+			return cmd;
+		}
+
+		internal MySqlCommand GetUpdateCommand(MySqlConnection conn)
+		{
+			string sql = "UPDATE Sites SET KeyName=@KeyName, HomePageUrl=@HomePageUrl, LogoUrl=@LogoUrl, PrimaryColor=@PrimaryColor, ContrastColor=@ContrastColor, HeaderColor=@HeaderColor, RegistrationDate=@RegistrationDate WHERE Id=@Id; SELECT @Id;";
+			MySqlCommand cmd = new MySqlCommand(sql, conn) { CommandType = CommandType.Text };
+			return cmd;
+		}
+
 		public int Save()
 		{
-			SqlCommand cmd = GetSaveCommand(DbHelper.Connection);
+			MySqlCommand cmd = GetSaveCommand(DbHelper.Connection);
 			cmd.Connection.Open();
 			try
 			{
@@ -161,7 +171,7 @@ namespace StreamingLiveLib
 
 		public static void Delete(int id)
 		{
-			DbHelper.ExecuteNonQuery("DELETE Sites WHERE Id=@Id", CommandType.Text, new SqlParameter[] { new SqlParameter("@Id", id) });
+			DbHelper.ExecuteNonQuery("DELETE FROM Sites WHERE Id=@Id", CommandType.Text, new MySqlParameter[] { new MySqlParameter("@Id", id) });
 		}
 
 		public object GetPropertyValue(string propertyName)

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data;
-using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
 using System.Reflection;
 
 namespace StreamingLiveLib
@@ -51,7 +51,7 @@ namespace StreamingLiveLib
 
 		#region Methods
 
-		public static Service Load(string sql, CommandType commandType = CommandType.Text, SqlParameter[] parameters = null)
+		public static Service Load(string sql, CommandType commandType = CommandType.Text, MySqlParameter[] parameters = null)
 		{
 			Services services = Services.Load(sql, commandType, parameters);
 			return (services.Count == 0) ? null : services[0];
@@ -59,17 +59,17 @@ namespace StreamingLiveLib
 
 		public static Service Load(int id)
 		{
-			return Load("SELECT * FROM Services WHERE Id=@Id", CommandType.Text, new SqlParameter[] { new SqlParameter("@Id", id) });
+			return Load("SELECT * FROM Services WHERE Id=@Id", CommandType.Text, new MySqlParameter[] { new MySqlParameter("@Id", id) });
 		}
 
 		public static Service Load(int id, int siteId)
 		{
-			return Load("SELECT * FROM Services WHERE Id=@Id AND SiteId=@SiteId", CommandType.Text, new SqlParameter[] { new SqlParameter("@Id", id), new SqlParameter("@SiteId", siteId) });
+			return Load("SELECT * FROM Services WHERE Id=@Id AND SiteId=@SiteId", CommandType.Text, new MySqlParameter[] { new MySqlParameter("@Id", id), new MySqlParameter("@SiteId", siteId) });
 		}
 
-		internal SqlCommand GetSaveCommand(SqlConnection conn)
+		internal MySqlCommand GetSaveCommand(MySqlConnection conn)
 		{
-			SqlCommand cmd = new SqlCommand("SaveService", conn) { CommandType = CommandType.StoredProcedure };
+			MySqlCommand cmd = (Id == 0) ? GetInsertCommand(conn) : GetUpdateCommand(conn);
 
 			cmd.Parameters.AddWithValue("@Id", (object)Id);
 			cmd.Parameters.AddWithValue("@SiteId", (object)SiteId);
@@ -86,9 +86,23 @@ namespace StreamingLiveLib
 			return cmd;
 		}
 
+		internal MySqlCommand GetInsertCommand(MySqlConnection conn)
+		{
+			string sql = "INSERT INTO Services (SiteId, ServiceTime, EarlyStart, Duration, ChatBefore, ChatAfter, Provider, ProviderKey, VideoUrl, TimezoneOffset, Recurring) VALUES (@SiteId, @ServiceTime, @EarlyStart, @Duration, @ChatBefore, @ChatAfter, @Provider, @ProviderKey, @VideoUrl, @TimezoneOffset, @Recurring); SELECT LAST_INSERT_ID();";
+			MySqlCommand cmd = new MySqlCommand(sql, conn) { CommandType = CommandType.Text };
+			return cmd;
+		}
+
+		internal MySqlCommand GetUpdateCommand(MySqlConnection conn)
+		{
+			string sql = "UPDATE Services SET SiteId=@SiteId, ServiceTime=@ServiceTime, EarlyStart=@EarlyStart, Duration=@Duration, ChatBefore=@ChatBefore, ChatAfter=@ChatAfter, Provider=@Provider, ProviderKey=@ProviderKey, VideoUrl=@VideoUrl, TimezoneOffset=@TimezoneOffset, Recurring=@Recurring WHERE Id=@Id; SELECT @Id;";
+			MySqlCommand cmd = new MySqlCommand(sql, conn) { CommandType = CommandType.Text };
+			return cmd;
+		}
+
 		public int Save()
 		{
-			SqlCommand cmd = GetSaveCommand(DbHelper.Connection);
+			MySqlCommand cmd = GetSaveCommand(DbHelper.Connection);
 			cmd.Connection.Open();
 			try
 			{
@@ -102,12 +116,12 @@ namespace StreamingLiveLib
 
 		public static void Delete(int id)
 		{
-			DbHelper.ExecuteNonQuery("DELETE Services WHERE Id=@Id", CommandType.Text, new SqlParameter[] { new SqlParameter("@Id", id) });
+			DbHelper.ExecuteNonQuery("DELETE FROM Services WHERE Id=@Id", CommandType.Text, new MySqlParameter[] { new MySqlParameter("@Id", id) });
 		}
 
 		public static void Delete(int id, int siteId)
 		{
-			DbHelper.ExecuteNonQuery("DELETE Services WHERE Id=@Id AND SiteId=@SiteId", CommandType.Text, new SqlParameter[] { new SqlParameter("@Id", id), new SqlParameter("@SiteId", siteId) });
+			DbHelper.ExecuteNonQuery("DELETE FROM Services WHERE Id=@Id AND SiteId=@SiteId", CommandType.Text, new MySqlParameter[] { new MySqlParameter("@Id", id), new MySqlParameter("@SiteId", siteId) });
 		}
 
 		public object GetPropertyValue(string propertyName)

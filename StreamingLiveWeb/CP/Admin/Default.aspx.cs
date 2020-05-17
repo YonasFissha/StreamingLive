@@ -45,7 +45,7 @@ namespace StreamingLiveWeb.CP.Admin
             {
                 int siteId = Convert.ToInt32(e.CommandArgument);
                 AppUser.Current.Site = StreamingLiveLib.Site.Load(siteId);
-                AppUser.Current.Role = new StreamingLiveLib.Role() { Name = "admin", SiteId = siteId, UserId = AppUser.Current.UserData.Id.Value };
+                AppUser.Current.Role = new StreamingLiveLib.Role() { Name = "admin", SiteId = siteId, UserId = AppUser.Current.UserData.Id };
                 Response.Redirect("/cp/");
             }
         }
