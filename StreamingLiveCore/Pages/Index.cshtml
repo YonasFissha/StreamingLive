@@ -1,0 +1,36 @@
+﻿@page
+@model StreamingLiveCore.Pages.IndexModel
+@{
+    ViewData["Title"] = Model.Title;
+    Layout = "~/Layouts/MasterLayout.cshtml";
+}
+@addTagHelper *, StreamingLiveCore
+    
+<div id="hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <a href="/"><img src="/images/logo.png" alt="Streaming Live" /></a>
+            </div>
+            <div class="col-6 text-right">
+                <a href="#register" class="btn btn-info btn-sm">Register</a>
+                <a href="/cp/" class="btn btn-primary btn-sm">Login</a>
+            </div>
+        </div>
+        <div class="text-center">
+            <h1>Connecting the Church</h1>
+            <p>Even While We're Apart</p>
+            <a href="#register" class="btn btn-info btn-lg">
+                Get Started Now
+            </a>
+            &nbsp;
+        </div>
+    </div>
+</div>
+<partial name="PartialViews/HomeBenefits" />
+<partial name="PartialViews/HomeFeatures" />
+<vc:home-register />
+
+<form method="post">
+    <input type="submit" asp-page-handler="Test" value="Test" />
+</form>

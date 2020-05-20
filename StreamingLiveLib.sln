@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamingLiveSub", "Streami
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamingLiveLambda", "StreamingLiveLambda\StreamingLiveLambda.csproj", "{02A925AA-EAF2-4B4E-8EB3-50B6FD7E4FEC}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamingLiveCore", "StreamingLiveCore\StreamingLiveCore.csproj", "{828E5D62-AD81-47A5-ABBD-635E53883FB2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{02A925AA-EAF2-4B4E-8EB3-50B6FD7E4FEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02A925AA-EAF2-4B4E-8EB3-50B6FD7E4FEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02A925AA-EAF2-4B4E-8EB3-50B6FD7E4FEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{828E5D62-AD81-47A5-ABBD-635E53883FB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{828E5D62-AD81-47A5-ABBD-635E53883FB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{828E5D62-AD81-47A5-ABBD-635E53883FB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{828E5D62-AD81-47A5-ABBD-635E53883FB2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
