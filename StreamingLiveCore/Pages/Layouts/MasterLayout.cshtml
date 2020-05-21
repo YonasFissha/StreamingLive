@@ -54,5 +54,10 @@
     <div>
         @RenderBody()
     </div>
+    
+    @{
+        //await Html.RenderPartialAsync("/Pages/_ValidationScriptsPartial.cshtml");
+        }
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

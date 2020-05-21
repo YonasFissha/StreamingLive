@@ -1,11 +1,8 @@
 ﻿@page
-@model StreamingLiveCore.Pages.IndexModel
-@{
-    ViewData["Title"] = Model.Title;
-    Layout = "~/Layouts/MasterLayout.cshtml";
-}
-@addTagHelper *, StreamingLiveCore
-    
+@model IndexModel
+
+
+
 <div id="hero">
     <div class="container">
         <div class="row">
@@ -29,8 +26,55 @@
 </div>
 <partial name="PartialViews/HomeBenefits" />
 <partial name="PartialViews/HomeFeatures" />
-<vc:home-register />
 
-<form method="post">
-    <input type="submit" asp-page-handler="Test" value="Test" />
-</form>
+
+
+
+
+<style>
+    #loginBox {
+        background-color: #EEE;
+        border: 1px solid #CCC;
+        border-radius: 5px;
+        padding: 20px;
+    }
+</style>
+<div id="register">
+    <div class="container">
+        <div class="text-center">
+            <h2 style="margin-bottom:20px;">Register <span>Your Church</span></h2>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <p>This is a <b><u>completely free</u></b> service offered to churches by Live Church Solutions, a 501(c)3.</p>
+                <p>If you would like to help support our mission of enabling churches to thrive with technology solutions, please consider <a href="/donate/">donating</a>.</p>
+            </div>
+            <div class="col-lg-6">
+                <div id="loginBox">
+                    <form method="post">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" asp-for="KeyName" class="form-control" placeholder="yourchurch" />
+                                <div class="input-group-append"><span class="input-group-text">.streaminglive.church</span></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Email Address" })
+                        </div>
+                        <div class="form-group">
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Password" })
+                        </div>
+
+                        <input type="submit" value="Register" class="btn btn-lg btn-primary btn-block" asp-page-handler="Register" />
+                    </form>
+                    <br />
+                    <div>
+                        Already have a site? <a href="/cp/">Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

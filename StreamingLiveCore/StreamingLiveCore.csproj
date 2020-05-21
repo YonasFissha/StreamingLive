@@ -8,4 +8,7 @@
     <PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="5.1.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.2" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\StreamingLiveLib\StreamingLiveLib.csproj" />
+  </ItemGroup>
 </Project>
