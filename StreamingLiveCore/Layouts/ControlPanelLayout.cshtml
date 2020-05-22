@@ -1,0 +1,46 @@
+﻿@using StreamingLiveCore.Components
+@{
+    Layout = "/Layouts/MasterLayout.cshtml";
+}
+@section Head {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <link rel="stylesheet" href="/css/datetime-local-polyfill.css">
+    <link rel="stylesheet" href="/css/bootstrap-iconpicker.min.css">
+    <link rel="stylesheet" href="/css/cp.css">
+    @RenderSection("Head", required: false)
+}
+
+
+<nav class="navbar navbar-expand navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand" href="/" style="padding-top:0px;padding-bottom:0px;">
+        <img src="/images/logo.png" id="logo" />
+    </a>
+    <div class="collapse navbar-collapse" id="navbar">
+        <ul class="navbar-nav mr-auto">
+        </ul>
+        <div class="navbar-nav ml-auto">
+            <asp:Literal ID="LoginLit" runat="server"><a href="/cp/">Login</a></asp:Literal>
+        </div>
+    </div>
+</nav>
+<div id="userMenu" style="display:none;"></div>
+<div style="height:66px;"></div>
+<div class="container-fluid">
+    <a href="javascript:sidebarToggle();" class="d-md-none" id="sidebarToggle"><i class="fas fa-bars"></i></a>
+    <div class="row">
+        @(await Html.RenderComponentAsync<Sidebar>(RenderMode.ServerPrerendered))
+        <main role="main" class="col-sm-12 ml-sm-auto col-md-10 pt-3">
+            @RenderBody()
+        </main>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script src="/js/bootstrap-iconpicker.bundle.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+    <script src="/js/datetime-local-polyfill.min.js"></script>
+    <asp:ContentPlaceHolder ID="ScriptBlock" runat="server" />
+}

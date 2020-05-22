@@ -12,17 +12,10 @@ namespace StreamingLiveLib
 {
     public partial class DbHelper
     {
-        private static string _connectionString = System.Configuration.ConfigurationManager.AppSettings["ConnectionString"];
-
-        public static string ConnectionString
-        {
-            get { return _connectionString; }
-            set { _connectionString = value; }
-        }
 
         public static MySqlConnection Connection
         {
-            get { return new MySqlConnection(_connectionString); }
+            get { return new MySqlConnection(CachedData.ConnectionString); }
         }
 
 

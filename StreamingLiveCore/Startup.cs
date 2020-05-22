@@ -10,7 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using StreamingLiveCore.Utils;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 
 namespace StreamingLiveCore
 {
@@ -26,13 +27,18 @@ namespace StreamingLiveCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-           services.AddRazorPages();
+            services.AddRazorPages();
+            services.AddServerSideBlazor();
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(o => o.LoginPath = new PathString("/cp/login"));
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddHttpContextAccessor();
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            CachedData.Environment = env;
+            SetCachedData(env);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -46,15 +52,30 @@ namespace StreamingLiveCore
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseSession();
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
+            AppContext.Configure(app.ApplicationServices.GetRequiredService<IHttpContextAccessor>());
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
+                endpoints.MapBlazorHub();
             });
         }
+
+
+        private void SetCachedData(IWebHostEnvironment env)
+        {
+            CachedData.Environment = env;
+            CachedData.SupportEmail = Configuration["AppSettings:SupportEmail"];
+            StreamingLiveLib.CachedData.PasswordSalt = Configuration["AppSettings:PasswordSalt"];
+            StreamingLiveLib.CachedData.ConnectionString = Configuration["AppSettings:ConnectionString"];
+
+        }
+
     }
 }

@@ -19,7 +19,6 @@ namespace StreamingLiveLib
 		public string DisplayName { get; set; }
 		public string Password { get; set; }
 		public string ResetGuid { get; set; }
-		private static string salt = System.Configuration.ConfigurationManager.AppSettings["PasswordSalt"];
 		#endregion
 
 		#region Constructors
@@ -57,7 +56,7 @@ namespace StreamingLiveLib
 		public static string HashPassword(string password)
 		{
 			SHA1CryptoServiceProvider hasher = new SHA1CryptoServiceProvider();
-			byte[] textWithSaltBytes = Encoding.UTF8.GetBytes(string.Concat(password, salt));
+			byte[] textWithSaltBytes = Encoding.UTF8.GetBytes(string.Concat(password, CachedData.PasswordSalt));
 			byte[] hashedBytes = hasher.ComputeHash(textWithSaltBytes);
 			hasher.Clear();
 			return Convert.ToBase64String(hashedBytes);

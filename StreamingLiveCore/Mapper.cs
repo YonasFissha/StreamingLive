@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace StreamingLiveCore.Utils
+namespace StreamingLiveCore
 {
     public static class Mapper
     {

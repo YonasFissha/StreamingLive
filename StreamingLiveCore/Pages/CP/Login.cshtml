@@ -1,0 +1,30 @@
+﻿@page
+@model StreamingLiveCore.Pages.CP.LoginModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Layouts/MasterLayout.cshtml";
+}
+
+<style>
+    #loginBox {background-color:#EEE;border:1px solid #CCC;border-radius:5px;padding:20px;}
+    #loginBox input {margin-bottom:5px;}
+    .smallCenterBlock {margin-top:60px;max-width:350px;margin-left:auto;margin-right:auto;}
+</style>
+<form method="post">
+    <div class="smallCenterBlock">
+        <div id="loginBox">
+            @Html.Raw(Model.ErrorMessage)
+            <h2>Please sign in</h2>
+            <input type="text" asp-for="Email" class="form-control" placeholder="Email Address" />
+            <input type="password" asp-for="Password" class="form-control" placeholder="Password" />
+            <input type="submit" value="Sign in" class="btn btn-lg btn-primary btn-block" asp-page-handler="SignIn" />
+            <br />
+            <div class="text-right">
+                <a href="/#register">Register</a> &nbsp; | &nbsp;
+                <a href="/cp/forgotpassword.aspx">Forgot Password</a>
+                &nbsp;
+            </div>
+        </div>
+    </div>
+</form>
+

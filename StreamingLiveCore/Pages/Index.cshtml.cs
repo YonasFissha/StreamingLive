@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Hosting.Internal;
 using System.IO;
+using System.Security.Policy;
+using System.Web;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 
 namespace StreamingLiveCore.Pages
 {
@@ -48,7 +53,7 @@ namespace StreamingLiveCore.Pages
         {
             if (ModelState.IsValid)
             {
-                string webRoot = Utils.CachedData.Environment.WebRootPath;
+                string webRoot = CachedData.Environment.WebRootPath;
 
                 StreamingLiveLib.Site s = new StreamingLiveLib.Site() { KeyName = KeyName.ToLower().Trim(), PrimaryColor = "#24b9ff", ContrastColor = "#ffffff", HeaderColor = "#24b9ff", HomePageUrl = "/", LogoUrl = "/data/master/logo.png", RegistrationDate = DateTime.UtcNow };
                 s.Save();
@@ -86,7 +91,11 @@ namespace StreamingLiveCore.Pages
 
 
                 AppUser.Login(u);
-                FormsAuthentication.SetAuthCookie(u.ResetGuid.ToString(), true);
+
+                //FormsAuthentication.SetAuthCookie(u.ResetGuid.ToString(), true);
+                var claims = new[] { new Claim(ClaimTypes.Name, "MyUserNameOrID"), new Claim(ClaimTypes.Role, "SomeRoleName") };
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
                 Response.Redirect("/cp/welcome.aspx");
             }
             
