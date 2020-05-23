@@ -72,6 +72,7 @@ namespace StreamingLiveCore
         {
             CachedData.Environment = env;
             CachedData.SupportEmail = Configuration["AppSettings:SupportEmail"];
+            CachedData.DataFolder = Configuration["AppSettings:DataFolder"];
             StreamingLiveLib.CachedData.PasswordSalt = Configuration["AppSettings:PasswordSalt"];
             StreamingLiveLib.CachedData.ConnectionString = Configuration["AppSettings:ConnectionString"];
             StreamingLiveLib.CachedData.SesKey = Configuration["AppSettings:SesKey"];

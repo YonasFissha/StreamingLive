@@ -9,6 +9,7 @@ namespace StreamingLiveCore
     public class CachedData
     {
         public static IWebHostEnvironment Environment;
+        public static string DataFolder;
         public static string SupportEmail;
     }
 }

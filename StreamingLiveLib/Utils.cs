@@ -87,6 +87,11 @@ namespace StreamingLiveLib
         {
             int min = int.TryParse(minText, out min) ? min : 0;
             int sec = int.TryParse(secText, out sec) ? sec : 0;
+            return GetTotalSeconds(min, sec);
+        }
+
+        public static int GetTotalSeconds(int min, int sec)
+        {
             return min * 60 + sec;
         }
 

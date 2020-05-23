@@ -1,0 +1,86 @@
+﻿@page
+@model StreamingLiveCore.Pages.CP.PagesModel
+@{
+}
+<h1><i class="fas fa-code"></i> Pages</h1>
+<div class="row">
+    <div class="col-md-8">
+        @if (Model.SelectedPage == null)
+        {
+            <div class="inputBox">
+                <div class="header"><div class="float-right"><a asp-page-handler="Add"><i class="fas fa-plus"></i></a></div>  <i class="fas fa-code"></i> Pages</div>
+                <div class="content">
+                    @if (Model.Pages.Count > 0)
+                    {
+                        <table class="table table-sm">
+                            @foreach (StreamingLiveLib.Page p in Model.Pages)
+                            {
+                                <tr>
+                                    <td>@p.Name</td>
+                                    <td class="text-right"><a asp-page-handler="Edit" asp-route-id="@p.Id"><i class="fas fa-pencil-alt"></i></a></td>
+                                </tr>
+                            }
+                        </table>
+                    }
+                    else
+                    {
+                        <p>Pages are designed to be a place for you to enter simple content that can be displayed within tabs on the live stream page.  Some examples would be sermon notes, bulletin information or resource links.  No pages have been added yet.  Click the plus button above to begin.</p>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <form method="post">
+                <div class="inputBox">
+                    <div class="header"><i class="fas fa-code"></i> Edit Page</div>
+                    <div class="content">
+                        <div class="form-group">
+                            <label>Page Name</label>
+                            <asp:TextBox ID="NameText" runat="server" CssClass="form-control" />
+                            <input type="text" asp-for="Name" class="form-control" />
+                            <input type="hidden" asp-for="PageId" />
+                        </div>
+                        <div class="form-group">
+                            <label>Contents</label>
+                            <div id="summerNote"></div>
+                            <input type="hidden" asp-for="PageBody" id="PageBody" />
+                        </div>
+                    </div>
+                    <div class="footer">
+                        <div class="row">
+                            @if (Model.SelectedPage != null && Model.SelectedPage.Id > 0)
+                            {
+                                <div class="col"><input type="submit" asp-page-handler="Delete" class="btn btn-danger btn-block" onclick="return confirm('Are you sure you wish to delete this page?')" value="Delete"></div>
+                            }
+                            <div class="col"><input type="submit" asp-action="Cancel" class="btn btn-warning btn-block" value="Cancel"></div>
+                            <div class="col"><input type="submit" asp-page-handler="Save" class="btn btn-primary btn-block" onclick="setBodyValue()" value="Save"></div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        }
+
+    </div>
+</div>
+@section Scripts
+{
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote-bs4.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote-bs4.min.js"></script>
+
+    <script>
+        var bodyHid = $('#PageBody');
+
+        function setBodyValue() {
+            var markup = $('#summerNote').eq(0).summernote('code');
+            bodyHid.val(markup);
+        }
+
+        $('#summerNote').summernote({
+            placeholder: 'Hello World',
+            tabsize: 2,
+            height: 300
+        });
+        $('#summerNote').summernote('code', bodyHid.val());
+    </script>
+}
