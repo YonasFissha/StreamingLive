@@ -2,6 +2,7 @@
 @model StreamingLiveCore.Pages.CP.SettingsModel
 @{
 }
+@using StreamingLiveCore.Components
 
 @section Head {
     <style>
@@ -201,15 +202,17 @@
                     </div>
                 </div>
             }
-
+            <input type="hidden" asp-for="TimezoneOffset" />
         </div>
         <div class="col-md-4">
+
             <uc1:AppearanceEditor runat="server" Id="AppearanceEditor1" />
+            <partial name="~/Pages/PartialViews/ButtonEditor.cshtml" />
             <uc1:ButtonEditor runat="server" Id="ButtonEditor1" />
             <uc1:TabEditor runat="server" Id="TabEditor1" />
         </div>
     </div>
-    <input type="hidden" asp-for="TimezoneOffset" />
+    
 </form>
 
 @section Scripts{

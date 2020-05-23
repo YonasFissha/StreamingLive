@@ -43,6 +43,18 @@ namespace StreamingLiveCore.Pages.CP
         [BindProperty]
         public int TimezoneOffset { get; set; }
 
+        #region Buttons
+        public StreamingLiveLib.Buttons Buttons;
+        public StreamingLiveLib.Button SelectedButton;
+        [BindProperty]
+        public int ButtonId { get; set; }
+        [BindProperty]
+        public string ButtonText { get; set; }
+        [BindProperty]
+        public string ButtonUrl { get; set; }
+        #endregion
+
+
         public void OnGet()
         {
             if (AppUser.Current.Role.Name != "admin") Response.Redirect("/cp/");
@@ -68,6 +80,7 @@ namespace StreamingLiveCore.Pages.CP
         private void LoadData()
         {
             Services = StreamingLiveLib.Services.LoadBySiteId(AppUser.Current.Site.Id).Sort("ServiceTime", false);
+            Buttons = StreamingLiveLib.Buttons.LoadBySiteId(AppUser.Current.Site.Id);
         }
 
         private void Populate()
@@ -239,6 +252,73 @@ namespace StreamingLiveCore.Pages.CP
             }
         }
 
+
+        #region Buttons
+        //***I think this could be better segregated into a blazor component, but am not sure how to do the event handling.
+        public void OnGetButtonAdd()
+        {
+            ButtonId = 0;
+            EditButtonShow();
+        }
+
+        private void EditButtonShow()
+        {
+            LoadData();  
+            SelectedButton = (ButtonId == 0) ? new StreamingLiveLib.Button() : StreamingLiveLib.Button.Load(ButtonId, AppUser.Current.Site.Id);
+            ButtonUrl = SelectedButton.Url;
+            ButtonText = SelectedButton.Text;
+        }
+
+        public void OnGetButtonUp()
+        {
+            int idx = Convert.ToInt32(Request.Query["idx"]);
+            LoadData();
+            Buttons[idx - 1].Sort = Buttons[idx - 1].Sort + 1;
+            Buttons[idx].Sort = Buttons[idx].Sort - 1;
+            Buttons[idx - 1].Save();
+            Buttons[idx].Save();
+            UpdateData();
+
+            ButtonId = 0;
+            UpdateData();
+        }
+
+        public void OnGetButtonDown()
+        {
+            int idx = Convert.ToInt32(Request.Query["idx"]);
+            LoadData();
+            Buttons[idx + 1].Sort = Buttons[idx + 1].Sort - 1;
+            Buttons[idx].Sort = Buttons[idx].Sort + 1;
+            Buttons[idx + 1].Save();
+            Buttons[idx].Save();
+            UpdateData();
+
+            ButtonId = 0;
+            UpdateData();
+        }
+
+        public void OnPostButtonCancel()
+        {
+            //***I think this is unnecessary.  How can I make the cancel button refire the OnGet() event?
+            Populate();
+        }
+
+        public void OnPostButtonSave()
+        {
+            StreamingLiveLib.Button button = (ButtonId == 0) ? new StreamingLiveLib.Button() { SiteId = AppUser.Current.Site.Id, Sort = 999 } : StreamingLiveLib.Button.Load(ButtonId, AppUser.Current.Site.Id);
+            button.Url = ButtonUrl;
+            button.Text = ButtonText;
+            button.Save();
+            if (ButtonId == 0)
+            {
+                LoadData();
+                Buttons.UpdateSort();
+            }
+            UpdateData();
+            Populate();
+        }
+
+        #endregion
 
 
     }
