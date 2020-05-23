@@ -29,197 +29,215 @@
 }
 
 
+<form method="post">
+    <div class="row" style="margin-bottom:25px;">
+        <div class="col"><h1 style="border-bottom:0px;margin-bottom:0px;"><i class="fas fa-video"></i> Live Stream</h1></div>
+        <div class="col text-right"><a asp-page-handler="Publish" class='btn btn-primary btn-lg @if (Model.PendingChanges) Html.Raw("pulsing");'>Publish Changes</a></div>
+    </div>
 
-<div class="row" style="margin-bottom:25px;">
-    <div class="col"><h1 style="border-bottom:0px;margin-bottom:0px;"><i class="fas fa-video"></i> Live Stream</h1></div>
-    <div class="col text-right"><asp:Button ID="PublishButton" runat="server" CssClass="btn btn-primary btn-lg" Text="Publish Changes" OnClick="PublishButton_Click" /></div>
-</div>
+    <div class="row">
+        <div class="col-md-8">
 
-<div class="row">
-    <div class="col-md-8">
-
-        <div class="inputBox">
-            <div class="header"><i class="far fa-calendar-alt"></i> Preview</div>
-            <div class="content">
-                <div id="previewWrapper">
-                    <iframe id="previewFrame" src="https://@(AppUser.Current.Site.KeyName).streaminglive.church/?preview=1"></iframe>
-                </div>
-                <p style="margin-top:10px;margin-bottom:0px;">View your live site: <a href="https://@(AppUser.Current.Site.KeyName).streaminglive.church/" target="_blank">https://@(AppUser.Current.Site.KeyName).streaminglive.church/</a></p>
-            </div>
-        </div>
-
-        @if (Model.SelectedService == null)
-        {
-            <div class="inputBox" id="servicesBox">
-                <div class="header"><div class="float-right"><a asp-page-handler="Add"><i class="fas fa-plus"></i></a></div>  <i class="far fa-calendar-alt"></i> Services</div>
-                <div class="content">
-                    @if (Model.Services != null && Model.Services.Count > 0)
-                    {
-                        <table class="table table-sm">
-                            @foreach (StreamingLiveLib.Service service in Model.Services)
-                            {
-                                <tr>
-                                    <td>@service.ServiceTime.AddMinutes(-service.TimezoneOffset).ToString()</td>
-                                    <td class="text-right"><a asp-page-handler="Edit" asp-route-id="@service.Id"><i class="fas fa-pencil-alt"></i></a></td>
-                                </tr>
-                            }
-                        </table>
-                    }
-                    else
-                    {
-                        <p>No services have been added.  Click the plus button above to begin.</p>
-                    }
-                </div>
-            </div>
-        }
-
-        @if (Model.SelectedService != null)
-        {
             <div class="inputBox">
-                <div class="header"><i class="far fa-calendar-alt"></i> Edit Service</div>
+                <div class="header"><i class="far fa-calendar-alt"></i> Preview</div>
                 <div class="content">
-                    @Html.Raw(Model.OutputMessage)
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-group">
-                                <label>Service Time</label>
-                                <input asp-for="CountdownTime" type="datetime-local" class="form-control" />
-                                <input type="hidden" asp-for="ServiceId" />
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-group">
-                                <label>Total Service Duration</label>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="input-group">
-                                            <input type="number" asp-for="DurationMin" class="form-control" min="0" step="1" />
-                                            <div class="input-group-append"><label class="input-group-text">min</label></div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="input-group">
-                                            <input type="number" asp-for="DurationSec" class="form-control" min="0" step="1" max="59" />
-                                            <div class="input-group-append"><label class="input-group-text">sec</label></div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
+                    <div id="previewWrapper">
+                        <iframe id="previewFrame" src="https://@(AppUser.Current.Site.KeyName).streaminglive.church/?preview=1"></iframe>
                     </div>
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-group">
-                                <label>Enable Chat and Prayer</label>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="input-group">
-                                            <input type="number" asp-for="ChatBefore" class="form-control" min="0" step="1" />
-                                            <div class="input-group-append"><label class="input-group-text">min before</label></div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="input-group">
-                                            <input type="number" asp-for="ChatAfter" class="form-control" min="0" step="1" />
-                                            <div class="input-group-append"><label class="input-group-text">min after</label></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-group">
-                                <label>Start Video Early <span class="description"> (Optional) For videos with countdowns</span></label>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="input-group">
-                                            <input type="number" asp-for="EarlyStartMin" class="form-control" min="0" step="1" />
-                                            <div class="input-group-append"><label class="input-group-text">min</label></div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="input-group">
-                                            <input type="number" asp-for="EarlyStartSec" class="form-control" min="0" step="1" max="59" />
-                                            <div class="input-group-append"><label class="input-group-text">sec</label></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-group">
-                                <label>Video Provider</label>
-                                <select asp-for="Provider" class="form-control" >
-                                    <optgroup label="Live Stream">
-                                        <option value="youtube_live">YouTube</option>
-                                        <option value="vimeo_live">Vimeo</option>
-                                        <option value="facebook_live">Facebook</option>
-                                        <option value="custom_live">Custom Embed Url</option>
-                                    </optgroup>
-                                    <optgroup label="Prerecorded Watchparty">
-                                        <option value="youtube_watchparty">YouTube</option>
-                                        <option value="vimeo_watchparty">Vimeo</option>
-                                        <option value="custom_watchparty">Custom Embed Url</option>
-                                    </optgroup>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-group">
-                                <label id="videoKeyLabel">Video Embed Url</label>
-                                <input id="videoKeyText" type="text" asp-for="VideoKey" class="form-control" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label>Recurs Weekly</label>
-                                <select class="form-control" asp-for="RecursWeekly">
-                                    <option value="False">No</option>
-                                    <option value="True">Yes</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="footer">
-                    <div class="row">
-                        @if (Model.SelectedService != null && Model.SelectedService.Id > 0)
-                        {
-                            <div class="col"><input type="submit" asp-page-handler="Delete" class="btn btn-danger btn-block" value="Delete" /></div>
-                        }
-                        <div class="col"><input type="submit" asp-page-handler="Cancel" class="btn btn-warning btn-block" value="Cancel" /></div>
-                        <div class="col"><input type="submit" asp-page-handler="Save" class="btn btn-primary btn-block" value="Save" /></div>
-                    </div>
+                    <p style="margin-top:10px;margin-bottom:0px;">View your live site: <a href="https://@(AppUser.Current.Site.KeyName).streaminglive.church/" target="_blank">https://@(AppUser.Current.Site.KeyName).streaminglive.church/</a></p>
                 </div>
             </div>
-        }
 
+            @if (Model.SelectedService == null)
+            {
+                <div class="inputBox" id="servicesBox">
+                    <div class="header"><div class="float-right"><a asp-page-handler="Add"><i class="fas fa-plus"></i></a></div>  <i class="far fa-calendar-alt"></i> Services</div>
+                    <div class="content">
+                        @if (Model.Services != null && Model.Services.Count > 0)
+                        {
+                            <table class="table table-sm">
+                                @foreach (StreamingLiveLib.Service service in Model.Services)
+                                {
+                                    <tr>
+                                        <td>@service.ServiceTime.AddMinutes(-service.TimezoneOffset).ToString()</td>
+                                        <td class="text-right"><a asp-page-handler="Edit" asp-route-id="@service.Id"><i class="fas fa-pencil-alt"></i></a></td>
+                                    </tr>
+                                }
+                            </table>
+                        }
+                        else
+                        {
+                            <p>No services have been added.  Click the plus button above to begin.</p>
+                        }
+                    </div>
+                </div>
+            }
+
+            @if (Model.SelectedService != null)
+            {
+                <div class="inputBox">
+                    <div class="header"><i class="far fa-calendar-alt"></i> Edit Service</div>
+                    <div class="content">
+                        @Html.Raw(Model.OutputMessage)
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label>Service Time</label>
+                                    <input asp-for="CountdownTime" type="datetime-local" class="form-control" />
+                                    <input type="hidden" asp-for="ServiceId" />
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label>Total Service Duration</label>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="input-group">
+                                                <input type="number" asp-for="DurationMin" class="form-control" min="0" step="1" />
+                                                <div class="input-group-append"><label class="input-group-text">min</label></div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="input-group">
+                                                <input type="number" asp-for="DurationSec" class="form-control" min="0" step="1" max="59" />
+                                                <div class="input-group-append"><label class="input-group-text">sec</label></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label>Enable Chat and Prayer</label>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="input-group">
+                                                <input type="number" asp-for="ChatBefore" class="form-control" min="0" step="1" />
+                                                <div class="input-group-append"><label class="input-group-text">min before</label></div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="input-group">
+                                                <input type="number" asp-for="ChatAfter" class="form-control" min="0" step="1" />
+                                                <div class="input-group-append"><label class="input-group-text">min after</label></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label>Start Video Early <span class="description"> (Optional) For videos with countdowns</span></label>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="input-group">
+                                                <input type="number" asp-for="EarlyStartMin" class="form-control" min="0" step="1" />
+                                                <div class="input-group-append"><label class="input-group-text">min</label></div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="input-group">
+                                                <input type="number" asp-for="EarlyStartSec" class="form-control" min="0" step="1" max="59" />
+                                                <div class="input-group-append"><label class="input-group-text">sec</label></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label>Video Provider</label>
+                                    <select id="Provider" asp-for="Provider" class="form-control" onchange="setVideoKeyLabels()">
+                                        <optgroup label="Live Stream">
+                                            <option value="youtube_live">YouTube</option>
+                                            <option value="vimeo_live">Vimeo</option>
+                                            <option value="facebook_live">Facebook</option>
+                                            <option value="custom_live">Custom Embed Url</option>
+                                        </optgroup>
+                                        <optgroup label="Prerecorded Watchparty">
+                                            <option value="youtube_watchparty">YouTube</option>
+                                            <option value="vimeo_watchparty">Vimeo</option>
+                                            <option value="custom_watchparty">Custom Embed Url</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label id="videoKeyLabel">Video Embed Url</label>
+                                    <input id="videoKeyText" type="text" asp-for="VideoKey" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label>Recurs Weekly</label>
+                                    <select class="form-control" asp-for="RecursWeekly">
+                                        <option value="False">No</option>
+                                        <option value="True">Yes</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="footer">
+                        <div class="row">
+                            @if (Model.SelectedService != null && Model.SelectedService.Id > 0)
+                            {
+                                <div class="col"><input type="submit" asp-page-handler="Delete" class="btn btn-danger btn-block" value="Delete" /></div>
+                            }
+                            <div class="col"><input type="submit" asp-page-handler="Cancel" class="btn btn-warning btn-block" value="Cancel" /></div>
+                            <div class="col"><input type="submit" asp-page-handler="Save" class="btn btn-primary btn-block" value="Save" /></div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+        <div class="col-md-4">
+            <uc1:AppearanceEditor runat="server" Id="AppearanceEditor1" />
+            <uc1:ButtonEditor runat="server" Id="ButtonEditor1" />
+            <uc1:TabEditor runat="server" Id="TabEditor1" />
+        </div>
     </div>
-    <div class="col-md-4">
-        <uc1:AppearanceEditor runat="server" Id="AppearanceEditor1" />
-        <uc1:ButtonEditor runat="server" Id="ButtonEditor1" />
-        <uc1:TabEditor runat="server" Id="TabEditor1" />
-    </div>
-</div>
-<input type="hidden" asp-for="TimezoneOffset" />
+    <input type="hidden" asp-for="TimezoneOffset" />
+</form>
 
 @section Scripts{
     <script>
         $(function () {
-            $('#<%=TZOffsetHid.ClientID%>').val(new Date().getTimezoneOffset().toString());
+            $('#TimezoneOffset').val(new Date().getTimezoneOffset().toString());
         });
 
         function setVideoKeyLabels() {
-
+            var provider = $('#Provider').val();
+            var label = $('#videoKeyLabel');
+            var text = $('#videoKeyText');
+            if (provider == 'youtube_live' || provider == 'youtube_watchparty') {
+                label.html('YouTube Video ID <span class="description">Ex: https://www.youtube.com/watch?v=<b>abcd1234</b></span>');
+                text.attr('placeholder', 'abcd1234');
+            } else if (provider == 'vimeo_live' || provider == 'vimeo_watchparty') {
+                label.html('Vimeo ID <span class="description">Ex: https://vimeo.com/<b>123456789</b></span>');
+                text.attr('placeholder', '123456789');
+            } else if (provider == 'facebook_live') {
+                label.html('Facebook Video ID <span class="description">Ex: https://facebook.com/video.php?v=<b>123456789</b></span>');
+                text.attr('placeholder', '123456789');
+            } else {
+                label.html('Video Embed Url');
+                text.attr('placeholder', 'https://yourprovider.com/yoururl/');
+            }
         }
+
+        setVideoKeyLabels();
 
     </script>
 

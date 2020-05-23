@@ -195,6 +195,11 @@ namespace StreamingLiveCore.Pages.CP
             ServiceId = 0;
             EditServiceShow();
         }
+        public void OnGetEdit()
+        {
+            ServiceId = Convert.ToInt32(Request.Query["id"]);
+            EditServiceShow();
+        }
 
         private void EditServiceShow()
         {
@@ -218,6 +223,7 @@ namespace StreamingLiveCore.Pages.CP
                 VideoKey = SelectedService.ProviderKey;
                 Provider = SelectedService.Provider;
                 RecursWeekly = SelectedService.Recurring;
+                ServiceId = SelectedService.Id;
             }
             else
             {
