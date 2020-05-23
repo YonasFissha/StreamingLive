@@ -42,9 +42,9 @@ namespace StreamingLiveCore
                         string resetGuid = context.User.Identity.Name;
                         StreamingLiveLib.User u = StreamingLiveLib.User.LoadByResetGuid(resetGuid);
                         if (u != null) au = Login(u);
-                        else context.Response.Redirect("/cp/logout.aspx");
+                        else context.Response.Redirect("/cp/logout");
                     }
-                    else context.Response.Redirect("/cp/logout.aspx");
+                    else context.Response.Redirect("/cp/logout");
                     context.Session.SetString("AppUser", JsonConvert.SerializeObject(au));
                 }
                 return au;

@@ -1,0 +1,66 @@
+﻿@page
+@model StreamingLiveCore.Pages.CP.TrafficModel
+@{
+}
+<h1><i class="fas fa-chart-area"></i> Stream Traffic</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="inputBox">
+            <div class="header"><i class="fas fa-chart-area"></i> Traffic</div>
+            <div class="content">
+                @if (Model.ChartOutput=="")
+                {
+                    <p>No data.  Check back after hosting your first service.</p>
+                } else { 
+                    <div id="chart_div"></div>
+                    <!--Load the AJAX API-->
+                    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+                    <script type="text/javascript">
+                                google.charts.load('current', { 'packages': ['corechart'] });
+                                google.charts.setOnLoadCallback(drawChart);
+                                function drawChart() {
+                                    var data = google.visualization.arrayToDataTable([
+                                        ['Grouping', 'Viewers'],
+                                       @Html.Raw(Model.ChartOutput)
+                                    ]);
+
+                                    var options = {
+                                        height: 400,
+                                        legend: { position: 'top', maxLines: 3 },
+                                        bar: { groupWidth: '75%' }
+                                    };
+
+                                    var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+                                    chart.draw(data, options);
+                                }
+                    </script>
+                }
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-4">
+        <div class="inputBox">
+            <div class="header"><i class="far fa-calendar-alt"></i> Recent Services</div>
+            <div class="content">
+                <table class="table table-sm">
+                    <tr><th>Date</th><th>Start</th><th>End</th></tr>
+
+                    @for (int i=0;i<Model.Sessions.Count;i++)
+                    {
+                        StreamingLiveLib.TrafficSession session = Model.Sessions[i];
+                        <tr>
+                            <td>@session.StartTime.ToString("M/d/yyyy")</td>
+                            <td><a asp-action="Show" asp-route-id="@i">@session.StartTime.ToString("hh:mm tt")</a></td>
+                            <td>@session.EndTime.ToString("M/d/yyyy")</td>
+                        </tr>
+                    }
+
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

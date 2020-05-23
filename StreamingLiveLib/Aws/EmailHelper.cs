@@ -27,7 +27,7 @@ namespace StreamingLiveLib.Aws
         {
             Amazon.SimpleEmail.Model.Content subject = new Amazon.SimpleEmail.Model.Content(msg.Subject);
             Amazon.SimpleEmail.Model.Body body = new Amazon.SimpleEmail.Model.Body() { Html = new Amazon.SimpleEmail.Model.Content(msg.Body) };
-            Amazon.SimpleEmail.AmazonSimpleEmailServiceClient client = new Amazon.SimpleEmail.AmazonSimpleEmailServiceClient(ConfigurationManager.AppSettings["SesKey"], ConfigurationManager.AppSettings["SesSecret"], Amazon.RegionEndpoint.USEast1);
+            Amazon.SimpleEmail.AmazonSimpleEmailServiceClient client = new Amazon.SimpleEmail.AmazonSimpleEmailServiceClient(CachedData.SesKey, CachedData.SesSecret, Amazon.RegionEndpoint.USEast1);
             List<string> toAddresses = new List<string>();
             foreach (System.Net.Mail.MailAddress oneToAddr in msg.To) toAddresses.Add(oneToAddr.Address);
             Amazon.SimpleEmail.Model.SendEmailRequest req = new Amazon.SimpleEmail.Model.SendEmailRequest();
@@ -35,7 +35,7 @@ namespace StreamingLiveLib.Aws
             req.Source = msg.From.DisplayName + " <" + msg.From.Address + ">";
             req.ReturnPath = msg.From.DisplayName + " <" + msg.From.Address + ">";
             req.Message = new Amazon.SimpleEmail.Model.Message(subject, body);
-            client.SendEmail(req);
+            client.SendEmailAsync(req).Wait();
         }
 
     }

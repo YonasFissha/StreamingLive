@@ -19,7 +19,14 @@
         <ul class="navbar-nav mr-auto">
         </ul>
         <div class="navbar-nav ml-auto">
-            <asp:Literal ID="LoginLit" runat="server"><a href="/cp/">Login</a></asp:Literal>
+            @if (StreamingLiveCore.AppUser.Current!=null && StreamingLiveCore.AppUser.Current.IsAuthenticated)
+            {
+                <a href="javascript:toggleUserMenu();"><i class="fas fa-user"></i> &nbsp; @StreamingLiveCore.AppUser.Current.UserData.DisplayName (@StreamingLiveCore.AppUser.Current.Site.KeyName) <i class="fas fa-caret-down"></i></a>
+            }
+            else
+            {
+                <a href="/cp/">Login</a>
+            }
         </div>
     </div>
 </nav>
@@ -42,5 +49,5 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
     <script src="/js/datetime-local-polyfill.min.js"></script>
-    <asp:ContentPlaceHolder ID="ScriptBlock" runat="server" />
+    @RenderSection("Scripts", required: false)
 }

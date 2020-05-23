@@ -74,6 +74,10 @@ namespace StreamingLiveCore
             CachedData.SupportEmail = Configuration["AppSettings:SupportEmail"];
             StreamingLiveLib.CachedData.PasswordSalt = Configuration["AppSettings:PasswordSalt"];
             StreamingLiveLib.CachedData.ConnectionString = Configuration["AppSettings:ConnectionString"];
+            StreamingLiveLib.CachedData.SesKey = Configuration["AppSettings:SesKey"];
+            StreamingLiveLib.CachedData.SesSecret = Configuration["AppSettings:SesSecret"];
+            StreamingLiveLib.CachedData.AnalyticsCredentialFile = Configuration["AppSettings:AnalyticsCredentialFile"];
+            StreamingLiveLib.CachedData.AnalyticsViewId = Configuration["AppSettings:AnalyticsViewId"];
 
         }
 

@@ -23,7 +23,7 @@ namespace StreamingLiveLib.GoogleApis
             {
                 string[] scopes = new string[] { AnalyticsReportingService.Scope.Analytics };
                 GoogleCredential credential;
-                using (var stream = new FileStream(System.Configuration.ConfigurationManager.AppSettings["AnalyticsCredentialFile"], FileMode.Open, FileAccess.Read))
+                using (var stream = new FileStream(CachedData.AnalyticsCredentialFile, FileMode.Open, FileAccess.Read))
                 {
                     credential = GoogleCredential.FromStream(stream).CreateScoped(scopes);
                 }
@@ -42,7 +42,7 @@ namespace StreamingLiveLib.GoogleApis
             Dimension dim = new Dimension() { Name = "ga:date" };
 
             ReportRequest rr = new ReportRequest() {
-                ViewId = System.Configuration.ConfigurationManager.AppSettings["AnalyticsViewId"],
+                ViewId = CachedData.AnalyticsViewId,
                 DateRanges = new List<DateRange>() { dateRange },
                 Metrics = new List<Metric>() { metric },
                 Dimensions = new List<Dimension>() { dim },
@@ -80,7 +80,7 @@ namespace StreamingLiveLib.GoogleApis
 
             ReportRequest rr = new ReportRequest()
             {
-                ViewId = System.Configuration.ConfigurationManager.AppSettings["AnalyticsViewId"],
+                ViewId = CachedData.AnalyticsViewId,
                 DateRanges = new List<DateRange>() { dateRange },
                 Metrics = new List<Metric>() { metric },
                 Dimensions = new List<Dimension>() { dim },

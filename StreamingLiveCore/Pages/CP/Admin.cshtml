@@ -1,0 +1,42 @@
+﻿@page
+@model StreamingLiveCore.Pages.CP.AdminModel
+@{
+    ViewData["Title"] = "Admin";
+}
+<h1><i class="fas fa-user-lock"></i>  Admin Dashboard</h1>
+<div class="row">
+    <div class="col-md-8">
+        <div class="inputBox">
+            <div class="header"><i class="far fa-calendar-alt"></i> Upcoming Services</div>
+            <div class="content">
+                <table class="table table-sm">
+                    <tr><th>Site</th><th>Time</th></tr>
+                    @Html.Raw(Model.Upcoming)
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-4">
+        <div class="inputBox">
+            <div class="header"><i class="fas fa-users"></i> Recent Registrations</div>
+            <div class="content">
+                <div class="input-group">
+                    <asp:TextBox ID="SearchText" runat="server" CssClass="form-control" placeholder="Search" />
+                    <div class="input-group-append"><asp:Button ID="SearchButton" runat="server" CssClass="btn btn-primary" Text="Search Sites" OnClick="SearchButton_Click" /></div>
+                </div>
+                <table class="table table-sm" style="margin-top:20px;">
+                    <tr><th>Site</th><th>Action</th></tr>
+                    @foreach (StreamingLiveLib.Site site in Model.RecentSites)
+                    {
+                        <tr>
+                            <td><a href="https://@(site.KeyName).streaminglive.church/">@(site.KeyName)</a></td>
+                            <td><a asp-action="Access" asp-route-id="@(site.Id)" ><i class="fas fa-sign-in-alt"></i></a></td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

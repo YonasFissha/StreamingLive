@@ -32,7 +32,7 @@ namespace StreamingLiveLib
 			string sql = "SELECT s.KeyName, ser.ServiceTime"
 				+ " FROM Services ser"
 				+ " INNER JOIN Sites s ON s.id = ser.SiteId"
-				+ " WHERE ServiceTime> getdate() and ProviderKey<>'zFOfmAHFKNw'"
+				+ " WHERE ServiceTime> now() and ProviderKey<>'zFOfmAHFKNw'"
 				+ " order by ServiceTime Limit 15";
 			return DbHelper.FillDt(sql);
 		}
