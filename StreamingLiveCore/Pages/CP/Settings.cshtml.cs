@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using StreamingLiveLib;
 
 namespace StreamingLiveCore.Pages.CP
@@ -54,6 +55,24 @@ namespace StreamingLiveCore.Pages.CP
         public string ButtonUrl { get; set; }
         #endregion
 
+        #region Tabs
+        public StreamingLiveLib.Tabs Tabs;
+        public StreamingLiveLib.Tab SelectedTab;
+        [BindProperty]
+        public int TabId { get; set; }
+        [BindProperty]
+        public string TabText { get; set; }
+        [BindProperty]
+        public string TabUrl { get; set; }
+        [BindProperty]
+        public string TabIcon { get; set; }
+        [BindProperty]
+        public string TabType { get; set; }
+        [BindProperty]
+        public string TabData { get; set; }
+        public List<SelectListItem> Pages { get; set; }
+        #endregion
+
 
         public void OnGet()
         {
@@ -81,6 +100,12 @@ namespace StreamingLiveCore.Pages.CP
         {
             Services = StreamingLiveLib.Services.LoadBySiteId(AppUser.Current.Site.Id).Sort("ServiceTime", false);
             Buttons = StreamingLiveLib.Buttons.LoadBySiteId(AppUser.Current.Site.Id);
+            Tabs = StreamingLiveLib.Tabs.LoadBySiteId(AppUser.Current.Site.Id);
+            Pages = new List<SelectListItem>();
+            foreach (StreamingLiveLib.Page p in StreamingLiveLib.Pages.LoadBySiteId(AppUser.Current.Site.Id))
+            {
+                Pages.Add(new SelectListItem(p.Name, p.Id.ToString()));
+            }
         }
 
         private void Populate()
@@ -277,7 +302,6 @@ namespace StreamingLiveCore.Pages.CP
             Buttons[idx].Sort = Buttons[idx].Sort - 1;
             Buttons[idx - 1].Save();
             Buttons[idx].Save();
-            UpdateData();
 
             ButtonId = 0;
             UpdateData();
@@ -291,15 +315,27 @@ namespace StreamingLiveCore.Pages.CP
             Buttons[idx].Sort = Buttons[idx].Sort + 1;
             Buttons[idx + 1].Save();
             Buttons[idx].Save();
-            UpdateData();
 
             ButtonId = 0;
             UpdateData();
         }
 
+        public void OnGetButtonEdit()
+        {
+            ButtonId = Convert.ToInt32(Request.Query["Id"]);
+            EditButtonShow();
+        }
+
         public void OnPostButtonCancel()
         {
             //***I think this is unnecessary.  How can I make the cancel button refire the OnGet() event?
+            Populate();
+        }
+
+        public void OnPostButtonDelete()
+        {
+            StreamingLiveLib.Button.Delete(ButtonId, AppUser.Current.Site.Id);
+            UpdateData();
             Populate();
         }
 
@@ -319,6 +355,107 @@ namespace StreamingLiveCore.Pages.CP
         }
 
         #endregion
+
+
+        #region Tabs
+        //***I think this could be better segregated into a blazor component, but am not sure how to do the event handling.
+        public void OnGetTabAdd()
+        {
+            TabId = 0;
+            EditTabShow();
+        }
+
+        private void EditTabShow()
+        {
+            SelectTab();
+            PopulateTab();
+        }
+
+        private void SelectTab()
+        {
+            LoadData();
+            SelectedTab = (TabId == 0) ? new StreamingLiveLib.Tab() { TabType="url" } : StreamingLiveLib.Tab.Load(TabId, AppUser.Current.Site.Id);
+        }
+
+        public void OnGetTabUp()
+        {
+            int idx = Convert.ToInt32(Request.Query["idx"]);
+            LoadData();
+            Tabs[idx - 1].Sort = Tabs[idx - 1].Sort + 1;
+            Tabs[idx].Sort = Tabs[idx].Sort - 1;
+            Tabs[idx - 1].Save();
+            Tabs[idx].Save();
+
+            TabId = 0;
+            UpdateData();
+        }
+
+        public void OnGetTabDown()
+        {
+            int idx = Convert.ToInt32(Request.Query["idx"]);
+            LoadData();
+            Tabs[idx + 1].Sort = Tabs[idx + 1].Sort - 1;
+            Tabs[idx].Sort = Tabs[idx].Sort + 1;
+            Tabs[idx + 1].Save();
+            Tabs[idx].Save();
+            TabId = 0;
+            UpdateData();
+        }
+
+        public void OnGetTabEdit()
+        {
+            TabId = Convert.ToInt32(Request.Query["Id"]);
+            EditTabShow();
+        }
+
+        public void OnPostTabCancel()
+        {
+            Populate();
+        }
+
+        public void OnPostTabSave()
+        {
+            StreamingLiveLib.Tab tab = (TabId == 0) ? new StreamingLiveLib.Tab() { SiteId = AppUser.Current.Site.Id, Sort = 999 } : StreamingLiveLib.Tab.Load(TabId, AppUser.Current.Site.Id);
+            tab.Url = TabUrl;
+            tab.Text = TabText;
+            tab.Icon = TabIcon;
+            tab.TabData = TabData;
+            tab.Save();
+            if (ButtonId == 0)
+            {
+                LoadData();
+                Tabs.UpdateSort();
+            }
+            UpdateData();
+            Populate();
+        }
+
+        public void OnPostTabDelete()
+        {
+            StreamingLiveLib.Tab.Delete(TabId, AppUser.Current.Site.Id);
+            UpdateData();
+            Populate();
+        }
+
+        public void OnPostTabTypeChanged()
+        {
+            LoadData();
+            SelectTab();
+            SelectedTab.TabType = TabType;
+            PopulateTab();
+        }
+
+        private void PopulateTab()
+        {
+            TabUrl = SelectedTab.Url;
+            TabText = SelectedTab.Text;
+            TabIcon = SelectedTab.Icon;
+            TabData = SelectedTab.TabData;
+            TabType = SelectedTab.TabType;
+        }
+
+        #endregion
+
 
 
     }

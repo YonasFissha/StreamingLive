@@ -30,7 +30,7 @@
 }
 
 
-<form method="post">
+<form id="settingsForm" method="post">
     <div class="row" style="margin-bottom:25px;">
         <div class="col"><h1 style="border-bottom:0px;margin-bottom:0px;"><i class="fas fa-video"></i> Live Stream</h1></div>
         <div class="col text-right"><a asp-page-handler="Publish" class='btn btn-primary btn-lg @if (Model.PendingChanges) Html.Raw("pulsing");'>Publish Changes</a></div>
@@ -208,8 +208,7 @@
 
             <uc1:AppearanceEditor runat="server" Id="AppearanceEditor1" />
             <partial name="~/Pages/PartialViews/ButtonEditor.cshtml" />
-            <uc1:ButtonEditor runat="server" Id="ButtonEditor1" />
-            <uc1:TabEditor runat="server" Id="TabEditor1" />
+            <partial name="~/Pages/PartialViews/TabEditor.cshtml" />
         </div>
     </div>
     
@@ -238,6 +237,12 @@
                 label.html('Video Embed Url');
                 text.attr('placeholder', 'https://yourprovider.com/yoururl/');
             }
+        }
+
+        //***I think there's a better way to handle autopostbacks from selects..
+        function tabTypeChanged() {
+            $('#settingsForm')[0].action = location.href.replace('TabEdit', 'TabTypeChanged').replace('TabAdd', 'TabTypeChanged');
+            $('#settingsForm')[0].submit();
         }
 
         setVideoKeyLabels();

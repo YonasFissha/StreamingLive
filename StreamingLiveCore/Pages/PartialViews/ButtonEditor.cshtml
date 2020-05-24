@@ -9,16 +9,15 @@
         </div>
         <div class="content">
             <table class="table table-sm">
-                <asp:Literal ID="ButtonsLit" runat="server" />
                 @for (int i=0;i<Model.Buttons.Count;i++)
                 {
                     StreamingLiveLib.Button button = Model.Buttons[i];
                     <tr>
                         <td><a href="@button.Url" target="_blank">@button.Text</a></td>
                         <td class="text-right">
-                            <a asp-action="ButtonUp" asp-route-idx="@i"><i class="fas fa-arrow-up"></i></a>
-                            <a asp-action="ButtonDown" asp-route-idx="@i"><i class="fas fa-arrow-down"></i></a>
-                            <a asp-action="ButtonEdit" asp-route-idx="@button.Id"><i class="fas fa-pencil-alt"></i></a>
+                            <a asp-page-handler="ButtonUp" asp-route-idx="@i"><i class="fas fa-arrow-up"></i></a>
+                            <a asp-page-handler="ButtonDown" asp-route-idx="@i"><i class="fas fa-arrow-down"></i></a>
+                            <a asp-page-handler="ButtonEdit" asp-route-id="@button.Id"><i class="fas fa-pencil-alt"></i></a>
                         </td>
                     </tr>
                 }
