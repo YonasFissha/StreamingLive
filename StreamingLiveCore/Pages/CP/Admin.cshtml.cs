@@ -18,6 +18,7 @@ namespace StreamingLiveCore.Pages.CP
 
         public void OnGet()
         {
+
             if (!AppUser.Current.IsSiteAdmin) Response.Redirect("/cp/");
             PopulateUpcoming();
             RecentSites = StreamingLiveLib.Sites.LoadRecent();

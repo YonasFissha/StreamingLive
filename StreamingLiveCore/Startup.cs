@@ -12,6 +12,13 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
+using Amazon.Lambda.Serialization.SystemTextJson;
+using Amazon.Util;
+using StreamingLiveLib;
+using Amazon.DynamoDBv2;
+using Microsoft.AspNetCore.DataProtection.Repositories;
+using Microsoft.AspNetCore.DataProtection;
+using Amazon.Extensions.NETCore.Setup;
 
 namespace StreamingLiveCore
 {
@@ -37,6 +44,29 @@ namespace StreamingLiveCore
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddHttpContextAccessor();
             services.AddSession();
+
+
+
+            //Begin dynamodb session state
+            services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
+            services.AddAWSService<IAmazonDynamoDB>();
+            services.AddSingleton<IXmlRepository, Session.DdbXmlRepository>();
+            services.AddDistributedDynamoDbCache(o => {
+                o.TableName = "StreamingLiveSessionState";
+                o.IdleTimeout = TimeSpan.FromMinutes(30);
+            });
+            services.AddSession(o => { o.IdleTimeout = TimeSpan.FromMinutes(30); o.Cookie.HttpOnly = false; });
+            var sp = services.BuildServiceProvider(); //***Not sure this is the proper way to access this
+            services.AddDataProtection().AddKeyManagementOptions(o => o.XmlRepository = sp.GetService<IXmlRepository>());
+            //End dynamodb session state
+
+
+            //services.AddAWSService<IAmazonS3>();
+
+
+
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,6 +88,7 @@ namespace StreamingLiveCore
             app.UseStaticFiles();
             app.UseSession();
             app.UseRouting();
+            
 
             app.UseAuthentication();
             app.UseAuthorization();
