@@ -27,7 +27,11 @@ namespace StreamingLiveCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
+            services.AddRazorPages(options => {
+                options.Conventions.AuthorizeFolder("/CP");
+                options.Conventions.AllowAnonymousToPage("/CP/login");
+                options.Conventions.AllowAnonymousToPage("/CP/logout");
+            });
             services.AddServerSideBlazor();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(o => o.LoginPath = new PathString("/cp/login"));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

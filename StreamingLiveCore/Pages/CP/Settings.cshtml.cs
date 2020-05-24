@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using StreamingLiveLib;
+using ImageProcessor;
+using ImageProcessor.Imaging.Formats;
 
 namespace StreamingLiveCore.Pages.CP
 {
@@ -73,6 +79,22 @@ namespace StreamingLiveCore.Pages.CP
         public List<SelectListItem> Pages { get; set; }
         #endregion
 
+        #region Appearance
+        [BindProperty]
+        public string LogoHtml { get; set; }
+        [BindProperty]
+        public string HomePageUrl { get; set; }
+        [BindProperty]
+        public string PrimaryColor { get; set; }
+        [BindProperty]
+        public string ContrastColor { get; set; }
+        [BindProperty]
+        public string HeaderColor { get; set; }
+        [BindProperty]
+        public BufferedSingleFileUpload Logo { get; set; }
+        #endregion
+
+        
 
         public void OnGet()
         {
@@ -106,6 +128,7 @@ namespace StreamingLiveCore.Pages.CP
             {
                 Pages.Add(new SelectListItem(p.Name, p.Id.ToString()));
             }
+            PopulateAppearance();
         }
 
         private void Populate()
@@ -456,7 +479,72 @@ namespace StreamingLiveCore.Pages.CP
 
         #endregion
 
+        #region Appearance
+        private void PopulateAppearance()
+        {
+            StreamingLiveLib.Site site = AppUser.Current.Site;
+            if (site.LogoUrl == "" || site.LogoUrl == null) LogoHtml = "none";
+            else LogoHtml = $"<img src=\"{site.LogoUrl}\" class=\"img-fluid\" />";
+            HomePageUrl = site.HomePageUrl;
+            PrimaryColor = site.PrimaryColor;
+            ContrastColor = site.ContrastColor;
+            HeaderColor = site.HeaderColor;
+        }
+
+        public void OnPostAppearanceSave()
+        {
+            
+            StreamingLiveLib.Site site = AppUser.Current.Site;
+            site.HomePageUrl = HomePageUrl;
+            site.PrimaryColor = PrimaryColor;
+            site.ContrastColor = ContrastColor;
+            site.HeaderColor = HeaderColor;
+
+            if (Logo!=null && Logo.FormFile!=null)
+            {
+                string tempFile = Path.Combine(CachedData.Environment.WebRootPath, "/temp/" + AppUser.Current.UserData.Id.ToString() + ".png");
+                using (var stream = System.IO.File.Create(tempFile))
+                {
+                    Logo.FormFile.CopyToAsync(stream).Wait();
+                }
+                
+
+                byte[] photoBytes = System.IO.File.ReadAllBytes(tempFile);
+                // Format is automatically detected though can be changed.
+                ISupportedImageFormat format = new PngFormat { Quality = 100 };
+                using (MemoryStream inStream = new MemoryStream(photoBytes))
+                {
+                    using (MemoryStream outStream = new MemoryStream())
+                    {
+                        // Initialize the ImageFactory using the overload to preserve EXIF metadata.
+                        using (ImageFactory imageFactory = new ImageFactory(preserveExifData: true))
+                        {
+                            //var ratio = 150.0 / Convert.ToDouble(img.Height);
+                            Size size = new Size(0, 150);
+                            imageFactory.Load(inStream).Resize(size).Format(format).Save(outStream);
+                        }
+                        outStream.WriteTo(new FileStream(Path.Combine(CachedData.DataFolder, AppUser.Current.Site.KeyName + "/logo.png"), FileMode.CreateNew));
+                    }
+                }
+
+                System.IO.File.Delete(tempFile);
+
+            }
+
+
+            site.Save();
+            UpdateData();
+            Populate();
+        }
+
+        #endregion
 
 
     }
+
+    public class BufferedSingleFileUpload
+    {
+        public IFormFile FormFile { get; set; }
+    }
+
 }
