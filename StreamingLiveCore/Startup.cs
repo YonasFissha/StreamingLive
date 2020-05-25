@@ -24,9 +24,10 @@ namespace StreamingLiveCore
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, Microsoft.AspNetCore.Hosting.IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            CachedData.Environment = environment;
         }
 
         public IConfiguration Configuration { get; }
@@ -46,21 +47,45 @@ namespace StreamingLiveCore
             services.AddSession();
 
 
+            
 
-            //Begin dynamodb session state
-            services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
-            services.AddAWSService<IAmazonDynamoDB>();
-            services.AddSingleton<IXmlRepository, Session.DdbXmlRepository>();
-            services.AddDistributedDynamoDbCache(o => {
-                o.TableName = "StreamingLiveSessionState";
-                o.IdleTimeout = TimeSpan.FromMinutes(30);
-            });
-            services.AddSession(o => { o.IdleTimeout = TimeSpan.FromMinutes(30); o.Cookie.HttpOnly = false; });
-            var sp = services.BuildServiceProvider(); //***Not sure this is the proper way to access this
-            services.AddDataProtection().AddKeyManagementOptions(o => o.XmlRepository = sp.GetService<IXmlRepository>());
-            //End dynamodb session state
+            if (CachedData.Environment.EnvironmentName == "Production")
+            {
+                //Store Session in DynamoDB
+                services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
+                services.AddAWSService<IAmazonDynamoDB>();
+                services.AddSingleton<IXmlRepository, Session.DdbXmlRepository>();
+                services.AddDistributedDynamoDbCache(o => {
+                    o.TableName = "StreamingLiveSessionState";
+                    o.IdleTimeout = TimeSpan.FromMinutes(30);
+                });
+                services.AddSession(o => { o.IdleTimeout = TimeSpan.FromMinutes(30); o.Cookie.HttpOnly = false; });
+                var sp = services.BuildServiceProvider(); //***Not sure this is the proper way to access this
+                services.AddDataProtection().AddKeyManagementOptions(o => o.XmlRepository = sp.GetService<IXmlRepository>());
+                
 
+                //Log errors to Cloudwatch
+                services.AddLogging(factory =>
+                {
+                    var loggerOptions = new LambdaLoggerOptions();
+                    loggerOptions.IncludeCategory = false;
+                    loggerOptions.IncludeLogLevel = false;
+                    loggerOptions.IncludeNewline = true;
+                    loggerOptions.IncludeException = true;
+                    loggerOptions.IncludeEventId = true;
+                    loggerOptions.IncludeScopes = true;
 
+                    loggerOptions.Filter = (category, logLevel) =>
+                    {
+                        if (string.Equals(category, "Default", StringComparison.Ordinal)) return (logLevel >= LogLevel.Debug);
+                        if (string.Equals(category, "Microsoft", StringComparison.Ordinal)) return (logLevel >= LogLevel.Information);
+                        return true;
+                    };
+
+                    factory.AddLambdaLogger(loggerOptions);
+                });
+            }
+            
             //services.AddAWSService<IAmazonS3>();
 
 
@@ -74,11 +99,6 @@ namespace StreamingLiveCore
         {
             SetCachedData(env);
 
-
-            app.UseDeveloperExceptionPage();  //temporary!
-
-
-            /*
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -88,7 +108,11 @@ namespace StreamingLiveCore
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
-            }*/
+            }
+
+
+            
+
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
