@@ -73,6 +73,12 @@ namespace StreamingLiveCore
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             SetCachedData(env);
+
+
+            app.UseDeveloperExceptionPage();  //temporary!
+
+
+            /*
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -82,7 +88,7 @@ namespace StreamingLiveCore
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
-            }
+            }*/
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

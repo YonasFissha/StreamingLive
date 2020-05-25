@@ -13,7 +13,7 @@
         "CodeUri": "",
         "MemorySize": 512,
         "Timeout": 30,
-        "Role": null,
+        "Role": "arn:aws:iam::428019619026:role/StreamingLiveRole",
         "Policies": [
           "AWSLambdaFullAccess"
         ],
