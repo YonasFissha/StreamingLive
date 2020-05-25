@@ -11,7 +11,7 @@ namespace StreamingLiveCore.Pages.CP
     {
         public void OnGet()
         {
-
+            Response.Redirect("/cp/host");
         }
     }
 }

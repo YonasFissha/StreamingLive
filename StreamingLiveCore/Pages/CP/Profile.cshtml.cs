@@ -37,10 +37,12 @@ namespace StreamingLiveCore.Pages.CP
             string[] errors = Validate();
             if (errors.Length == 0)
             {
-                AppUser.Current.UserData.DisplayName = Name;
-                AppUser.Current.UserData.Email = Email;
-                if (Password != "") AppUser.Current.UserData.Password = StreamingLiveLib.User.HashPassword(Password);
-                AppUser.Current.UserData.Save();
+                AppUser au = AppUser.Current;
+                au.UserData.DisplayName = Name;
+                au.UserData.Email = Email;
+                if (Password != "") au.UserData.Password = StreamingLiveLib.User.HashPassword(Password);
+                au.UserData.Save();
+                AppUser.Current = au;
                 OutputMessage = Utils.FormatMessage("<b>Success:</b> Changes saved.", false);
             }
             else OutputMessage = Utils.FormatMessage("<b>Error:</b><ul><li>" + String.Join("</li><li>", errors) + "</li></ul>", true);

@@ -100,7 +100,7 @@ namespace StreamingLiveCore.Pages
                 var claims = new[] { new Claim(ClaimTypes.Name, "MyUserNameOrID"), new Claim(ClaimTypes.Role, "SomeRoleName") };
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
-                Response.Redirect("/cp/welcome.aspx");
+                Response.Redirect("/cp/welcome");
             }
             
         }

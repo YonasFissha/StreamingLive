@@ -1,0 +1,7 @@
+﻿@page
+@model StreamingLiveCore.Pages.CP.UserMenuModel
+@{
+    Layout = null;
+}
+@Html.Raw(Model.AccountsHtml)
+<a href="/cp/logout.aspx" class="divider"><i class="fas fa-lock"></i> Logout</a>
