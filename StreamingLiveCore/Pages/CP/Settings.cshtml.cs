@@ -14,15 +14,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using StreamingLiveLib;
 using ImageProcessor;
 using ImageProcessor.Imaging.Formats;
+using Amazon.S3;
 
 namespace StreamingLiveCore.Pages.CP
 {
+    
+
     public class SettingsModel : PageModel
     {
         public StreamingLiveLib.Service SelectedService;
         public StreamingLiveLib.Services Services;
         public string OutputMessage;
         public bool PendingChanges;
+        IAmazonS3 S3Client { get; set; }
 
         [BindProperty]
         public string CountdownTime { get; set; }
@@ -94,7 +98,11 @@ namespace StreamingLiveCore.Pages.CP
         public BufferedSingleFileUpload Logo { get; set; }
         #endregion
 
-        
+        public SettingsModel(IAmazonS3 s3Client)
+        {
+            this.S3Client = s3Client;
+        }
+
 
         public void OnGet()
         {
@@ -111,7 +119,7 @@ namespace StreamingLiveCore.Pages.CP
             PendingChanges = true;
             try
             {
-                string existing = System.IO.File.ReadAllText(Path.Combine(CachedData.DataFolder, AppUser.Current.Site.KeyName + "/data.json"));
+                string existing = Utils.GetUrlContents($"{CachedData.ContentUrl}/data/{AppUser.Current.Site.KeyName}/data.json");
                 string current = AppUser.Current.Site.LoadJson();
                 PendingChanges = existing != current;
             }
@@ -148,9 +156,10 @@ namespace StreamingLiveCore.Pages.CP
 
         public void OnGetPublish()
         {
-            System.IO.File.WriteAllText(Path.Combine(CachedData.DataFolder, AppUser.Current.Site.KeyName + "/data.json"), AppUser.Current.Site.LoadJson());
-            System.IO.File.WriteAllText(Path.Combine(CachedData.DataFolder, AppUser.Current.Site.KeyName + "/data.css"), AppUser.Current.Site.GetCss());
+            Utils.WriteToS3(S3Client, $"data/{AppUser.Current.Site.KeyName}/data.json", AppUser.Current.Site.LoadJson(), "application/json");
+            Utils.WriteToS3(S3Client, $"data/{AppUser.Current.Site.KeyName}/data.css", AppUser.Current.Site.GetCss(), "text.css");
             PendingChanges = false;
+            Populate();
         }
 
         public void OnPostSave()
@@ -484,7 +493,7 @@ namespace StreamingLiveCore.Pages.CP
         {
             StreamingLiveLib.Site site = AppUser.Current.Site;
             if (site.LogoUrl == "" || site.LogoUrl == null) LogoHtml = "none";
-            else LogoHtml = $"<img src=\"{site.LogoUrl}\" class=\"img-fluid\" />";
+            else LogoHtml = $"<img src=\"{CachedData.ContentUrl}{site.LogoUrl}\" class=\"img-fluid\" />";
             HomePageUrl = site.HomePageUrl;
             PrimaryColor = site.PrimaryColor;
             ContrastColor = site.ContrastColor;
@@ -523,7 +532,15 @@ namespace StreamingLiveCore.Pages.CP
                             Size size = new Size(0, 150);
                             imageFactory.Load(inStream).Resize(size).Format(format).Save(outStream);
                         }
-                        outStream.WriteTo(new FileStream(Path.Combine(CachedData.DataFolder, AppUser.Current.Site.KeyName + "/logo.png"), FileMode.CreateNew));
+
+                        S3Client.PutObjectAsync(new Amazon.S3.Model.PutObjectRequest()
+                        {
+                            BucketName = CachedData.S3ContentBucket,
+                            InputStream = outStream,
+                            ContentType = "image/png",
+                            Key = $"data/{AppUser.Current.Site.KeyName}/logo.png",
+                            CannedACL = S3CannedACL.PublicRead
+                        }).Wait();
                     }
                 }
 

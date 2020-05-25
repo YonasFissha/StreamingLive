@@ -19,6 +19,7 @@ using Amazon.DynamoDBv2;
 using Microsoft.AspNetCore.DataProtection.Repositories;
 using Microsoft.AspNetCore.DataProtection;
 using Amazon.Extensions.NETCore.Setup;
+using Amazon.S3;
 
 namespace StreamingLiveCore
 {
@@ -47,12 +48,13 @@ namespace StreamingLiveCore
             services.AddSession();
 
 
-            
+            AWSOptions awsOptions = Configuration.GetAWSOptions();
+            //IAmazonS3 client = awsOptions.CreateServiceClient<IAmazonS3>();
 
             if (CachedData.Environment.EnvironmentName == "Production")
             {
                 //Store Session in DynamoDB
-                services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
+                services.AddDefaultAWSOptions(awsOptions);
                 services.AddAWSService<IAmazonDynamoDB>();
                 services.AddSingleton<IXmlRepository, Session.DdbXmlRepository>();
                 services.AddDistributedDynamoDbCache(o => {
@@ -86,7 +88,7 @@ namespace StreamingLiveCore
                 });
             }
             
-            //services.AddAWSService<IAmazonS3>();
+            services.AddAWSService<IAmazonS3>();
 
 
 
@@ -137,7 +139,9 @@ namespace StreamingLiveCore
         {
             CachedData.Environment = env;
             CachedData.SupportEmail = Configuration["AppSettings:SupportEmail"];
-            CachedData.DataFolder = Configuration["AppSettings:DataFolder"];
+            CachedData.S3ContentBucket = Configuration["AppSettings:S3ContentBucket"];
+            CachedData.ContentUrl = $"https://{CachedData.S3ContentBucket}.s3.us-east-2.amazonaws.com";
+
             StreamingLiveLib.CachedData.PasswordSalt = Configuration["AppSettings:PasswordSalt"];
             StreamingLiveLib.CachedData.ConnectionString = Configuration["AppSettings:ConnectionString"];
             StreamingLiveLib.CachedData.SesKey = Configuration["AppSettings:SesKey"];

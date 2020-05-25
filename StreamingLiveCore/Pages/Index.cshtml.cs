@@ -12,6 +12,7 @@ using System.Web;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using Amazon.S3;
 
 namespace StreamingLiveCore.Pages
 {
@@ -19,7 +20,8 @@ namespace StreamingLiveCore.Pages
     {
         
         public string Title = "Hello World";
-        
+        IAmazonS3 S3Client { get; set; }
+
         [Required]
         [BindProperty]
         public string KeyName { get; set; }
@@ -31,10 +33,10 @@ namespace StreamingLiveCore.Pages
         [Required]
         [BindProperty]
         public string Password { get; set; }
-        
-        public IndexModel()
-        {
 
+        public IndexModel(IAmazonS3 s3Client)
+        {
+            this.S3Client = s3Client;
         }
 
 
@@ -78,8 +80,10 @@ namespace StreamingLiveCore.Pages
                 new StreamingLiveLib.Service() { SiteId = s.Id, ChatAfter = 15 * 60, ChatBefore = 15 * 60, Duration = 60 * 60, EarlyStart = 5 * 60, Provider = "youtube_watchparty", ProviderKey = "zFOfmAHFKNw", VideoUrl = "https://www.youtube.com/embed/zFOfmAHFKNw?autoplay=1&controls=0&showinfo=0&rel=0&modestbranding=1&disablekb=1", ServiceTime = serviceTime, TimezoneOffset = 300, Recurring = false }.Save();
 
                 Directory.CreateDirectory(Path.Combine(webRoot, "/data/" + s.KeyName));
-                System.IO.File.Copy(Path.Combine(webRoot, "/data/master/data.json"), Path.Combine(webRoot, "/data/" + s.KeyName + "/data.json"));
-                System.IO.File.Copy(Path.Combine(webRoot, "/data/master/data.css"), Path.Combine(webRoot, "/data/" + s.KeyName + "/data.css"));
+
+
+                Utils.WriteToS3(S3Client, "data/" + s.KeyName + "/data.json", Utils.GetUrlContents(CachedData.ContentUrl + "/data/master/data.json"), "application/json");
+                Utils.WriteToS3(S3Client, "data/" + s.KeyName + "/data.css", Utils.GetUrlContents(CachedData.ContentUrl + "/data/master/data.css"), "text/css");
 
                 try
                 {
