@@ -53,7 +53,7 @@
                         StreamingLiveLib.TrafficSession session = Model.Sessions[i];
                         <tr>
                             <td>@session.StartTime.ToString("M/d/yyyy")</td>
-                            <td><a asp-action="Show" asp-route-id="@i">@session.StartTime.ToString("hh:mm tt")</a></td>
+                            <td><a asp-page-handler="Show" asp-route-id="@i">@session.StartTime.ToString("hh:mm tt")</a></td>
                             <td>@session.EndTime.ToString("M/d/yyyy")</td>
                         </tr>
                     }

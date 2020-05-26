@@ -22,4 +22,12 @@
   <ItemGroup>
     <ProjectReference Include="..\StreamingLiveLib\StreamingLiveLib.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Update="streaming-live-275602-2d20d34ae5f8.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\streaming-live-275602-2d20d34ae5f8.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

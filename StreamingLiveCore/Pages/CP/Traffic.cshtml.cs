@@ -15,13 +15,8 @@ namespace StreamingLiveCore.Pages.CP
         public void OnGet()
         {
             if (AppUser.Current.Role.Name != "admin") Response.Redirect("/cp/");
-
-            if (Request.Query["action"] == "Show") OnGetShow();  //***WHY ISN'T THIS CALLED AUTOMATICALLY
-            else
-            {
-                LoadSessions();
-                if (Sessions.Count > 0) ShowChart(Sessions[0]);
-            }
+            LoadSessions();
+            if (Sessions.Count > 0) ShowChart(Sessions[0]);
         }
 
         public void OnGetShow()

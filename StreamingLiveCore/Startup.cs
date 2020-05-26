@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.DataProtection.Repositories;
 using Microsoft.AspNetCore.DataProtection;
 using Amazon.Extensions.NETCore.Setup;
 using Amazon.S3;
+using System.IO;
 
 namespace StreamingLiveCore
 {
@@ -86,9 +87,10 @@ namespace StreamingLiveCore
 
                     loggerOptions.Filter = (category, logLevel) =>
                     {
-                        if (string.Equals(category, "Default", StringComparison.Ordinal)) return (logLevel >= LogLevel.Debug);
-                        if (string.Equals(category, "Microsoft", StringComparison.Ordinal)) return (logLevel >= LogLevel.Information);
-                        return true;
+                        //if (string.Equals(category, "Default", StringComparison.Ordinal)) return (logLevel >= LogLevel.Debug);
+                        //if (string.Equals(category, "Microsoft", StringComparison.Ordinal)) return (logLevel >= LogLevel.Debug);
+                        //return true;
+                        return (logLevel >= LogLevel.Debug);
                     };
 
                     factory.AddLambdaLogger(loggerOptions);
@@ -108,6 +110,7 @@ namespace StreamingLiveCore
             SetCachedData(env);
 
             //app.UseDeveloperExceptionPage();
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -155,7 +158,7 @@ namespace StreamingLiveCore
             StreamingLiveLib.CachedData.ConnectionString = Configuration["AppSettings:ConnectionString"];
             StreamingLiveLib.CachedData.SesKey = Configuration["AppSettings:SesKey"];
             StreamingLiveLib.CachedData.SesSecret = Configuration["AppSettings:SesSecret"];
-            StreamingLiveLib.CachedData.AnalyticsCredentialFile = Configuration["AppSettings:AnalyticsCredentialFile"];
+            StreamingLiveLib.CachedData.AnalyticsCredentialFile = Path.Combine(env.WebRootPath, Configuration["AppSettings:AnalyticsCredentialFile"]);
             StreamingLiveLib.CachedData.AnalyticsViewId = Configuration["AppSettings:AnalyticsViewId"];
 
         }
