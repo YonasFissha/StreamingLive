@@ -79,13 +79,14 @@ namespace StreamingLiveCore.Pages
                 while (serviceTime.DayOfWeek != DayOfWeek.Sunday) serviceTime = serviceTime.AddDays(1);
                 new StreamingLiveLib.Service() { SiteId = s.Id, ChatAfter = 15 * 60, ChatBefore = 15 * 60, Duration = 60 * 60, EarlyStart = 5 * 60, Provider = "youtube_watchparty", ProviderKey = "zFOfmAHFKNw", VideoUrl = "https://www.youtube.com/embed/zFOfmAHFKNw?autoplay=1&controls=0&showinfo=0&rel=0&modestbranding=1&disablekb=1", ServiceTime = serviceTime, TimezoneOffset = 300, Recurring = false }.Save();
 
-                Utils.WriteToS3(S3Client, "data/" + s.KeyName + "/data.json", Utils.GetUrlContents(CachedData.ContentUrl + "/data/master/data.json"), "application/json");
-                Utils.WriteToS3(S3Client, "data/" + s.KeyName + "/data.css", Utils.GetUrlContents(CachedData.ContentUrl + "/data/master/data.css"), "text/css");
+
+                Utils.CopyS3(S3Client, "data/master/data.json", $"data/{s.KeyName}/data.json");
+                Utils.CopyS3(S3Client, "data/master/data.css", $"data/{s.KeyName}/data.css");
 
                 try
                 {
                     string body = "<a href=\"https://" + s.KeyName + ".streaminglive.church/\">https://" + s.KeyName + ".streaminglive.church/</a> - " + u.Email;
-                    StreamingLiveLib.Aws.EmailHelper.SendEmail(CachedData.SupportEmail, CachedData.SupportEmail, "New StreamingLive.church Registration", body);
+                    //StreamingLiveLib.Aws.EmailHelper.SendEmail(CachedData.SupportEmail, CachedData.SupportEmail, "New StreamingLive.church Registration", body);
                 }
                 catch { }
 
@@ -93,11 +94,10 @@ namespace StreamingLiveCore.Pages
 
                 AppUser.Login(u);
 
-                //FormsAuthentication.SetAuthCookie(u.ResetGuid.ToString(), true);
-                var claims = new[] { new Claim(ClaimTypes.Name, "MyUserNameOrID"), new Claim(ClaimTypes.Role, "SomeRoleName") };
+                var claims = new[] { new Claim(ClaimTypes.Name, u.ResetGuid), new Claim(ClaimTypes.Role, "User") };
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
-                Response.Redirect("/cp/welcome");
+                Response.Redirect("/cp/");
             }
             
         }

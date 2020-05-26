@@ -28,6 +28,19 @@ namespace StreamingLiveCore
             }).Wait();
         }
 
+        public static void CopyS3(IAmazonS3 s3Client,string sourceKey, string destKey)
+        {
+            s3Client.CopyObjectAsync(new Amazon.S3.Model.CopyObjectRequest()
+            {
+                SourceBucket = CachedData.S3ContentBucket,
+                CannedACL = S3CannedACL.PublicRead,
+                SourceKey = sourceKey,
+                DestinationBucket = CachedData.S3ContentBucket,
+                DestinationKey = destKey
+            }); ;
+        }
+
+
         public static string GetUrlContents(string url)
         {
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);

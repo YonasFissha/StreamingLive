@@ -107,6 +107,7 @@ namespace StreamingLiveCore
         {
             SetCachedData(env);
 
+            //app.UseDeveloperExceptionPage();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
