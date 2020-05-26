@@ -25,7 +25,7 @@ namespace StreamingLiveCore.Pages.CP
             else
             {
                 string guid = user.SetResetGuid();
-                string body = "<p>Please click the <a href=\"/cp/login.aspx?guid=" + guid + "&ReturnUrl=%2fcp%2f\">here</a> to reset your StreamingLive.church password.</p>";
+                string body = "<p>Please click the <a href=\"/cp/login?guid=" + guid + "&ReturnUrl=%2fcp%2f\">here</a> to reset your StreamingLive.church password.</p>";
                 StreamingLiveLib.Aws.EmailHelper.SendEmail(CachedData.SupportEmail, user.Email, "StreamingLive.church Password Reset Request", body);
                 OutputMessage = Utils.FormatMessage("Password reset instructions have been sent to " + user.Email, false);
             }

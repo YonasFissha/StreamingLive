@@ -1,4 +1,5 @@
 ﻿//chat
+var previewRoot = 'https://streaminglive.church'
 var displayName = 'Anonymous';
 var keyName = 'master';
 var prayerGuid = '';
@@ -106,7 +107,7 @@ function displayTimeRemaining(currentTime) {
 
 function loadConfig() {
     var jsonUrl = '/data/' + keyName + '/data.json?nocache=' + (new Date()).getTime();
-    if (getQs('preview') == 1) jsonUrl = '/preview/data.json?key=' + keyName + '&nocache=' + (new Date()).getTime();
+    if (getQs('preview') == 1) jsonUrl = previewRoot + '/preview/data?key=' + keyName + '&nocache=' + (new Date()).getTime();
 
     $.getJSON(jsonUrl, function (_data) {
         data = _data;
@@ -137,7 +138,7 @@ function loadConfig() {
         }
 
         var cssUrl = '/data/' + keyName + '/data.css?nocache=' + new Date().getTime();
-        if (getQs('preview') == 1) cssUrl = '/preview/data.css?key=' + keyName + '&nocache=' + new Date().getTime();
+        if (getQs('preview') == 1) cssUrl = previewRoot + '/preview/css?key=' + keyName + '&nocache=' + new Date().getTime();
         $('#customCss').attr('href', cssUrl);
 
         initChat();

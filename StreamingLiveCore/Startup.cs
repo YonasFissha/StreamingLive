@@ -47,6 +47,13 @@ namespace StreamingLiveCore
             services.AddHttpContextAccessor();
             services.AddSession();
 
+            services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
+
 
             AWSOptions awsOptions = Configuration.GetAWSOptions();
             //IAmazonS3 client = awsOptions.CreateServiceClient<IAmazonS3>();
@@ -87,7 +94,6 @@ namespace StreamingLiveCore
                     factory.AddLambdaLogger(loggerOptions);
                 });
             }
-            
             services.AddAWSService<IAmazonS3>();
 
 
@@ -120,7 +126,9 @@ namespace StreamingLiveCore
             app.UseStaticFiles();
             app.UseSession();
             app.UseRouting();
-            
+            app.UseCors("CorsPolicy");
+
+
 
             app.UseAuthentication();
             app.UseAuthorization();

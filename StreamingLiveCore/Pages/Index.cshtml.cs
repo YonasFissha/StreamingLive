@@ -79,9 +79,6 @@ namespace StreamingLiveCore.Pages
                 while (serviceTime.DayOfWeek != DayOfWeek.Sunday) serviceTime = serviceTime.AddDays(1);
                 new StreamingLiveLib.Service() { SiteId = s.Id, ChatAfter = 15 * 60, ChatBefore = 15 * 60, Duration = 60 * 60, EarlyStart = 5 * 60, Provider = "youtube_watchparty", ProviderKey = "zFOfmAHFKNw", VideoUrl = "https://www.youtube.com/embed/zFOfmAHFKNw?autoplay=1&controls=0&showinfo=0&rel=0&modestbranding=1&disablekb=1", ServiceTime = serviceTime, TimezoneOffset = 300, Recurring = false }.Save();
 
-                Directory.CreateDirectory(Path.Combine(webRoot, "/data/" + s.KeyName));
-
-
                 Utils.WriteToS3(S3Client, "data/" + s.KeyName + "/data.json", Utils.GetUrlContents(CachedData.ContentUrl + "/data/master/data.json"), "application/json");
                 Utils.WriteToS3(S3Client, "data/" + s.KeyName + "/data.css", Utils.GetUrlContents(CachedData.ContentUrl + "/data/master/data.css"), "text/css");
 

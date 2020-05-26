@@ -307,6 +307,7 @@ namespace StreamingLiveCore.Pages.CP
                 ChatBefore = 15;
                 ChatAfter = 15;
             }
+            Populate();
         }
 
 

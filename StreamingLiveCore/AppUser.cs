@@ -73,7 +73,7 @@ namespace StreamingLiveCore
             AppUser.Current = null;
             HttpContext context = AppContext.Current;
             context.SignOutAsync().Wait();
-            context.Response.Redirect("/");
+            context.Response.Redirect("/cp");
         }
     }
 }
