@@ -59,6 +59,10 @@ namespace StreamingLiveCore
             AWSOptions awsOptions = Configuration.GetAWSOptions();
             //IAmazonS3 client = awsOptions.CreateServiceClient<IAmazonS3>();
 
+
+
+            
+
             if (CachedData.Environment.EnvironmentName == "Production")
             {
                 //Store Session in DynamoDB
@@ -72,7 +76,7 @@ namespace StreamingLiveCore
                 services.AddSession(o => { o.IdleTimeout = TimeSpan.FromMinutes(30); o.Cookie.HttpOnly = false; });
                 var sp = services.BuildServiceProvider(); //***Not sure this is the proper way to access this
                 services.AddDataProtection().AddKeyManagementOptions(o => o.XmlRepository = sp.GetService<IXmlRepository>());
-                
+
 
                 //Log errors to Cloudwatch
                 services.AddLogging(factory =>
@@ -109,8 +113,8 @@ namespace StreamingLiveCore
         {
             SetCachedData(env);
 
-            //app.UseDeveloperExceptionPage();
-            
+            app.UseDeveloperExceptionPage();
+            /*
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -120,7 +124,7 @@ namespace StreamingLiveCore
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
-            }
+            }*/
 
 
             

@@ -111,7 +111,8 @@ namespace Microsoft.Extensions.Caching.DynamoDb
             _ssdoc.Add("ExpiryType", expiryType.ToString());
             _ssdoc.Add(_ttlfield, epoctime);
 
-            await _table.PutItemAsync(_ssdoc);
+            _table.PutItemAsync(_ssdoc).Wait();
+            //await _table.PutItemAsync(_ssdoc);
         }
 
         private long GetEpochExpiry(DistributedCacheEntryOptions options, out ExpiryType expiryType)

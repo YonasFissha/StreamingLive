@@ -43,7 +43,7 @@ namespace StreamingLiveCore.Session
         }
     }
 
-    [DynamoDBTable("StreamingLiveSessionState")]
+    [DynamoDBTable("AspXmlKeys")]
     public class XmlKey
     {
         [DynamoDBHashKey]

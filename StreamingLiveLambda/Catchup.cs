@@ -75,6 +75,16 @@ namespace StreamingLiveLambda
             client.PostToConnectionAsync(postReq);
         }
 
+
+        internal static void Delete(string room)
+        {
+            AmazonDynamoDBClient client = new AmazonDynamoDBClient();
+            Table catchup = Table.LoadTable(client, "catchup");
+            Document doc = new Document();
+            doc["room"] = room;
+            catchup.DeleteItemAsync(doc);
+        }
+
         internal static void Cleanup()
         {
             Logging.LogDebug("Cleaning catchup");
@@ -89,12 +99,7 @@ namespace StreamingLiveLambda
             };
             ScanResponse response = client.ScanAsync(request).Result;
             Table catchupTable = Table.LoadTable(client, "catchup");
-            foreach (Dictionary<string, AttributeValue> item in response.Items)
-            {
-                Document doc = new Document();
-                doc["room"] = item["room"].ToString();
-                catchupTable.DeleteItemAsync(doc);
-            }
+            foreach (Dictionary<string, AttributeValue> item in response.Items) Delete(item["room"].ToString());
         }
 
 

@@ -34,7 +34,7 @@ namespace StreamingLiveLambda
             Document doc = new Document();
             doc["room"] = room;
             doc["connectionId"] = connectionId;
-            doc["joinTime"] = DateTime.Now;
+            doc["joinTime"] = DateTime.Now.Ticks;
             chatTable.PutItemAsync(doc);
         }
 
