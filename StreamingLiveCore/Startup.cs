@@ -156,7 +156,7 @@ namespace StreamingLiveCore
             CachedData.Environment = env;
             CachedData.SupportEmail = Configuration["AppSettings:SupportEmail"];
             CachedData.S3ContentBucket = Configuration["AppSettings:S3ContentBucket"];
-            CachedData.ContentUrl = $"https://{CachedData.S3ContentBucket}.s3.us-east-2.amazonaws.com";
+            CachedData.ContentUrl = Configuration["AppSettings:ContentUrl"];
 
             StreamingLiveLib.CachedData.PasswordSalt = Configuration["AppSettings:PasswordSalt"];
             StreamingLiveLib.CachedData.ConnectionString = Configuration["AppSettings:ConnectionString"];

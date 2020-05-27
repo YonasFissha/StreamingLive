@@ -12,9 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using StreamingLiveLib;
-using ImageProcessor;
-using ImageProcessor.Imaging.Formats;
 using Amazon.S3;
+using ImageMagick;
 
 namespace StreamingLiveCore.Pages.CP
 {
@@ -157,7 +156,7 @@ namespace StreamingLiveCore.Pages.CP
         public void OnGetPublish()
         {
             Utils.WriteToS3(S3Client, $"data/{AppUser.Current.Site.KeyName}/data.json", AppUser.Current.Site.LoadJson(), "application/json");
-            Utils.WriteToS3(S3Client, $"data/{AppUser.Current.Site.KeyName}/data.css", AppUser.Current.Site.GetCss(), "text.css");
+            Utils.WriteToS3(S3Client, $"data/{AppUser.Current.Site.KeyName}/data.css", AppUser.Current.Site.GetCss(), "text/css");
             PendingChanges = false;
             Populate();
         }
@@ -512,43 +511,39 @@ namespace StreamingLiveCore.Pages.CP
 
             if (Logo!=null && Logo.FormFile!=null)
             {
-                string tempFile = Path.Combine(CachedData.Environment.WebRootPath, "/temp/" + AppUser.Current.UserData.Id.ToString() + ".png");
-                using (var stream = System.IO.File.Create(tempFile))
+                //string tempFile = Path.Combine(CachedData.Environment.WebRootPath, "/temp/" + AppUser.Current.UserData.Id.ToString() + ".png");
+
+                byte[] photoBytes;
+                using (var stream = new MemoryStream())
                 {
                     Logo.FormFile.CopyToAsync(stream).Wait();
+                    stream.Position = 0;
+                    photoBytes = new byte[stream.Length];
+                    stream.Read(photoBytes, 0, photoBytes.Length);
                 }
-                
 
-                byte[] photoBytes = System.IO.File.ReadAllBytes(tempFile);
-                // Format is automatically detected though can be changed.
-                ISupportedImageFormat format = new PngFormat { Quality = 100 };
-                using (MemoryStream inStream = new MemoryStream(photoBytes))
+                using (MemoryStream outStream = new MemoryStream())
                 {
-                    using (MemoryStream outStream = new MemoryStream())
-                    {
-                        // Initialize the ImageFactory using the overload to preserve EXIF metadata.
-                        using (ImageFactory imageFactory = new ImageFactory(preserveExifData: true))
-                        {
-                            //var ratio = 150.0 / Convert.ToDouble(img.Height);
-                            Size size = new Size(0, 150);
-                            imageFactory.Load(inStream).Resize(size).Format(format).Save(outStream);
-                        }
+                    MagickImage image = new MagickImage(photoBytes);
+                    int ratio = Convert.ToInt32(150.0 / Convert.ToDouble(image.Height));
+                    image.Resize(image.Width * ratio, 150);
+                    image.Write(outStream);
+                    outStream.Position = 0;
 
-                        S3Client.PutObjectAsync(new Amazon.S3.Model.PutObjectRequest()
-                        {
-                            BucketName = CachedData.S3ContentBucket,
-                            InputStream = outStream,
-                            ContentType = "image/png",
-                            Key = $"data/{AppUser.Current.Site.KeyName}/logo.png",
-                            CannedACL = S3CannedACL.PublicRead
-                        }).Wait();
-                    }
+
+                    S3Client.PutObjectAsync(new Amazon.S3.Model.PutObjectRequest()
+                    {
+                        BucketName = CachedData.S3ContentBucket,
+                        InputStream = outStream,
+                        ContentType = "image/png",
+                        Key = $"data/{AppUser.Current.Site.KeyName}/logo.png",
+                        CannedACL = S3CannedACL.PublicRead
+                    }).Wait();
                 }
 
-                System.IO.File.Delete(tempFile);
 
             }
-
+            site.LogoUrl = $"/data/{site.KeyName}/logo.png?dt=" + DateTime.UtcNow.Ticks.ToString();
 
             site.Save();
             UpdateData();
