@@ -1,17 +1,16 @@
-context('Admin - Service is Over', () => {
+context('Admin - Post Service Chat', () => {
+    Cypress.Cookies.defaults({ whitelist: ['.AspNetCore.Session', '.AspNetCore.Cookies'] })
     logIntoAdmin();
     editService();
 });
 
 function logIntoAdmin() {
     it('Log Into Admin', () => {
-        cy.visit(Cypress.env('adminUrl') + '/cp/login.aspx?ReturnUrl=%2fcp%2flive%2f');
-        
-        cy.get('#MainContent_EmailText').type(Cypress.env('email'));
-        cy.get('#MainContent_PasswordText').type(Cypress.env('password'));
-        cy.get('#MainContent_SigninButton').click();
-        cy.get('body').should('contain', 'View your live site:');
-
+        cy.visit(Cypress.env('adminUrl') + '/cp/login?ReturnUrl=%2Fcp%2Fsettings');
+        cy.get('#Email').type(Cypress.env('email'));
+        cy.get('#Password').type(Cypress.env('password'));
+        cy.get('#SigninButton').click();
+        cy.get('body').should('contain', 'View your live site:')
     });
 }
 
@@ -27,11 +26,11 @@ function editService() {
         var serviceTime = getCurrentMinute();
         serviceTime.setTime(serviceTime.getTime() - 90 * 60 * 1000); 
 
-        cy.get('#MainContent_MainContent_CountdownTimeText')
+        cy.get('#CountdownTime')
             .should('exist')
             .type(formatDateTimeLocal(serviceTime));
-        cy.get('#MainContent_MainContent_SaveServiceButton').click();
-        cy.get('#MainContent_MainContent_PublishButton').click();
+        cy.get('#SaveServiceButton').click();
+        cy.get('#PublishButton').click();
         cy.wait(1000);  
     });
 }

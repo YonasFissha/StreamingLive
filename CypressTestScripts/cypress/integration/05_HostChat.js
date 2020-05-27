@@ -1,4 +1,5 @@
 context('Admin - Chat functions', () => {
+    Cypress.Cookies.defaults({ whitelist: ['.AspNetCore.Session', '.AspNetCore.Cookies'] });
     logIntoAdmin();
     checkCatchup();
     checkPrayerCatchup();
@@ -14,10 +15,10 @@ context('Admin - Chat functions', () => {
 
 function logIntoAdmin() {
     it('Log Into Admin', () => {
-        cy.visit(Cypress.env('adminUrl') + '/cp/login.aspx?ReturnUrl=%2fcp%2fhost%2f');
-        cy.get('#MainContent_EmailText').type(Cypress.env('email'));
-        cy.get('#MainContent_PasswordText').type(Cypress.env('password'));
-        cy.get('#MainContent_SigninButton').click();
+        cy.visit(Cypress.env('adminUrl') + '/cp/login');
+        cy.get('#Email').type(Cypress.env('email'));
+        cy.get('#Password').type(Cypress.env('password'));
+        cy.get('#SigninButton').click();
         cy.wait(2000);
         cy.get('body').should('contain', 'Private Host Chat');
 

@@ -18,6 +18,7 @@
             <input type="text" asp-for="Email" class="form-control" placeholder="Email Address" />
             <input type="password" asp-for="Password" class="form-control" placeholder="Password" />
             <input type="submit" value="Sign in" class="btn btn-lg btn-primary btn-block" asp-page-handler="SignIn" id="SigninButton" />
+            <input type="hidden" asp-for="ReturnUrl" />
             <br />
             <div class="text-right">
                 <a href="/#register">Register</a> &nbsp; | &nbsp;

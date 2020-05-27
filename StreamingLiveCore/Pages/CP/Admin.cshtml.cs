@@ -15,6 +15,10 @@ namespace StreamingLiveCore.Pages.CP
         public string Upcoming = "";
         public StreamingLiveLib.Sites RecentSites;
 
+        [BindProperty]
+        public string SearchText { get; set; }
+
+
 
         public void OnGet()
         {
@@ -30,6 +34,12 @@ namespace StreamingLiveCore.Pages.CP
             AppUser.Current.Site = StreamingLiveLib.Site.Load(id);
             AppUser.Current.Role = new StreamingLiveLib.Role() { Name = "admin", SiteId = id, UserId = AppUser.Current.UserData.Id };
             Response.Redirect("/cp/");
+        }
+
+        public void OnPostSearch()
+        {
+            RecentSites = StreamingLiveLib.Sites.Search(SearchText);
+            PopulateUpcoming();
         }
 
         private void PopulateUpcoming()

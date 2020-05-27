@@ -25,10 +25,14 @@ namespace StreamingLiveCore.Pages.CP
         [BindProperty]
         public string ErrorMessage { get; set; }
 
+        [BindProperty]
+        public string ReturnUrl { get; set; }
+
+
 
         public void OnGet()
         {
-
+            ReturnUrl = Request.Query["ReturnUrl"];
         }
 
 
@@ -51,7 +55,10 @@ namespace StreamingLiveCore.Pages.CP
                     var claims = new[] { new Claim(ClaimTypes.Name, user.ResetGuid), new Claim(ClaimTypes.Role, "User") };
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
-                    Response.Redirect("/cp/");
+
+                    //***This doesn't seem like the right way to get the return url;
+                    if (ReturnUrl == null || ReturnUrl == "") ReturnUrl = "/cp/";
+                    Response.Redirect(ReturnUrl);
 
                 }
             }

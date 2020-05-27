@@ -22,10 +22,12 @@
         <div class="inputBox">
             <div class="header"><i class="fas fa-users"></i> Recent Registrations</div>
             <div class="content">
-                <div class="input-group">
-                    <asp:TextBox ID="SearchText" runat="server" CssClass="form-control" placeholder="Search" />
-                    <div class="input-group-append"><asp:Button ID="SearchButton" runat="server" CssClass="btn btn-primary" Text="Search Sites" OnClick="SearchButton_Click" /></div>
-                </div>
+                <form method="post">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" asp-for="SearchText" />
+                        <div class="input-group-append"><input type="submit" class="btn btn-primary" value="Search Sites" asp-page-handler="Search" /></div>
+                    </div>
+                </form>
                 <table class="table table-sm" style="margin-top:20px;">
                     <tr><th>Site</th><th>Action</th></tr>
                     @foreach (StreamingLiveLib.Site site in Model.RecentSites)
