@@ -546,6 +546,11 @@ namespace StreamingLiveCore.Pages.CP
             site.LogoUrl = $"/data/{site.KeyName}/logo.png?dt=" + DateTime.UtcNow.Ticks.ToString();
 
             site.Save();
+
+            AppUser au = AppUser.Current;
+            au.Site = site;
+            AppUser.Current = au; //*** This really shouldn't be necessary.  Updated session variables should automatically store in dynamodb.
+
             UpdateData();
             Populate();
         }
