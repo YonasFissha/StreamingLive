@@ -78,7 +78,7 @@ namespace StreamingLiveLambda
                 ProjectionExpression = "room, connectionId",
             };
             ScanResponse response = client.ScanAsync(request).Result;
-            foreach (Dictionary<string, AttributeValue> item in response.Items) Delete(item["room"].ToString(), item["connectionId"].ToString());
+            foreach (Dictionary<string, AttributeValue> item in response.Items) Delete(item["room"].S, item["connectionId"].S);
         }
 
 

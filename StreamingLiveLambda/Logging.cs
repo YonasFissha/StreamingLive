@@ -11,13 +11,13 @@ namespace StreamingLiveLambda
 {
     public class Logging
     {
-        private static NLog.LogLevel logLevel = LogLevel.Debug;
+        private static NLog.LogLevel logLevel = LogLevel.Info;
         private static bool configured = false;
 
 
         public static void LogDebug(string message)
         {
-            if (logLevel >= LogLevel.Info)
+            if (logLevel >= LogLevel.Debug)
             {
                 if (!configured) Configure();
                 Logger logger = LogManager.GetCurrentClassLogger();

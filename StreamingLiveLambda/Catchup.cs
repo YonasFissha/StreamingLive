@@ -78,6 +78,7 @@ namespace StreamingLiveLambda
 
         internal static void Delete(string room)
         {
+            Logging.LogDebug("Deleting catchup:" + room);
             AmazonDynamoDBClient client = new AmazonDynamoDBClient();
             Table catchup = Table.LoadTable(client, "catchup");
             Document doc = new Document();
@@ -90,16 +91,22 @@ namespace StreamingLiveLambda
             Logging.LogDebug("Cleaning catchup");
             AmazonDynamoDBClient client = new AmazonDynamoDBClient();
             DateTime threshold = DateTime.UtcNow.AddMinutes(-30);
+
+            Logging.LogDebug("TS:" + threshold.Ticks.ToString());
             ScanRequest request = new ScanRequest
             {
                 TableName = "catchup",
                 FilterExpression = "ts < :ts",
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue> { { ":ts", new AttributeValue { N = threshold.Ticks.ToString() } } },
-                ProjectionExpression = "room, connectionId"
+                ProjectionExpression = "room"
             };
             ScanResponse response = client.ScanAsync(request).Result;
+            Logging.LogDebug("Pending Delete Count:" + response.Items.Count.ToString());
+
+            Logging.LogDebug(Newtonsoft.Json.JsonConvert.SerializeObject(response.Items));
+
             Table catchupTable = Table.LoadTable(client, "catchup");
-            foreach (Dictionary<string, AttributeValue> item in response.Items) Delete(item["room"].ToString());
+            foreach (Dictionary<string, AttributeValue> item in response.Items) Delete(item["room"].S);
         }
 
 
