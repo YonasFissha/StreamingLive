@@ -287,7 +287,7 @@ namespace StreamingLiveCore.Pages.CP
                 ChatAfter = StreamingLiveLib.Utils.GetMinutes(SelectedService.ChatAfter);
 
                 DateTime localServiceTime = SelectedService.ServiceTime;
-                localServiceTime = localServiceTime.AddMinutes(-TimezoneOffset);
+                localServiceTime = localServiceTime.AddMinutes(-SelectedService.TimezoneOffset);
                 CountdownTime = localServiceTime.ToString("yyyy-MM-dd") + "T" + localServiceTime.ToString("HH:mm");
                 VideoKey = SelectedService.ProviderKey;
                 Provider = SelectedService.Provider;
