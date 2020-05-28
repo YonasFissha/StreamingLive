@@ -30,6 +30,7 @@ namespace StreamingLiveLambda
             doc["room"] = room;
             doc["messages"] = messages.ToString(Newtonsoft.Json.Formatting.None);
             doc["ts"] = DateTime.UtcNow.Ticks;
+            doc["prettyTS"] = DateTime.Now.ToString();
             Task<Document> t = table.PutItemAsync(doc);
             t.Wait();
         }
@@ -83,7 +84,7 @@ namespace StreamingLiveLambda
             Table catchup = Table.LoadTable(client, "catchup");
             Document doc = new Document();
             doc["room"] = room;
-            catchup.DeleteItemAsync(doc);
+            catchup.DeleteItemAsync(doc).Wait();
         }
 
         internal static void Cleanup()

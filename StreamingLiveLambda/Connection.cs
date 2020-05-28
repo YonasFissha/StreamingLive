@@ -35,6 +35,7 @@ namespace StreamingLiveLambda
             doc["room"] = room;
             doc["connectionId"] = connectionId;
             doc["joinTime"] = DateTime.Now.Ticks;
+            doc["prettyJoinTime"] = DateTime.Now.ToString();
             chatTable.PutItemAsync(doc);
         }
 
@@ -61,7 +62,7 @@ namespace StreamingLiveLambda
             Document doc = new Document();
             doc["room"] = room;
             doc["connectionId"] = connectionId;
-            chatTable.DeleteItemAsync(doc);
+            chatTable.DeleteItemAsync(doc).Wait();
         }
 
 
