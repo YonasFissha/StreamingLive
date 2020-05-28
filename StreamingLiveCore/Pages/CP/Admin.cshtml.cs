@@ -31,9 +31,15 @@ namespace StreamingLiveCore.Pages.CP
         public void OnGetAccess()
         {
             int id = Convert.ToInt32(Request.Query["id"]);
-            AppUser.Current.Site = StreamingLiveLib.Site.Load(id);
-            AppUser.Current.Role = new StreamingLiveLib.Role() { Name = "admin", SiteId = id, UserId = AppUser.Current.UserData.Id };
+            AppUser au = AppUser.Current;
+
+            au.Site = StreamingLiveLib.Site.Load(id);
+            au.Role = new StreamingLiveLib.Role() { Name = "admin", SiteId = id, UserId = AppUser.Current.UserData.Id };
+            AppUser.Current = au;
             Response.Redirect("/cp/");
+            //***Shouldn't be neccessary
+            PopulateUpcoming();
+            RecentSites = StreamingLiveLib.Sites.LoadRecent();
         }
 
         public void OnPostSearch()
