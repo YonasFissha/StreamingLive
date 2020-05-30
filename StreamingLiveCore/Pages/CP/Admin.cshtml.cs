@@ -20,15 +20,19 @@ namespace StreamingLiveCore.Pages.CP
 
 
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
 
-            if (!AppUser.Current.IsSiteAdmin) Response.Redirect("/cp/");
-            PopulateUpcoming();
-            RecentSites = StreamingLiveLib.Sites.LoadRecent();
+            if (!AppUser.Current.IsSiteAdmin) return Redirect("/cp/");
+            else
+            {
+                PopulateUpcoming();
+                RecentSites = StreamingLiveLib.Sites.LoadRecent();
+                return this.Page();
+            }
         }
 
-        public void OnGetAccess()
+        public IActionResult OnGetAccess()
         {
             int id = Convert.ToInt32(Request.Query["id"]);
             AppUser au = AppUser.Current;
@@ -36,10 +40,7 @@ namespace StreamingLiveCore.Pages.CP
             au.Site = StreamingLiveLib.Site.Load(id);
             au.Role = new StreamingLiveLib.Role() { Name = "admin", SiteId = id, UserId = AppUser.Current.UserData.Id };
             AppUser.Current = au;
-            Response.Redirect("/cp/");
-            //***Shouldn't be neccessary
-            PopulateUpcoming();
-            RecentSites = StreamingLiveLib.Sites.LoadRecent();
+            return Redirect("/cp/");
         }
 
         public void OnPostSearch()

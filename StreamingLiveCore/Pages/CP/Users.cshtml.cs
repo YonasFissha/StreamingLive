@@ -31,10 +31,14 @@ namespace StreamingLiveCore.Pages.CP
 
 
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
-            if (AppUser.Current.Role.Name != "admin") Response.Redirect("/cp/");
-            Populate();
+            if (AppUser.Current.Role.Name != "admin") return Redirect("/cp/");
+            else
+            {
+                Populate();
+                return this.Page();
+            }
         }
 
         private void Populate()
@@ -56,14 +60,12 @@ namespace StreamingLiveCore.Pages.CP
             ShowEditUser(userId);
         }
 
-        public void OnPostDelete()
+        public ActionResult OnPostDelete()
         {
             StreamingLiveLib.Role r = StreamingLiveLib.Role.Load(Id, AppUser.Current.Site.Id);
             StreamingLiveLib.Role.Delete(r.Id);
-
             if (StreamingLiveLib.Roles.LoadByUserId(Id).Count == 0) StreamingLiveLib.User.Delete(Id);
-            Response.Redirect("/cp/users/");
-            LoadUsers(); //*** It appears response.redirect doesn't end the page execution, which throws an error.  What's the right way to handle this?
+            return Redirect("/cp/users/");
         }
 
         public void OnPostSave()

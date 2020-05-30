@@ -30,10 +30,14 @@ namespace StreamingLiveCore.Pages.CP
             this.S3Client = s3Client;
         }
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
-            if (AppUser.Current.Role.Name != "admin") Response.Redirect("/cp/");
-            Populate();
+            if (AppUser.Current.Role.Name != "admin") return Redirect("/cp/");
+            else
+            {
+                Populate();
+                return Page();
+            }
         }
 
         private void Populate()

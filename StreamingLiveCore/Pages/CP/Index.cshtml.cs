@@ -9,9 +9,9 @@ namespace StreamingLiveCore.Pages.CP
 {
     public class IndexModel : PageModel
     {
-        public void OnGet()
+        public IActionResult OnGet()
         {
-            Response.Redirect("/cp/host");
+            return Redirect("/cp/host");
         }
     }
 }

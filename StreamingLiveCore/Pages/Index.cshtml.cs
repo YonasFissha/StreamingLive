@@ -51,7 +51,7 @@ namespace StreamingLiveCore.Pages
         }
 
 
-        public void OnPostRegister()
+        public IActionResult OnPostRegister()
         {
             if (ModelState.IsValid)
             {
@@ -97,8 +97,9 @@ namespace StreamingLiveCore.Pages
                 var claims = new[] { new Claim(ClaimTypes.Name, u.ResetGuid), new Claim(ClaimTypes.Role, "User") };
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
-                Response.Redirect("/cp/");
+                return Redirect("/cp/");
             }
+            else return Page();
             
         }
 

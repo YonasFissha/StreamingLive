@@ -12,11 +12,15 @@ namespace StreamingLiveCore.Pages.CP
         public string ChartOutput;
         public StreamingLiveLib.TrafficSessions Sessions;
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
-            if (AppUser.Current.Role.Name != "admin") Response.Redirect("/cp/");
-            LoadSessions();
-            if (Sessions.Count > 0) ShowChart(Sessions[0]);
+            if (AppUser.Current.Role.Name != "admin") return Redirect("/cp/");
+            else
+            {
+                LoadSessions();
+                if (Sessions.Count > 0) ShowChart(Sessions[0]);
+                return Page();
+            }
         }
 
         public void OnGetShow()

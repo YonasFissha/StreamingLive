@@ -103,14 +103,15 @@ namespace StreamingLiveCore.Pages.CP
         }
 
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
-            if (AppUser.Current.Role.Name != "admin") Response.Redirect("/cp/");
-            CheckPendingChanges();
-            Populate();
-            //AppearanceEditor1.DataUpdated += AppearanceEditor1_DataUpdated;
-            //ButtonEditor1.DataUpdated += ButtonEditor1_DataUpdated;
-            //TabEditor1.DataUpdated += TabEditor1_DataUpdated;
+            if (AppUser.Current.Role.Name != "admin") return Redirect("/cp/");
+            else
+            {
+                CheckPendingChanges();
+                Populate();
+                return Page();
+            }
         }
 
         private void CheckPendingChanges()
@@ -203,9 +204,9 @@ namespace StreamingLiveCore.Pages.CP
                         break;
                 }
                 service.Save();
-                UpdateData();
             }
             OutputMessage = Utils.FormatMessage("<b>Error:</b><ul><li>" + String.Join("</li><li>", errors) + "</li></ul>", true);
+            UpdateData();
         }
 
         private string[] ValidateService()

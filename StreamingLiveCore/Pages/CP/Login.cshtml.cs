@@ -36,7 +36,7 @@ namespace StreamingLiveCore.Pages.CP
         }
 
 
-        public void OnPostSignIn()
+        public IActionResult OnPostSignIn()
         {
             if (ModelState.IsValid)
             {
@@ -58,10 +58,10 @@ namespace StreamingLiveCore.Pages.CP
 
                     //***This doesn't seem like the right way to get the return url;
                     if (ReturnUrl == null || ReturnUrl == "") ReturnUrl = "/cp/";
-                    Response.Redirect(ReturnUrl);
-
+                    return Redirect(ReturnUrl);
                 }
             }
+            return this.Page();
 
         }
 
