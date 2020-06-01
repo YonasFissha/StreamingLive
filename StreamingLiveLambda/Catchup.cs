@@ -49,7 +49,7 @@ namespace StreamingLiveLambda
             QueryResponse response = client.QueryAsync(request).Result;
             if (response.Items.Count > 0) result = JArray.Parse(response.Items[0]["messages"].S);
             
-            double threshold = DateTime.UtcNow.AddMinutes(-5).Ticks;
+            double threshold = DateTime.UtcNow.AddMinutes(-30).Ticks;
             for (int i = result.Count - 1; i >= 0; i--)
             {
                 if (i > 19) result.RemoveAt(i);

@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Amazon.Extensions.NETCore.Setup;
 using Amazon.S3;
 using System.IO;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace StreamingLiveCore
 {
@@ -43,7 +44,16 @@ namespace StreamingLiveCore
                 options.Conventions.AllowAnonymousToPage("/CP/logout");
             });
             services.AddServerSideBlazor();
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(o => o.LoginPath = new PathString("/cp/login"));
+            string a = new PathString("/cp/login");
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(o => {
+                o.Events = new CookieAuthenticationEvents()
+                {
+                    OnRedirectToLogin = async (context) =>
+                    {
+                        context.HttpContext.Response.Redirect(CachedData.BaseUrl + new PathString("/cp/login"));
+                    }
+                };
+            });
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddHttpContextAccessor();
             services.AddSession();
@@ -157,6 +167,7 @@ namespace StreamingLiveCore
             CachedData.SupportEmail = Configuration["AppSettings:SupportEmail"];
             CachedData.S3ContentBucket = Configuration["AppSettings:S3ContentBucket"];
             CachedData.ContentUrl = Configuration["AppSettings:ContentUrl"];
+            CachedData.BaseUrl = Configuration["AppSettings:BaseUrl"];
 
             StreamingLiveLib.CachedData.PasswordSalt = Configuration["AppSettings:PasswordSalt"];
             StreamingLiveLib.CachedData.ConnectionString = Configuration["AppSettings:ConnectionString"];

@@ -12,5 +12,6 @@ namespace StreamingLiveCore
         public static string SupportEmail;
         public static string S3ContentBucket;
         public static string ContentUrl;
+        public static string BaseUrl;
     }
 }
