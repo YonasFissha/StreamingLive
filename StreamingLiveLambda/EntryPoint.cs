@@ -15,11 +15,16 @@ namespace StreamingLiveLambda
             Logging.Init();
             try
             {
-                JObject data = JObject.Parse(req.Body);
-                string action = data["action"].ToString();
-                string room = data["room"].ToString();
                 string apiUrl = "wss://" + req.RequestContext.DomainName + "/" + req.RequestContext.Stage;
-                RouteChat(apiUrl, req.RequestContext.ConnectionId, action, room, data);
+
+                if (req.RequestContext.EventType == "DISCONNECT") RouteChat(apiUrl, req.RequestContext.ConnectionId, "disconnect", null, null);
+                else
+                {
+                    JObject data = JObject.Parse(req.Body);
+                    string action = data["action"].ToString();
+                    string room = data["room"].ToString();
+                    RouteChat(apiUrl, req.RequestContext.ConnectionId, action, room, data);
+                }
                 return new APIGatewayProxyResponse() { Body = "success", StatusCode = 200 };
             }
             catch (Exception ex)
@@ -38,6 +43,7 @@ namespace StreamingLiveLambda
             else if (action == "setCallout") Message.SetCallout(apiUrl, connectionId, room, data);
             else if (action == "sendMessage") Message.Send(apiUrl, connectionId, room, data);
             else if (action == "deleteMessage") Message.Delete(apiUrl, connectionId, room, data);
+            else if (action == "disconnect") Connection.Delete(connectionId);
             else if (action == "cleanup") Cleanup();
         }
 

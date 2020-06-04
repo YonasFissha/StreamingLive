@@ -453,6 +453,12 @@ namespace StreamingLiveCore.Pages.CP
             tab.Text = TabText;
             tab.Icon = TabIcon;
             tab.TabData = TabData;
+            tab.TabType = TabType;
+
+            if (tab.TabType == "page") tab.Url = $"/data/{AppUser.Current.Site.KeyName}/page{tab.TabData}.html";
+            else if (tab.TabType == "chat") tab.Url = "/chat.html";
+            else if (tab.TabType == "prayer") tab.Url = "/prayer.html";
+
             tab.Save();
             if (ButtonId == 0)
             {

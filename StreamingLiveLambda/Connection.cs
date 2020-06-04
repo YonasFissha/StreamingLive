@@ -65,6 +65,20 @@ namespace StreamingLiveLambda
             chatTable.DeleteItemAsync(doc).Wait();
         }
 
+        internal static void Delete(string connectionId)
+        {
+            AmazonDynamoDBClient client = new AmazonDynamoDBClient();
+            ScanRequest request = new ScanRequest
+            {
+                TableName = "connections",
+                FilterExpression = "connectionId = :connectionId",
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue> { { ":connectionId", new AttributeValue { S = connectionId } } },
+                ProjectionExpression = "room, connectionId",
+            };
+            ScanResponse response = client.ScanAsync(request).Result;
+            foreach (Dictionary<string, AttributeValue> item in response.Items) Delete(item["room"].S, item["connectionId"].S);
+        }
+
 
         internal static void Cleanup()
         {
