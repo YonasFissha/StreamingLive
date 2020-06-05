@@ -1,12 +1,12 @@
 {
   "colors": {
-    "primary": "#24b9ff",
+    "primary": "#92e241",
     "contrast": "#ffffff",
     "header": "#24b9ff"
   },
   "logo": {
     "url": "/",
-    "image": "/data/localhost/logo.png?dt=542020092411"
+    "image": "/data/localhost/logo.png?dt=637262866224868449"
   },
   "buttons": [
     {
@@ -51,7 +51,7 @@
   "services": [
     {
       "videoUrl": "https://player.vimeo.com/video/416574393?autoplay=1",
-      "serviceTime": "2020-05-16T18:00",
+      "serviceTime": "2020-06-04T23:55",
       "duration": "60:00",
       "earlyStart": "15:00",
       "chatBefore": "15:00",

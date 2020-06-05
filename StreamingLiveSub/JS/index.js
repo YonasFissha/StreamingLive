@@ -261,6 +261,30 @@ function calloutReceived(data) {
     }
 }
 
+function updateAttendance(data) {
+    if (data.totalViewers == '1') $('#attendanceCount').html('1 viewer online <i class="fas fa-chevron-down"></i>');
+    else $('#attendanceCount').html(data.totalViewers.toString() + ' viewers online <i class="fas fa-chevron-down"></i>');
+    setAttendanceArrow();
+
+    var names = [];
+    for (var i = 0; i < data.viewers.length; i++) {
+        if (data.viewers[i].count > 1) names.push('<div><i class="fas fa-user-alt"></i> ' + data.viewers[i].displayName + '<span>(' + data.viewers[i].count.toString() + ')</span></div>')
+        else names.push('<div><i class="fas fa-user-alt"></i> ' + data.viewers[i].displayName + '</div>')
+    }
+    $('#attendance').html(names.join(''));
+}
+
+function toggleAttendance() {
+    if ($('#attendance').is(':visible')) $('#attendance').hide();
+    else $('#attendance').show();
+    setAttendanceArrow();
+}
+
+function setAttendanceArrow() {
+    if ($('#attendance').is(':visible')) $('#attendanceCount i').removeClass('fa-chevron-down').addClass('fa-chevron-up');
+    else $('#attendanceCount i').removeClass('fa-chevron-up').addClass('fa-chevron-down');
+}
+
 
 function deleteReceived(data) {
     $('#msg-' + data.ts).remove();
@@ -300,6 +324,9 @@ function toggleName(mode) {
 
         if (mode == 'prayer') $("#prayerSendText")[0].focus();
         else $("#sendText")[0].focus();
+
+        socket.send(JSON.stringify({ 'action': 'setName', 'userGuid': userGuid, 'displayName': displayName }));
+
     }
 }
 
@@ -354,6 +381,7 @@ function handleMessage(data) {
     else if (data.action == "setCallout") calloutReceived(data);
     else if (data.action == "deleteMessage") deleteReceived(data);
     else if (data.action == "updateConfig") updateConfig();
+    else if (data.action == "updateAttendance") updateAttendance(data);
     else if (data.action == "catchup") catchup(data);
 }
 
@@ -397,10 +425,12 @@ function initChat() {
 }
 
 
+
+
 function getChatDiv() {
     var result = '<div id="chatContainer">';
 
-    result += '<div id="callout"></div><div id="chatReceive"></div>';
+    result += '<div id="attendance"></div><a id="attendanceCount" href="javascript:toggleAttendance();"></a><div id="callout"></div><div id="chatReceive"></div>';
 
     result += '<div id="chatSend" style="display:none;">'
         + ' <div class="input-group" id="sendPublic"><div class="input-group-prepend"><a href="javascript:void();" data-field="sendText" class="btn btn-outline-secondary emojiButton">😀</a></div><input type="text" class="form-control" id="sendText" /><div class="input-group-append"><a id="sendMessageButton" class="btn btn-primary" style="border-radius:0px" href="javascript:sendMessage();">Send</a></div></div>'

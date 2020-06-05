@@ -21,8 +21,8 @@ namespace StreamingLiveLambda
                 else
                 {
                     JObject data = JObject.Parse(req.Body);
-                    string action = data["action"].ToString();
-                    string room = data["room"].ToString();
+                    string action = Convert.ToString(data["action"]);
+                    string room = Convert.ToString(data["room"]);
                     RouteChat(apiUrl, req.RequestContext.ConnectionId, action, room, data);
                 }
                 return new APIGatewayProxyResponse() { Body = "success", StatusCode = 200 };
@@ -38,12 +38,15 @@ namespace StreamingLiveLambda
         {
             Logging.LogDebug(action);
             if (action == "joinRoom") Connection.Join(apiUrl, connectionId, room, data);
+            else if (action == "setName") Connection.SetName(apiUrl, connectionId, data);
+            else if (action == "disconnect") Connection.Delete(apiUrl, connectionId);
+
             else if (action == "updateConfig") Message.UpdateConfig(apiUrl, connectionId, room, data);
             else if (action == "requestPrayer") Message.RequestPrayer(apiUrl, connectionId, room, data);
             else if (action == "setCallout") Message.SetCallout(apiUrl, connectionId, room, data);
             else if (action == "sendMessage") Message.Send(apiUrl, connectionId, room, data);
             else if (action == "deleteMessage") Message.Delete(apiUrl, connectionId, room, data);
-            else if (action == "disconnect") Connection.Delete(connectionId);
+            
             else if (action == "cleanup") Cleanup();
         }
 

@@ -6,11 +6,11 @@
 }
 @section Head
 {
-    <link rel="stylesheet" href="/css/host.css?ver=20200511">
+    <link rel="stylesheet" href="/css/host.css?ver=20200604">
 }
 @section Scripts
 {
-    <script src="/js/host.js?ver=20200515c"></script>
+    <script src="/js/host.js?ver=20200604b"></script>
     <script>
         keyName = '@StreamingLiveCore.AppUser.Current.Site.KeyName';
         var displayName = '@StreamingLiveCore.AppUser.Current.UserData.DisplayName';
@@ -30,6 +30,8 @@
             <div class="inputBox">
                 <div class="header"><i class="far fa-comments"></i> Public Chat</div>
                 <div id="chatContainer" class="content chatContainer">
+                    <div id="attendance"></div>
+                    <a id="attendanceCount" href="javascript:toggleAttendance();"></a>
                     <div id="callout"></div>
                     <div id="chatReceive" class="chatReceive"></div>
                     <div id="chatSend" class="chatSend">

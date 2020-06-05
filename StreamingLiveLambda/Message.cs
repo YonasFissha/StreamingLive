@@ -69,11 +69,11 @@ namespace StreamingLiveLambda
         }
 
 
-        internal static Task SendMessage(string serviceUrl, string connectionId, string room, JObject message)
+        internal static Task SendMessage(string apiUrl, string connectionId, string room, JObject message)
         {
             Task result = Task.Run(() => {
                 MemoryStream stream = new MemoryStream(UTF8Encoding.UTF8.GetBytes(message.ToString(Newtonsoft.Json.Formatting.None)));
-                AmazonApiGatewayManagementApiConfig config = new AmazonApiGatewayManagementApiConfig() { ServiceURL = serviceUrl  };
+                AmazonApiGatewayManagementApiConfig config = new AmazonApiGatewayManagementApiConfig() { ServiceURL = apiUrl  };
                 AmazonApiGatewayManagementApiClient client = new AmazonApiGatewayManagementApiClient(config);
                 PostToConnectionRequest postReq = new PostToConnectionRequest() { ConnectionId = connectionId, Data = stream };
                 try
@@ -86,8 +86,8 @@ namespace StreamingLiveLambda
                 catch (Exception ex)
                 {
                     Logging.LogDebug("Deleteing conneciton " + connectionId);
-                    error = serviceUrl + " - " + connectionId + " - " + ex.ToString();
-                    Connection.Delete(room, connectionId);
+                    error = apiUrl + " - " + connectionId + " - " + ex.ToString();
+                    Connection.Delete(apiUrl, room, connectionId);
                     Logging.LogDebug("Deleted conneciton " + connectionId);
                 }
             });

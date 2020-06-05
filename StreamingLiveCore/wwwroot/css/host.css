@@ -17,6 +17,12 @@
     overflow-y: scroll;
 }
 
+#attendance { display: none;flex: 1 0 0;padding: 10px;overflow-y: scroll;}
+#attendance span {float:right;color:#999;}
+#attendance i {color:#999; margin-right:10px;}
+#attendanceCount {flex:0 0 25px; background-color:#DDD;display:block;text-align:center;}
+#attendanceCount:hover {text-decoration:none;}
+
 .chatSend {
     flex: 0 0 0px;
 }
@@ -33,3 +39,6 @@ prayerRequests a {display:block;}
 
 .popover {max-width:400px !important;z-index:9999;}
 
+@media (max-height:800px) {
+    h1{display:none;}
+}

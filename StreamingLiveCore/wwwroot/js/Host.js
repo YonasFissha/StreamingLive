@@ -161,6 +161,30 @@ function calloutReceived(data) {
     }
 }
 
+function updateAttendance(data) {
+    if (data.totalViewers == '1') $('#attendanceCount').html('1 viewer online <i class="fas fa-chevron-down"></i>');
+    else $('#attendanceCount').html(data.totalViewers.toString() + ' viewers online <i class="fas fa-chevron-down"></i>');
+    setAttendanceArrow();
+
+    var names = [];
+    for (var i = 0; i < data.viewers.length; i++) {
+        if (data.viewers[i].count > 1) names.push('<div><i class="fas fa-user-alt"></i> ' + data.viewers[i].displayName + '<span>(' + data.viewers[i].count.toString() + ')</span></div>')
+        else names.push('<div><i class="fas fa-user-alt"></i> ' + data.viewers[i].displayName + '</div>')
+    }
+    $('#attendance').html(names.join(''));
+}
+
+function toggleAttendance() {
+    if ($('#attendance').is(':visible')) $('#attendance').hide();
+    else $('#attendance').show();
+    setAttendanceArrow();
+}
+
+function setAttendanceArrow() {
+    if ($('#attendance').is(':visible')) $('#attendanceCount i').removeClass('fa-chevron-down').addClass('fa-chevron-up');
+    else $('#attendanceCount i').removeClass('fa-chevron-up').addClass('fa-chevron-down');
+}
+
 
 function prayerRequestReceived(data) {
     $('#prayerRequests').append('<div><a id=\"' + data.guid + '\" href="javascript:claimPrayer(\'' + data.guid + '\', \'' + escape(data.name) + '\');\"">' + data.name + '</a></div>');
@@ -173,7 +197,7 @@ function claimPrayer(guid, name) {
     $('#prayerChat').show();
     $('#privatePrayerTitle').text('Prayer with ' + name);
     $('#prayerReceive').html('');
-    socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': keyName + prayerGuid }));
+    socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': keyName + prayerGuid, 'displayName': displayName }));
 }
 
 function chatReceived(data) {
@@ -243,6 +267,7 @@ function handleMessage(data) {
     else if (data.action == "deleteMessage") deleteReceived(data);
     else if (data.action == "requestPrayer") prayerRequestReceived(data);
     else if (data.action == "updateConfig") window.location.reload();
+    else if (data.action == "updateAttendance") updateAttendance(data);
     else if (data.action == "catchup") catchup(data);
 }
 
@@ -251,8 +276,8 @@ function init() {
 
     socket = new WebSocket('wss://lr6pbsl0ji.execute-api.us-east-2.amazonaws.com/production');
     socket.onopen = function (e) {
-        socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': keyName }));
-        socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': keyName + '.host' }));
+        socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': keyName, 'displayName': displayName }));
+        socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': keyName + '.host', 'displayName': displayName }));
         setTimeout(keepAlive, 30 * 1000);
     };
 
