@@ -153,6 +153,7 @@ namespace StreamingLiveLambda
 
             JObject result = new JObject();
             result["action"] = "updateAttendance";
+            result["room"] = room;
             result["viewers"] = viewers;
             result["totalViewers"] = names.Count;
             return result;

@@ -10,7 +10,8 @@
 
 function selectSite(id) {
     $.get('/cp/usermenu?handler=Select&id=' + id.toString(), function (data) {
-        window.location.href = '/cp/';
+        if (window.location.href.indexOf('/cp/host') > -1) window.location.reload();
+        else window.location.href = '/cp/';
     });
 }
 

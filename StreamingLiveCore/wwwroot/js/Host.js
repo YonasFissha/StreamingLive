@@ -162,6 +162,7 @@ function calloutReceived(data) {
 }
 
 function updateAttendance(data) {
+    if (data.room.indexOf('.') > -1) return; //only update for the main room, not host or prayer rooms.
     if (data.totalViewers == '1') $('#attendanceCount').html('1 viewer online <i class="fas fa-chevron-down"></i>');
     else $('#attendanceCount').html(data.totalViewers.toString() + ' viewers online <i class="fas fa-chevron-down"></i>');
     setAttendanceArrow();
