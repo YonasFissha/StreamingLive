@@ -21,7 +21,7 @@
         <div class="navbar-nav ml-auto">
             @if (StreamingLiveCore.AppUser.Current!=null && StreamingLiveCore.AppUser.Current.IsAuthenticated)
             {
-                <a href="javascript:toggleUserMenu();"><i class="fas fa-user"></i> &nbsp; @StreamingLiveCore.AppUser.Current.UserData.DisplayName (@StreamingLiveCore.AppUser.Current.Site.KeyName) <i class="fas fa-caret-down"></i></a>
+                <a href="javascript:toggleUserMenu();"><i class="fas fa-user"></i> &nbsp; @StreamingLiveCore.AppUser.Current.UserData.DisplayName (@StreamingLiveCore.AppUser.CurrentSite.KeyName) <i class="fas fa-caret-down"></i></a>
             }
             else
             {

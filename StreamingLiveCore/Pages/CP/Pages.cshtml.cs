@@ -42,7 +42,7 @@ namespace StreamingLiveCore.Pages.CP
 
         private void Populate()
         {
-            Pages = StreamingLiveLib.Pages.LoadBySiteId(AppUser.Current.Site.Id);
+            Pages = StreamingLiveLib.Pages.LoadBySiteId(AppUser.CurrentSite.Id);
         }
 
         private void ShowEditPage()
@@ -55,7 +55,7 @@ namespace StreamingLiveCore.Pages.CP
             {
                 try
                 {
-                    PageBody = Utils.GetUrlContents(CachedData.ContentUrl + $"/data/{AppUser.Current.Site.KeyName}/page{SelectedPage.Id}.html");
+                    PageBody = Utils.GetUrlContents(CachedData.ContentUrl + $"/data/{AppUser.CurrentSite.KeyName}/page{SelectedPage.Id}.html");
                     PageBody = System.Text.RegularExpressions.Regex.Match(PageBody, "<body>.*</body>").Value.Replace("<body>", "").Replace("</body>", "");
                 } catch
                 {
@@ -74,7 +74,7 @@ namespace StreamingLiveCore.Pages.CP
         public void OnPostDelete()
         {
             StreamingLiveLib.Page page = StreamingLiveLib.Page.Load(PageId);
-            S3Client.DeleteAsync(CachedData.S3ContentBucket, $"data/{AppUser.Current.Site.KeyName}/page{page.Id}.html", null).Wait();
+            S3Client.DeleteAsync(CachedData.S3ContentBucket, $"data/{AppUser.CurrentSite.KeyName}/page{page.Id}.html", null).Wait();
             StreamingLiveLib.Page.Delete(PageId);
             Populate();
         }
@@ -89,13 +89,13 @@ namespace StreamingLiveCore.Pages.CP
             StreamingLiveLib.Page page = (PageId == 0) ? new StreamingLiveLib.Page() : StreamingLiveLib.Page.Load(PageId);
             page.Name = Name;
             page.LastModified = DateTime.UtcNow;
-            page.SiteId = AppUser.Current.Site.Id;
+            page.SiteId = AppUser.CurrentSite.Id;
             page.Save();
 
-            string cssLink = "<link href=\"/data/" + AppUser.Current.Site.KeyName + "/data.css\" rel=\"stylesheet\">" 
+            string cssLink = "<link href=\"/data/" + AppUser.CurrentSite.KeyName + "/data.css\" rel=\"stylesheet\">" 
                 + "<link href=\"/css/page.css\" rel=\"stylesheet\">";
 
-            Utils.WriteToS3(S3Client, $"data/{AppUser.Current.Site.KeyName}/page{page.Id}.html", $"<html><head>{cssLink}</head><body>{PageBody}</body></html>", "text/html");
+            Utils.WriteToS3(S3Client, $"data/{AppUser.CurrentSite.KeyName}/page{page.Id}.html", $"<html><head>{cssLink}</head><body>{PageBody}</body></html>", "text/html");
             Populate();
         }
 

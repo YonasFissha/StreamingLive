@@ -62,7 +62,7 @@ namespace StreamingLiveCore.Pages.CP
 
         public ActionResult OnPostDelete()
         {
-            StreamingLiveLib.Role r = StreamingLiveLib.Role.Load(Id, AppUser.Current.Site.Id);
+            StreamingLiveLib.Role r = StreamingLiveLib.Role.Load(Id, AppUser.CurrentSite.Id);
             StreamingLiveLib.Role.Delete(r.Id);
             if (StreamingLiveLib.Roles.LoadByUserId(Id).Count == 0) StreamingLiveLib.User.Delete(Id);
             return Redirect("/cp/users/");
@@ -86,11 +86,11 @@ namespace StreamingLiveCore.Pages.CP
                         Id = user.Id;
                     }
                     else Id = existing.Id;
-                    new StreamingLiveLib.Role() { SiteId = AppUser.Current.Site.Id, Name = SelectedRole, UserId = Id }.Save();
+                    new StreamingLiveLib.Role() { SiteId = AppUser.CurrentSite.Id, Name = SelectedRole, UserId = Id }.Save();
                 }
                 else
                 {
-                    StreamingLiveLib.Role role = StreamingLiveLib.Role.Load(Id, AppUser.Current.Site.Id);
+                    StreamingLiveLib.Role role = StreamingLiveLib.Role.Load(Id, AppUser.CurrentSite.Id);
                     role.Name = SelectedRole;
                     role.Save();
                 }
@@ -103,7 +103,7 @@ namespace StreamingLiveCore.Pages.CP
 
         private void LoadUsers()
         {
-            Users = StreamingLiveLib.Users.LoadBySiteId(AppUser.Current.Site.Id);
+            Users = StreamingLiveLib.Users.LoadBySiteId(AppUser.CurrentSite.Id);
         }
 
 
@@ -111,7 +111,7 @@ namespace StreamingLiveCore.Pages.CP
         private void ShowEditUser(int userId)
         {
             StreamingLiveLib.User selectedUser = (userId == 0) ? new StreamingLiveLib.User() : StreamingLiveLib.User.Load(userId);
-            StreamingLiveLib.Role selectedRole = StreamingLiveLib.Role.Load(userId, AppUser.Current.Site.Id);
+            StreamingLiveLib.Role selectedRole = StreamingLiveLib.Role.Load(userId, AppUser.CurrentSite.Id);
 
             Id = selectedUser.Id;
             Email = selectedUser.Email;

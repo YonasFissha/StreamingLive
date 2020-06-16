@@ -37,7 +37,9 @@ namespace StreamingLiveCore.Pages.CP
             int id = Convert.ToInt32(Request.Query["id"]);
             AppUser au = AppUser.Current;
 
-            au.Site = StreamingLiveLib.Site.Load(id);
+            StreamingLiveLib.Site site = StreamingLiveLib.Site.Load(id);
+            au.Sites.Add(site);
+            AppUser.CurrentSite = site;
             au.Role = new StreamingLiveLib.Role() { Name = "admin", SiteId = id, UserId = AppUser.Current.UserData.Id };
             AppUser.Current = au;
             return Redirect("/cp/");

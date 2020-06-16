@@ -12,17 +12,38 @@ namespace StreamingLiveCore
     {
         public StreamingLiveLib.User UserData;
         public StreamingLiveLib.Sites Sites;
-        public StreamingLiveLib.Site Site;
+        //public StreamingLiveLib.Site Site;
         public StreamingLiveLib.Roles Roles;
         public StreamingLiveLib.Role Role;
         public bool IsSiteAdmin = false;
 
-        
-        
+
+
 
         public bool IsAuthenticated
         {
             get { return UserData != null; }
+        }
+
+
+        public static StreamingLiveLib.Site CurrentSite
+        {
+            get
+            {
+                StreamingLiveLib.Site result = null;
+
+                if (AppContext.Current.User.Identity.IsAuthenticated)
+                {
+                    int currentSiteId = Convert.ToInt32(AppContext.Current.Request.Cookies["currentSite"]);
+                    result = AppUser.Current.Sites.GetById(currentSiteId);
+                }
+                if (result==null) AppContext.Current.Response.Redirect("/cp/logout.aspx");
+                return result;
+            }
+            set
+            {
+                AppContext.Current.Response.Cookies.Append("currentSite", value.Id.ToString());
+            }
         }
 
         public static AppUser Current
@@ -51,6 +72,7 @@ namespace StreamingLiveCore
             }
             set {
                 HttpContext context = AppContext.Current;
+                context.Session.Clear();
                 context.Session.SetString("AppUser", JsonConvert.SerializeObject(value)); 
             }
         }
@@ -63,7 +85,7 @@ namespace StreamingLiveCore
             StreamingLiveLib.Roles roles = StreamingLiveLib.Roles.LoadByUserId(u.Id);
             StreamingLiveLib.Role role = roles.GetBySiteId(sites[0].Id);
             if (role == null) return null;
-            AppUser user = new AppUser { UserData = u, Sites = sites, Site = sites[0], Role = role, Roles = roles, IsSiteAdmin = roles.GetByName("siteadmin").Count > 0 };
+            AppUser user = new AppUser { UserData = u, Sites = sites, Role = role, Roles = roles, IsSiteAdmin = roles.GetByName("siteadmin").Count > 0 };
             AppUser.Current = user;
             return user;
         }

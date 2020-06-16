@@ -33,7 +33,7 @@ namespace StreamingLiveCore.Pages.CP
 
         private void LoadSessions()
         {
-            Sessions = new StreamingLiveLib.TrafficSessions(StreamingLiveLib.TrafficMinutes.Load(DateTime.Today.AddDays(-5), DateTime.Today.AddDays(1), AppUser.Current.Site.KeyName + ".streaminglive.church"));
+            Sessions = new StreamingLiveLib.TrafficSessions(StreamingLiveLib.TrafficMinutes.Load(DateTime.Today.AddDays(-5), DateTime.Today.AddDays(1), AppUser.CurrentSite.KeyName + ".streaminglive.church"));
             Sessions = Sessions.Sort("StartTime", true);
         }
 

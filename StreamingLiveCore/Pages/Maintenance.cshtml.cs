@@ -40,7 +40,7 @@ namespace StreamingLiveCore.Pages
             {
                 foreach (StreamingLiveLib.Site site in StreamingLiveLib.Sites.Load(siteIds.ToArray()))
                 {
-                    Utils.WriteToS3(S3Client, $"data/{AppUser.Current.Site.KeyName}/data.json", site.LoadJson(), "application/json");
+                    Utils.WriteToS3(S3Client, $"data/{AppUser.CurrentSite.KeyName}/data.json", site.LoadJson(), "application/json");
                 }
             }
         }

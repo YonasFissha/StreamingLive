@@ -21,8 +21,9 @@ namespace StreamingLiveCore.Pages.CP
         {
             int id = Convert.ToInt32(Request.Query["id"]);
             AppUser au = AppUser.Current;
-            au.Site = au.Sites.GetById(id);
-            AppUser.Current= au;
+            StreamingLiveLib.Site site = au.Sites.GetById(id);
+            AppUser.CurrentSite = site;
+            //AppUser.Current= au;
         }
 
         private void OutputSites()

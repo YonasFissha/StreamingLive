@@ -56,6 +56,8 @@ namespace StreamingLiveCore.Pages.CP
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
 
+                    AppUser.CurrentSite = AppUser.Current.Sites[0];
+
                     //***This doesn't seem like the right way to get the return url;
                     if (ReturnUrl == null || ReturnUrl == "") ReturnUrl = "/cp/";
                     return Redirect(ReturnUrl);

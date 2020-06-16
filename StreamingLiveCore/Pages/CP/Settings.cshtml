@@ -43,9 +43,9 @@
                 <div class="header"><i class="far fa-calendar-alt"></i> Preview</div>
                 <div class="content">
                     <div id="previewWrapper">
-                        <iframe id="previewFrame" src="https://@(AppUser.Current.Site.KeyName).streaminglive.church/?preview=1"></iframe>
+                        <iframe id="previewFrame" src="https://@(AppUser.CurrentSite.KeyName).streaminglive.church/?preview=1"></iframe>
                     </div>
-                    <p style="margin-top:10px;margin-bottom:0px;">View your live site: <a href="https://@(AppUser.Current.Site.KeyName).streaminglive.church/" target="_blank">https://@(AppUser.Current.Site.KeyName).streaminglive.church/</a></p>
+                    <p style="margin-top:10px;margin-bottom:0px;">View your live site: <a href="https://@(AppUser.CurrentSite.KeyName).streaminglive.church/" target="_blank">https://@(AppUser.CurrentSite.KeyName).streaminglive.church/</a></p>
                 </div>
             </div>
 
@@ -261,7 +261,7 @@
         <script>
             socket = new WebSocket('wss://lr6pbsl0ji.execute-api.us-east-2.amazonaws.com/production');
             socket.onopen = function (e) {
-                socket.send(JSON.stringify({ 'action': 'updateConfig', 'room': '<%=StreamingLiveWeb.AppUser.Current.Site.KeyName%>' }));
+                socket.send(JSON.stringify({ 'action': 'updateConfig', 'room': '<%=StreamingLiveWeb.AppUser.CurrentSite.KeyName%>' }));
             };
         </script>
     </asp:PlaceHolder>

@@ -119,8 +119,8 @@ namespace StreamingLiveCore.Pages.CP
             PendingChanges = true;
             try
             {
-                string existing = Utils.GetUrlContents($"{CachedData.ContentUrl}/data/{AppUser.Current.Site.KeyName}/data.json");
-                string current = AppUser.Current.Site.LoadJson();
+                string existing = Utils.GetUrlContents($"{CachedData.ContentUrl}/data/{AppUser.CurrentSite.KeyName}/data.json");
+                string current = AppUser.CurrentSite.LoadJson();
                 PendingChanges = existing != current;
             }
             catch { }
@@ -128,11 +128,11 @@ namespace StreamingLiveCore.Pages.CP
 
         private void LoadData()
         {
-            Services = StreamingLiveLib.Services.LoadBySiteId(AppUser.Current.Site.Id).Sort("ServiceTime", false);
-            Buttons = StreamingLiveLib.Buttons.LoadBySiteId(AppUser.Current.Site.Id);
-            Tabs = StreamingLiveLib.Tabs.LoadBySiteId(AppUser.Current.Site.Id);
+            Services = StreamingLiveLib.Services.LoadBySiteId(AppUser.CurrentSite.Id).Sort("ServiceTime", false);
+            Buttons = StreamingLiveLib.Buttons.LoadBySiteId(AppUser.CurrentSite.Id);
+            Tabs = StreamingLiveLib.Tabs.LoadBySiteId(AppUser.CurrentSite.Id);
             Pages = new List<SelectListItem>();
-            foreach (StreamingLiveLib.Page p in StreamingLiveLib.Pages.LoadBySiteId(AppUser.Current.Site.Id))
+            foreach (StreamingLiveLib.Page p in StreamingLiveLib.Pages.LoadBySiteId(AppUser.CurrentSite.Id))
             {
                 Pages.Add(new SelectListItem(p.Name, p.Id.ToString()));
             }
@@ -156,8 +156,8 @@ namespace StreamingLiveCore.Pages.CP
 
         public void OnGetPublish()
         {
-            Utils.WriteToS3(S3Client, $"data/{AppUser.Current.Site.KeyName}/data.json", AppUser.Current.Site.LoadJson(), "application/json");
-            Utils.WriteToS3(S3Client, $"data/{AppUser.Current.Site.KeyName}/data.css", AppUser.Current.Site.GetCss(), "text/css");
+            Utils.WriteToS3(S3Client, $"data/{AppUser.CurrentSite.KeyName}/data.json", AppUser.CurrentSite.LoadJson(), "application/json");
+            Utils.WriteToS3(S3Client, $"data/{AppUser.CurrentSite.KeyName}/data.css", AppUser.CurrentSite.GetCss(), "text/css");
             PendingChanges = false;
             Populate();
         }
@@ -177,7 +177,7 @@ namespace StreamingLiveCore.Pages.CP
             string[] errors = ValidateService();
             if (errors.Length == 0)
             {
-                StreamingLiveLib.Service service = (ServiceId == 0) ? new StreamingLiveLib.Service() { SiteId = AppUser.Current.Site.Id } : StreamingLiveLib.Service.Load(ServiceId, AppUser.Current.Site.Id);
+                StreamingLiveLib.Service service = (ServiceId == 0) ? new StreamingLiveLib.Service() { SiteId = AppUser.CurrentSite.Id } : StreamingLiveLib.Service.Load(ServiceId, AppUser.CurrentSite.Id);
                 service.VideoUrl = VideoKey;
                 service.EarlyStart = earlyStart;
                 service.Duration = duration;
@@ -255,7 +255,7 @@ namespace StreamingLiveCore.Pages.CP
 
         public void OnPostDelete()
         {
-            StreamingLiveLib.Service.Delete(ServiceId, AppUser.Current.Site.Id);
+            StreamingLiveLib.Service.Delete(ServiceId, AppUser.CurrentSite.Id);
             UpdateData();
             Populate();
         }
@@ -273,7 +273,7 @@ namespace StreamingLiveCore.Pages.CP
 
         private void EditServiceShow()
         {
-            SelectedService = (ServiceId == 0) ? new StreamingLiveLib.Service() { SiteId = AppUser.Current.Site.Id } : StreamingLiveLib.Service.Load(ServiceId, AppUser.Current.Site.Id);
+            SelectedService = (ServiceId == 0) ? new StreamingLiveLib.Service() { SiteId = AppUser.CurrentSite.Id } : StreamingLiveLib.Service.Load(ServiceId, AppUser.CurrentSite.Id);
             Provider = "custom_watchparty";
             if (ServiceId > 0)
             {
@@ -322,7 +322,7 @@ namespace StreamingLiveCore.Pages.CP
         private void EditButtonShow()
         {
             LoadData();  
-            SelectedButton = (ButtonId == 0) ? new StreamingLiveLib.Button() : StreamingLiveLib.Button.Load(ButtonId, AppUser.Current.Site.Id);
+            SelectedButton = (ButtonId == 0) ? new StreamingLiveLib.Button() : StreamingLiveLib.Button.Load(ButtonId, AppUser.CurrentSite.Id);
             ButtonUrl = SelectedButton.Url;
             ButtonText = SelectedButton.Text;
         }
@@ -367,14 +367,14 @@ namespace StreamingLiveCore.Pages.CP
 
         public void OnPostButtonDelete()
         {
-            StreamingLiveLib.Button.Delete(ButtonId, AppUser.Current.Site.Id);
+            StreamingLiveLib.Button.Delete(ButtonId, AppUser.CurrentSite.Id);
             UpdateData();
             Populate();
         }
 
         public void OnPostButtonSave()
         {
-            StreamingLiveLib.Button button = (ButtonId == 0) ? new StreamingLiveLib.Button() { SiteId = AppUser.Current.Site.Id, Sort = 999 } : StreamingLiveLib.Button.Load(ButtonId, AppUser.Current.Site.Id);
+            StreamingLiveLib.Button button = (ButtonId == 0) ? new StreamingLiveLib.Button() { SiteId = AppUser.CurrentSite.Id, Sort = 999 } : StreamingLiveLib.Button.Load(ButtonId, AppUser.CurrentSite.Id);
             button.Url = ButtonUrl;
             button.Text = ButtonText;
             button.Save();
@@ -407,7 +407,7 @@ namespace StreamingLiveCore.Pages.CP
         private void SelectTab()
         {
             LoadData();
-            SelectedTab = (TabId == 0) ? new StreamingLiveLib.Tab() { TabType="url" } : StreamingLiveLib.Tab.Load(TabId, AppUser.Current.Site.Id);
+            SelectedTab = (TabId == 0) ? new StreamingLiveLib.Tab() { TabType="url" } : StreamingLiveLib.Tab.Load(TabId, AppUser.CurrentSite.Id);
         }
 
         public void OnGetTabUp()
@@ -448,14 +448,14 @@ namespace StreamingLiveCore.Pages.CP
 
         public void OnPostTabSave()
         {
-            StreamingLiveLib.Tab tab = (TabId == 0) ? new StreamingLiveLib.Tab() { SiteId = AppUser.Current.Site.Id, Sort = 999 } : StreamingLiveLib.Tab.Load(TabId, AppUser.Current.Site.Id);
+            StreamingLiveLib.Tab tab = (TabId == 0) ? new StreamingLiveLib.Tab() { SiteId = AppUser.CurrentSite.Id, Sort = 999 } : StreamingLiveLib.Tab.Load(TabId, AppUser.CurrentSite.Id);
             tab.Url = TabUrl;
             tab.Text = TabText;
             tab.Icon = TabIcon;
             tab.TabData = TabData;
             tab.TabType = TabType;
 
-            if (tab.TabType == "page") tab.Url = $"/data/{AppUser.Current.Site.KeyName}/page{tab.TabData}.html";
+            if (tab.TabType == "page") tab.Url = $"/data/{AppUser.CurrentSite.KeyName}/page{tab.TabData}.html";
             else if (tab.TabType == "chat") tab.Url = "/chat.html";
             else if (tab.TabType == "prayer") tab.Url = "/prayer.html";
 
@@ -471,7 +471,7 @@ namespace StreamingLiveCore.Pages.CP
 
         public void OnPostTabDelete()
         {
-            StreamingLiveLib.Tab.Delete(TabId, AppUser.Current.Site.Id);
+            StreamingLiveLib.Tab.Delete(TabId, AppUser.CurrentSite.Id);
             UpdateData();
             Populate();
         }
@@ -498,7 +498,7 @@ namespace StreamingLiveCore.Pages.CP
         #region Appearance
         private void PopulateAppearance()
         {
-            StreamingLiveLib.Site site = AppUser.Current.Site;
+            StreamingLiveLib.Site site = AppUser.CurrentSite;
             if (site.LogoUrl == "" || site.LogoUrl == null) LogoHtml = "none";
             else LogoHtml = $"<img src=\"{CachedData.ContentUrl}{site.LogoUrl}\" class=\"img-fluid\" />";
             HomePageUrl = site.HomePageUrl;
@@ -510,7 +510,7 @@ namespace StreamingLiveCore.Pages.CP
         public void OnPostAppearanceSave()
         {
             
-            StreamingLiveLib.Site site = AppUser.Current.Site;
+            StreamingLiveLib.Site site = AppUser.CurrentSite;
             site.HomePageUrl = HomePageUrl;
             site.PrimaryColor = PrimaryColor;
             site.ContrastColor = ContrastColor;
@@ -543,7 +543,7 @@ namespace StreamingLiveCore.Pages.CP
                         BucketName = CachedData.S3ContentBucket,
                         InputStream = outStream,
                         ContentType = "image/png",
-                        Key = $"data/{AppUser.Current.Site.KeyName}/logo.png",
+                        Key = $"data/{AppUser.CurrentSite.KeyName}/logo.png",
                         CannedACL = S3CannedACL.PublicRead
                     }).Wait();
                 }
@@ -554,8 +554,9 @@ namespace StreamingLiveCore.Pages.CP
 
             site.Save();
 
+
             AppUser au = AppUser.Current;
-            au.Site = site;
+            au.Sites = StreamingLiveLib.Sites.LoadByUserId(AppUser.Current.UserData.Id);
             AppUser.Current = au; //*** This really shouldn't be necessary.  Updated session variables should automatically store in dynamodb.
 
             UpdateData();
