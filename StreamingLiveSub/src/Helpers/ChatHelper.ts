@@ -20,6 +20,7 @@ export class ChatHelper {
         ChatHelper.socket = new WebSocket('wss://lr6pbsl0ji.execute-api.us-east-2.amazonaws.com/production');
         ChatHelper.socket.onopen = function (e) {
             ChatHelper.socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': keyName }));
+            if (ChatHelper.user.displayName !== 'Anonymous') ChatHelper.setName(ChatHelper.user.displayName);
             setTimeout(ChatHelper.keepAlive, 30 * 1000);
         };
 
@@ -27,6 +28,12 @@ export class ChatHelper {
             ChatHelper.handleMessage(JSON.parse(event.data));
             messageReceived({ ...ChatHelper.state });
         };
+    }
+
+    static setName(name: string) {
+        ChatHelper.user.displayName = name;
+        Cookies.set('displayName', name);
+        ChatHelper.socket.send(JSON.stringify({ 'action': 'setName', 'userGuid': ChatHelper.user.guid, 'displayName': name }));
     }
 
     static requestPrayer() {
@@ -37,11 +44,11 @@ export class ChatHelper {
     }
 
     static handleMessage(msg: RawChatMessageInterface) {
-        if (msg.action == "updateAttendance") { if (msg.viewers !== undefined) ChatHelper.state.viewers = msg.viewers; }
-        else if (msg.action == "sendMessage") ChatHelper.chatReceived(msg);
-        else if (msg.action == "catchup") ChatHelper.catchup(msg);
-        else if (msg.action == "setCallout") ChatHelper.state.callout = msg.msg || '';
-        else if (msg.action == "deleteMessage") ChatHelper.deleteMessage(msg);
+        if (msg.action === "updateAttendance") { if (msg.viewers !== undefined) ChatHelper.state.viewers = msg.viewers; }
+        else if (msg.action === "sendMessage") ChatHelper.chatReceived(msg);
+        else if (msg.action === "catchup") ChatHelper.catchup(msg);
+        else if (msg.action === "setCallout") ChatHelper.state.callout = msg.msg || '';
+        else if (msg.action === "deleteMessage") ChatHelper.deleteMessage(msg);
         //console.log(ChatHelper.state);
         /*
         else if (msg.action == "updateConfig") updateConfig();
@@ -111,10 +118,6 @@ export class ChatHelper {
         return result;
     }
 
-    static setNameCookie(name: string) {
-        ChatHelper.user.displayName = name;
-        Cookies.set('displayName', name);
-    }
 
     static S4() {
         return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);

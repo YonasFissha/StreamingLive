@@ -7,7 +7,8 @@ import { ChatReceive } from './ChatReceive';
 interface Props {
     user: UserInterface,
     chatState: ChatStateInterface | undefined
-    nameUpdateFunction: (displayName: string) => void
+    nameUpdateFunction: (displayName: string) => void,
+    visible: boolean
 }
 
 export const RequestPrayer: React.FC<Props> = (props) => {
@@ -20,13 +21,13 @@ export const RequestPrayer: React.FC<Props> = (props) => {
     }
 
 
-    if (prayerGuid !== '') return (<div id="chatContainer">
+    if (prayerGuid !== '') return (<div className="chatContainer" style={(props.visible) ? {} : { display: 'none' }}>
         <ChatName user={props.user} updateFunction={props.nameUpdateFunction} />
         <ChatReceive messages={props.chatState?.prayerMessages || []} />
         <ChatSend room={ConfigHelper.current.keyName + prayerGuid} />
     </div>)
 
-    else return (<div id="prayerContainer">
+    else return (<div id="prayerContainer" style={(props.visible) ? {} : { display: 'none' }}>
         Need prayer?  Start a private chat session with one of our hosts.
         <button id="requestPrayerButton" className="btn btn-primary btn-block" onClick={requestPrayer}>Request Prayer</button>
     </div>);

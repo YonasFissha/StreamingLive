@@ -33,7 +33,7 @@ const App: React.FC = () => {
     var u = { ...user };
     u.displayName = displayName;
     setUser(u);
-    ChatHelper.setNameCookie(displayName);
+    ChatHelper.setName(displayName);
   }
 
   React.useEffect(loadConfig, []);

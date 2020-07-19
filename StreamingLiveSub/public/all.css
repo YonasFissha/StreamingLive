@@ -33,7 +33,7 @@ body {margin:0px;padding:0px;background-color:#000;font-family: 'Roboto', sans-s
 /*#tabs > *:not(:first-child) {border-left:1px solid var(--primaryColor);}*/
 .frame {flex:1;display:flex}
 
-#chatContainer, #prayerContainer {display:flex;flex-direction:column;background-color:#FFF;flex:1;}
+.chatContainer, #prayerContainer {display:flex;flex-direction:column;background-color:#FFF;flex:1;}
 #chatReceive, #prayerReceive {flex:1 0 0; padding:10px;overflow-y:scroll;}
 #callout {font-size:20px;padding-bottom:15px;border-bottom:2px solid #EEE;margin-bottom:15px;padding-left:5px;padding-right:5px;padding-top:5px;}
 #prayerContainer {padding-left:25%;padding-right: 25%;padding-top:100px}

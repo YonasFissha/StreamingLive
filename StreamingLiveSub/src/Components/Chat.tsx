@@ -5,7 +5,8 @@ import { ServicesHelper } from '../Helpers';
 interface Props {
     user: UserInterface,
     chatState: ChatStateInterface | undefined
-    nameUpdateFunction: (displayName: string) => void
+    nameUpdateFunction: (displayName: string) => void,
+    visible: boolean
 }
 
 export const Chat: React.FC<Props> = (props) => {
@@ -24,9 +25,9 @@ export const Chat: React.FC<Props> = (props) => {
 
     React.useEffect(() => { setInterval(updateChatEnabled, 1000); }, []);
 
-    var className = (chatEnabled) ? '' : 'chatDisabled';
+    var className = (chatEnabled) ? 'chatContainer' : 'chatContainer chatDisabled';
     return (
-        <div id="chatContainer" className={className}>
+        <div className={className} style={(props.visible) ? {} : { display: 'none' }} >
             <ChatName user={props.user} updateFunction={props.nameUpdateFunction} />
             <Attendance viewers={props.chatState?.viewers} />
             <Callout callout={props.chatState?.callout || ''} />

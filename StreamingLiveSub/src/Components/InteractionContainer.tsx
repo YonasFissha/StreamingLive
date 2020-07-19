@@ -31,19 +31,19 @@ export const InteractionContainer: React.FC<Props> = (props) => {
             for (let i = 0; i < props.tabs.length; i++) {
                 let t = props.tabs[i];
                 result.push(<a key={"anchor" + i.toString()} href="#" onClick={(e: React.MouseEvent) => { e.preventDefault(); setSelectedTab(i); }} className="tab"><i className={t.icon}></i>{t.text}</a>);
-                if (i === selectedTab) {
-                    switch (t.type) {
-                        case 'chat':
-                            result.push(<Chat key={i} user={props.user} nameUpdateFunction={props.nameUpdateFunction} chatState={props.chatState} />);
-                            break;
-                        case 'prayer':
-                            result.push(<RequestPrayer key={i} user={props.user} nameUpdateFunction={props.nameUpdateFunction} chatState={props.chatState} />);
-                            break;
-                        default:
-                            result.push(<div key={i} id={"frame" + i.toString()} className="frame"><iframe src={t.url} frameBorder="0"></iframe></div>);
-                            break;
-                    }
+                var visible = i === selectedTab;
+                switch (t.type) {
+                    case 'chat':
+                        result.push(<Chat key={i} user={props.user} nameUpdateFunction={props.nameUpdateFunction} chatState={props.chatState} visible={visible} />);
+                        break;
+                    case 'prayer':
+                        result.push(<RequestPrayer key={i} user={props.user} nameUpdateFunction={props.nameUpdateFunction} chatState={props.chatState} visible={visible} />);
+                        break;
+                    default:
+                        result.push(<div key={i} id={"frame" + i.toString()} className="frame" style={(!visible) ? { display: 'none' } : {}}><iframe src={t.url} frameBorder="0"></iframe></div>);
+                        break;
                 }
+
 
             }
         }

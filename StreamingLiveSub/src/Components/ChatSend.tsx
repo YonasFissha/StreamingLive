@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { InputHTMLAttributes, KeyboardEvent } from 'react';
 import { ChatHelper } from '../Helpers';
 import { Emojis } from './Emojis';
 
@@ -10,13 +10,18 @@ export const ChatSend: React.FC<Props> = (props) => {
     const [message, setMessage] = React.useState('');
     const [showEmojis, setShowEmojis] = React.useState(false);
 
-    const sendMessage = (e: React.MouseEvent) => {
+    const handleSendMessage = (e: React.MouseEvent) => {
         e.preventDefault();
+        sendMessage();
+    }
+
+    const sendMessage = () => {
         ChatHelper.sendMessage(props.room, message);
         setMessage('');
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => { setMessage(e.currentTarget.value); }
+    const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => { if (e.keyCode === 13) sendMessage(); }
     const toggleEmojis = (e: React.MouseEvent) => { e.preventDefault(); setShowEmojis(!showEmojis); }
     const insertEmoji = (emoji: string) => { setMessage(message + emoji); }
 
@@ -29,9 +34,9 @@ export const ChatSend: React.FC<Props> = (props) => {
                 <div className="input-group-prepend">
                     <a href="about:blank" onClick={toggleEmojis} data-field="sendText" className="btn btn-outline-secondary emojiButton"><span role="img" aria-label="emoji">😀</span></a>
                 </div>
-                <input type="text" className="form-control" id="sendText" value={message} onChange={handleChange} />
+                <input type="text" className="form-control" id="sendText" value={message} onChange={handleChange} onKeyDown={handleKeyDown} />
                 <div className="input-group-append">
-                    <a id="sendMessageButton" className="btn btn-primary" href="about:blank" onClick={sendMessage}>Send</a>
+                    <a id="sendMessageButton" className="btn btn-primary" href="about:blank" onClick={handleSendMessage}>Send</a>
                 </div>
             </div>
         </div>
