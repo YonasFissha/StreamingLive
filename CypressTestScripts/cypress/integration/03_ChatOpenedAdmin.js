@@ -1,5 +1,5 @@
 context('Admin - Before Service Chat', () => {
-    Cypress.Cookies.defaults({ whitelist: ['.AspNetCore.Session', '.AspNetCore.Cookies'] });
+    Cypress.Cookies.defaults({ whitelist: (cookie) => { return true } });
     logIntoAdmin();
     editService();
 });

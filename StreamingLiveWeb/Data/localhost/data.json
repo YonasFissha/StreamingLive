@@ -50,14 +50,14 @@
   ],
   "services": [
     {
-      "videoUrl": "https://player.vimeo.com/video/416574393?autoplay=1",
-      "serviceTime": "2020-06-04T23:55",
+      "videoUrl": "https://www.youtube.com/embed/hV1Byn172Ao?autoplay=1&controls=0&showinfo=0&rel=0&modestbranding=1&disablekb=1",
+      "serviceTime": "2020-07-17T02:37",
       "duration": "60:00",
       "earlyStart": "15:00",
       "chatBefore": "15:00",
       "chatAfter": "15:00",
-      "provider": "vimeo_watchparty",
-      "providerKey": "416574393"
+      "provider": "youtube_watchparty",
+      "providerKey": "hV1Byn172Ao"
     }
   ]
 }

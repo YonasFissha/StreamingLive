@@ -1,5 +1,5 @@
 context('Admin - Post Service Chat', () => {
-    Cypress.Cookies.defaults({ whitelist: ['.AspNetCore.Session', '.AspNetCore.Cookies'] })
+    Cypress.Cookies.defaults({ whitelist: (cookie) => { return true } });
     logIntoAdmin();
     editService();
 });
@@ -22,16 +22,16 @@ function editService() {
         var id = services[services.length - 1].parentElement.id;
         console.log(id);
         cy.get('#' + id).click();
-        
+
         var serviceTime = getCurrentMinute();
-        serviceTime.setTime(serviceTime.getTime() - 90 * 60 * 1000); 
+        serviceTime.setTime(serviceTime.getTime() - 90 * 60 * 1000);
 
         cy.get('#CountdownTime')
             .should('exist')
             .type(formatDateTimeLocal(serviceTime));
         cy.get('#SaveServiceButton').click();
         cy.get('#PublishButton').click();
-        cy.wait(1000);  
+        cy.wait(1000);
     });
 }
 

@@ -1,0 +1,96 @@
+html,body,#liveContainer{height:100%;width:100%;background-color: #000;}
+#root {height:100vh;}
+body {margin:0px;padding:0px;background-color:#000;font-family: 'Roboto', sans-serif !important;}
+#liveContainer {display:flex;flex-direction:column;}
+
+#header {flex:0 0 80px; display:flex;background-color:var(--headerColor);padding-top:3px;padding-bottom:3px;}
+#logo {flex:1;padding-left:20px;display:flex;flex-direction:row;align-content:space-around;}
+#logo img { max-width:100%; align-self:center; display:flex;max-height:75px;}
+#logo a {flex:1 1 0px; align-self:center;}
+#logo a img {max-height:80px;}
+#liveButtons {flex:3;display:flex;flex-direction:row;align-content:space-around;}
+#liveButtons div {align-self:center; flex:1 1 100%;padding-right:5px;}
+#liveButtons table {float:right;}
+#liveButtons table td {padding-right:15px;}
+
+.btn-primary { color: var(--contrastColor); background-color:var(--primaryColor); border-color: var(--contrastColor); }
+.btn-secondary { color: var(--primaryColor); background-color: var(--contrastColor); border-color: var(--primaryColor); }
+.btn-secondary:hover { color: var(--contrastColor); background-color: var(--primaryColor); border-color: var(--contrastColor); }
+
+#body {flex:9;display:flex;}
+#videoContainer {flex:3;overflow:hidden;display:flex;flex-direction:row;}
+#videoContainer iframe {width:100%;flex:1 1 100%;align-self:center;height:100%;}
+#noVideoContent { width: 100%;color:#FFF;font-size:40px;overflow:hidden; flex:1 1 0%; width:100%;text-align:center;align-self:center; } 
+#interactionContainer {flex:1; background-color:#FFF;display:flex;flex-direction:column;}
+#interactionContainer iframe {width:100%;}
+/*
+#tabs {flex:0 0 40px;display:flex;background-color:#FFF; border-bottom:2px solid var(--primaryColor); }
+#tabs > *:not(:first-child) {border-left:1px solid #005288;}
+*/
+.tab {flex:0 0 0%;text-decoration:none; vertical-align:middle;text-align:left;padding-top:5px;padding-bottom:5px; color:var(--contrastColor); background-color:var(--primaryColor); border-top: 1px solid var(--contrastColor); border-bottom:1px solid var(--contrastColor); }
+.tab:hover {text-decoration:none;color:var(--contrastColor);}
+.tab i {padding-right:10px;padding-left:10px;}
+/*#tabs > *:not(:first-child) {border-left:1px solid var(--primaryColor);}*/
+.frame {flex:1;display:flex}
+
+#chatContainer, #prayerContainer {display:flex;flex-direction:column;background-color:#FFF;flex:1;}
+#chatReceive, #prayerReceive {flex:1 0 0; padding:10px;overflow-y:scroll;}
+#callout {font-size:20px;padding-bottom:15px;border-bottom:2px solid #EEE;margin-bottom:15px;padding-left:5px;padding-right:5px;padding-top:5px;}
+#prayerContainer {padding-left:25%;padding-right: 25%;padding-top:100px}
+
+#nameBar {flex:0 0 25px; background-color:#DDD;display:block;text-align:center;border-bottom:1px solid #FFF;font-size:16px;}
+
+#attendance { flex: 1 0 0;padding: 10px;overflow-y: scroll;}
+#attendance span {float:right;color:#999;}
+#attendance i {color:#999; margin-right:10px;}
+#attendanceCount {flex:0 0 25px; background-color:#DDD;display:block;text-align:center;}
+#attendanceCount:hover {text-decoration:none;}
+#chatSend, prayerSend {flex:0 0 0px;}
+#chatName, #prayerName {flex:0 0 0px;border-top:1px solid #005288;padding:10px;}
+
+
+
+#chatTabs td {
+    padding: 0px;
+    width:50%;
+}
+#chatTabs a {
+    padding-top:4px;padding-bottom:4px;
+    color: #333;
+    background-color: #DDD;
+    display:block;
+    text-decoration:none;
+    font-weight:bold;
+    text-align:center;
+}
+
+
+#chatTabs a.active, #chatTabs a:hover { color: var(--primaryColor); background-color: #FFF; }
+#sendMessageButton {border-radius:0px}
+
+#altTabs {display:none;width:100%;}
+#altTabs td {margin:0px;padding-top:0px;padding-bottom:0px;}
+#altTabs td:first-child{padding-left:0px;}
+#altTabs td:last-child{padding-right:0px;}
+.altTab {color:var(--contrastColor); background-color:var(--primaryColor);display:block;width:100%;padding-top:5px;padding-bottom:5px;text-align:center;font-weight:bold;font-size:18px;}
+.altTab:hover {text-decoration:none;color:var(--contrastColor);}
+.altTab.active{color:var(--primaryColor); background-color:var(--contrastColor);}
+
+#emojiContent { font-size: 24px; padding-left:20px;padding-right: 20px; border-top:1px solid #999; }
+#emojiContent a:hover { text-decoration:none; }
+
+.chatDisabled {opacity:0.4;pointer-events:none;}
+
+@media (max-aspect-ratio: 5/3) {
+    #body {flex-direction:column;}
+    #videoContainer {flex:2;}
+    #interactionContainer {flex:3;}
+    .tab {display:none;}
+    #altTabs {display:table;}
+    
+
+
+}
+
+    
+

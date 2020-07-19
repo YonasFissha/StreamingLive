@@ -1,5 +1,5 @@
 context('Admin - Chat functions', () => {
-    Cypress.Cookies.defaults({ whitelist: ['.AspNetCore.Session', '.AspNetCore.Cookies'] });
+    Cypress.Cookies.defaults({ whitelist: (cookie) => { return true } });
     logIntoAdmin();
     checkCatchup();
     checkPrayerCatchup();
@@ -31,7 +31,7 @@ function checkCatchup() {
         cy.get('#hostChatReceive').should('not.contain', 'Hello World');
     });
 
-    
+
 }
 
 function checkPrayerCatchup() {

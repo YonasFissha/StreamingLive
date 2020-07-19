@@ -1,5 +1,5 @@
 context('Admin - Service Inactive', () => {
-    Cypress.Cookies.defaults({ whitelist: ['.AspNetCore.Session', '.AspNetCore.Cookies'] })
+    Cypress.Cookies.defaults({ whitelist: (cookie) => { return true } });
     logIntoAdmin();
     editService();
 });
@@ -7,7 +7,7 @@ context('Admin - Service Inactive', () => {
 function logIntoAdmin() {
     it('Log Into Admin', () => {
         cy.visit(Cypress.env('adminUrl') + '/cp/login?ReturnUrl=%2Fcp%2Fsettings');
-        
+
         cy.get('#Email').type(Cypress.env('email'));
         cy.get('#Password').type(Cypress.env('password'));
         cy.get('#SigninButton').click();
@@ -19,7 +19,7 @@ function logIntoAdmin() {
 
 function editService() {
     it('Set Service for 1 hour later', () => {
-        cy.wait(750);
+        cy.wait(1750);
         var services = Cypress.$('#servicesBox .fa-pencil-alt');
         var id = services[services.length - 1].parentElement.id;
         cy.get('#' + id).click();

@@ -4,7 +4,7 @@ var displayName = 'Anonymous';
 var keyName = 'master';
 var prayerGuid = '';
 var socket;
-var userGuid = '';
+var userGuid = generateGuid();
 var timerId = 0;
 
 //player
@@ -296,38 +296,17 @@ function insertLinks(text) {
     return text.replace(exp, "<a href='$1' target='_blank'>$1</a>");
 }
 
-function setName(mode) {
-    if (!chatEnabled) return;
-    var name = '';
-    if (mode == 'prayer') name = $('#prayerNameText').val();
-    else name = $('#nameText').val();
-    if (name == '') return;
-    if (confirm('Please confirm.  Would you like to set your name to ' + name + '?')) {
+
+function askName() {
+    var name = window.prompt('Please enter the name you would like displayed:');
+    if (name == '') name = 'Anonymous';
+    if (name != displayName) {
         displayName = name;
-        toggleName(mode);
-    }
-}
-
-function toggleName(mode) {
-    if (displayName != 'Anonymous') {
-        userGuid = generateGuid();
-
-        $('#chatName').hide();
-        $('#chatSend').show();
-
-        $('#prayerName').hide();
-        $('#prayerSend').show();
-
-        $("#sendText").keypress(function (e) { if (e.which == 13) { e.preventDefault(); sendMessage(); } });
-
-        initEmoji();
-
-        if (mode == 'prayer') $("#prayerSendText")[0].focus();
-        else $("#sendText")[0].focus();
-
         socket.send(JSON.stringify({ 'action': 'setName', 'userGuid': userGuid, 'displayName': displayName }));
-
+        $('#displayName').text(displayName);
+        $.cookie('dipsplayName', displayName);
     }
+    return false;
 }
 
 
@@ -390,7 +369,22 @@ function updateConfig() {
 }
 
 
+const loadUserSettings = () => {
+    displayName = $.cookie("displayName");
+    userGuid = $.cookie("userGuid");
+    if (displayName == '') createUserSettings();
+    $('#displayName').text(displayName);
+}
+
+const createUserSettings = () => {
+    userGuid = generateGuid();
+    displayName = 'Anonymous';
+    $.cookie('userGuid', userGuid);
+    $.cookie('dipsplayName', displayName);
+}
+
 function initChat() {
+    loadUserSettings();
     if (socket == null) {
         socket = new WebSocket('wss://lr6pbsl0ji.execute-api.us-east-2.amazonaws.com/production');
         socket.onopen = function (e) {
@@ -414,12 +408,17 @@ function initChat() {
         };
     } else {
         socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': keyName }));
-        toggleName('');
     }
 
-    $("#nameText")[0].focus();
-    $("#nameText").keypress(function (e) { if (e.which == 13) { e.preventDefault(); setName(); } });
+    //$("#nameText")[0].focus();
+    //$("#nameText").keypress(function (e) { if (e.which == 13) { e.preventDefault(); setName(); } });
+    
+    $("#sendText").keypress(function (e) { if (e.which == 13) { e.preventDefault(); sendMessage(); } });
 
+    initEmoji();
+
+    if (mode == 'prayer') $("#prayerSendText")[0].focus();
+    else $("#sendText")[0].focus();
     if ($('#prayerContainer').length > 0) togglePrayer();
     
 }
@@ -430,19 +429,21 @@ function initChat() {
 function getChatDiv() {
     var result = '<div id="chatContainer">';
 
-    result += '<div id="attendance"></div><a id="attendanceCount" href="javascript:toggleAttendance();"></a><div id="callout"></div><div id="chatReceive"></div>';
+    result += '<div id="nameBar">Chatting as: <a id="displayName" href="#" onclick="return askName();">' + displayName + '</span></div>';
+    result += '<div id="attendance"></div><a id="attendanceCount" href="javascript:toggleAttendance();"></a>';
+    result += '<div id="callout"></div><div id="chatReceive"></div>';
 
-    result += '<div id="chatSend" style="display:none;">'
+    result += '<div id="chatSend">'
         + ' <div class="input-group" id="sendPublic"><div class="input-group-prepend"><a href="javascript:void();" data-field="sendText" class="btn btn-outline-secondary emojiButton">😀</a></div><input type="text" class="form-control" id="sendText" /><div class="input-group-append"><a id="sendMessageButton" class="btn btn-primary" style="border-radius:0px" href="javascript:sendMessage();">Send</a></div></div>'
         + '</div>';
-
+    /*
     result += '<div id="chatName">'
         + ' <div class="form-group">'
         + '     <label>Enter your name to chat:</label>'
         + '     <div class="input-group"><input type="text" class="form-control" id="nameText" placeholder="Your Name" /><div class="input-group-append"><a class="btn btn-primary" id="setNameButton" style="border-radius:0px" href="javascript:setName(\'chat\');">Set Name</a></div></div>'
         + ' </div>'
         + '</div>';
-
+        */
     result += '</div>';
     return result;
 }
@@ -451,18 +452,18 @@ function getPrayerDiv() {
     var result = '<div id="prayerContainer">';
     result += '<div id="prayerReceive"><p><i>You are in private prayer mode.  Messages posted here are only visible to you and the host responding to your prayer request.</i></p></div>';
 
-    result += '<div id="prayerSend" style="display:none;">'
+    result += '<div id="prayerSend">'
         + ' <div class="input-group" id="prayerSendInput" style="display:none;"><div class="input-group-prepend"><a href="javascript:void();" data-field="prayerSendText" class="btn btn-outline-secondary emojiButton">😀</a></div><input type="text" class="form-control" id="prayerSendText" /><div class="input-group-append"><a id="prayerSendMessageButton" class="btn btn-primary" style="border-radius:0px" href="javascript:prayerSendMessage();">Send</a></div></div>'
         + '<div id="requestPrayer" style="display:none;"><a id="requestPrayerButton" class="btn btn-primary btn-block" style="border-radius:0px" href="javascript:requestPrayer();">Request Prayer</a></div>'
         + '</div>';
-
+    /*
     result += '<div id="prayerName">'
         + ' <div class="form-group">'
         + '     <label>Enter your name to chat:</label>'
         + '     <div class="input-group"><input type="text" class="form-control" id="prayerNameText" placeholder="Your Name" /><div class="input-group-append"><a class="btn btn-primary" style="border-radius:0px" href="javascript:setName(\'prayer\');">Set Name</a></div></div>'
         + ' </div>'
         + '</div>';
-
+        */
     result += '</div>';
 
     return result;

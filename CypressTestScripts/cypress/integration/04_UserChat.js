@@ -38,14 +38,15 @@ function showingCountdown() {
 function postSeveralMessages() {
     it('Post Several Messages', () => {
         userName = userName + 'b';
-        cy.get('#nameText').type(userName);
+        cy.get('#nameLink').click();
+        cy.get('#nameText').type(userName, { delay: 50 })
         cy.get('#setNameButton').click();
+
         for (var i = 1; i < 11; i++) {
             cy.get('#sendText').type('Testing ' + i.toString());
             cy.get('#sendMessageButton').click();
         }
         cy.wait(500);
-        cy.get('#chatReceive .message').should('have.attr', 'id');
         for (var i = 1; i < 11; i++) {
             cy.get('#chatReceive').should('contain', 'Testing ' + i.toString());
         }
@@ -72,15 +73,13 @@ function setDisplayName() {
         cy.get('#chatContainer')
             .should('exist')
             .should('not.have.class', 'chatDisabled');
-        cy.get('#sendText').should('not.be.visible');
+        cy.get('#nameLink').should('exist').click();
         cy.get('#nameText')
             .should('be.visible')
             .type(userName, { delay: 50 })
             .should('have.value', userName);
-        cy.get('#setNameButton').click()
-            .then(() => {
-                expect(stub.getCall(0)).to.be.calledWith('Please confirm.  Would you like to set your name to ' + userName + '?');
-            })
+        cy.get('#setNameButton').click();
+        cy.get('#nameLink').should('contain', userName);
     });
 }
 
@@ -91,24 +90,24 @@ function testPrayer() {
         cy.get('#requestPrayerButton')
             .should('be.visible')
             .click()
-            .should('not.be.visible');
-        cy.get('#prayerSendText')
+            .should('not.exist');
+        cy.get('#sendText')
             .should('be.visible')
             .type('Could you pray for me?', { delay: 50 })
             .should('have.value', 'Could you pray for me?');
-        cy.get('#prayerSendMessageButton').click();
-        cy.get('#prayerReceive')
+        cy.get('#sendMessageButton').click();
+        cy.get('#chatReceive')
             .should('contain', userName)
             .should('contain', 'Could you pray for me?');
         cy.wait(500);
-        cy.get('#prayerReceive .message').should('have.attr', 'id');
-        cy.get('#chatReceive').should('not.contain', 'Could you pray for me ?');
+        cy.get('#chatReceive .message').should('exist');
+        //cy.get('#chatReceive').should('not.contain', 'Could you pray for me ?');
     });
 }
 
 
 function testMessage() {
-    it('Send a Message', () => { 
+    it('Send a Message', () => {
         cy.get('#nameText').should('not.be.visible');
         cy.get('#sendText')
             .should('be.visible')
@@ -121,6 +120,6 @@ function testMessage() {
             .should('contain', userName)
             .should('contain', 'Hello World');
         cy.wait(500);
-        cy.get('#chatReceive .message').should('have.attr', 'id');
+        //cy.get('#chatReceive .message').should('have.attr', 'id');
     });
 }

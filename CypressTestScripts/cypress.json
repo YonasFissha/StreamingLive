@@ -1,12 +1,19 @@
 {
   "chromeWebSecurity": false,
   "blacklistHosts": [
-    "facebook.net", "doubleclick.net", "bible.com", "facebook.com", "google-analytics.com", "googleadservices.com", "googletagmanager.com", "gstatic.com"
+    "facebook.net",
+    "doubleclick.net",
+    "bible.com",
+    "facebook.com",
+    "google-analytics.com",
+    "googleadservices.com",
+    "googletagmanager.com",
+    "gstatic.com"
   ],
   "env": {
-    "url": "https://localhost.streaminglive.church",
+    "url": "http://localhost:3000",
     "adminUrl": "https://streaminglive.church",
-    "email": "",
-    "password": ""
+    "email": "localhost@streaminglive.church",
+    "password": "password"
   }
 }

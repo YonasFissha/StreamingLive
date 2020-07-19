@@ -211,6 +211,7 @@ namespace StreamingLiveCore.Pages.CP
 
         private string[] ValidateService()
         {
+            if (VideoKey == null) VideoKey = "";
             List<string> errors = new List<string>();
             switch (Provider)
             {

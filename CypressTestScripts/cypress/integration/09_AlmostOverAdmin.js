@@ -1,5 +1,5 @@
 context('Admin - Almost Over', () => {
-    Cypress.Cookies.defaults({ whitelist: ['.AspNetCore.Session', '.AspNetCore.Cookies'] })
+    Cypress.Cookies.defaults({ whitelist: (cookie) => { return true } });
     logIntoAdmin();
     editService();
 });
@@ -21,7 +21,7 @@ function editService() {
         var id = services[services.length - 1].parentElement.id;
         console.log(id);
         cy.get('#' + id).click();
-        
+
         var serviceTime = getCurrentMinute();
         serviceTime.setTime(serviceTime.getTime() - 40 * 60 * 1000); //5 minutes until end
 
