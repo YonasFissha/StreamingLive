@@ -17,7 +17,7 @@ export class ChatHelper {
 
     static init(keyName: string, messageReceived: (state: ChatStateInterface) => void) {
         ChatHelper.state = { messages: [], viewers: [], callout: '', prayerMessages: [], chatEnabled: false };
-        ChatHelper.socket = new WebSocket('wss://lr6pbsl0ji.execute-api.us-east-2.amazonaws.com/production');
+        ChatHelper.socket = new WebSocket('wss://n0qw9vkmu0.execute-api.us-east-2.amazonaws.com/Prod');
         ChatHelper.socket.onopen = function (e) {
             ChatHelper.socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': keyName }));
             if (ChatHelper.user.displayName !== 'Anonymous') ChatHelper.setName(ChatHelper.user.displayName);
@@ -44,6 +44,8 @@ export class ChatHelper {
     }
 
     static handleMessage(msg: RawChatMessageInterface) {
+        console.log('received message');
+        console.log(msg);
         if (msg.action === "updateAttendance") { if (msg.viewers !== undefined) ChatHelper.state.viewers = msg.viewers; }
         else if (msg.action === "sendMessage") ChatHelper.chatReceived(msg);
         else if (msg.action === "catchup") ChatHelper.catchup(msg);
@@ -77,6 +79,8 @@ export class ChatHelper {
     }
 
     static catchup(msg: RawChatMessageInterface) {
+        console.log('catchup received');
+        console.log(msg);
         if (msg.messages !== undefined) {
             for (var i = 0; i < msg.messages.length; i++) {
                 console.log('catchup');
@@ -99,6 +103,7 @@ export class ChatHelper {
 
     static keepAlive() {
         var timeout = 60 * 1000;
+        console.log(ChatHelper.socket.readyState == WebSocket.OPEN);
         if (ChatHelper.socket.readyState == WebSocket.OPEN) ChatHelper.socket.send('{"action":"keepAlive", "room":""}');
         ChatHelper.timerId = setTimeout(ChatHelper.keepAlive, timeout);
     }

@@ -1,0 +1,26 @@
+{
+  "name": "streaming-live-chat",
+  "version": "1.0.0",
+  "description": "Streaming Live Chat App",
+  "main": "dist/app.js",
+  "repository": "",
+  "author": "Live Church Solutions",
+  "license": "MIT",
+  "dependencies": {
+    "aws-lambda": "^1.0.6",
+    "axios": "^0.18.0"
+  },
+  "scripts": {
+    "test": "mocha tests/unit/",
+    "build": "sam build --template-file template.yaml",
+    "package": "sam package --template-file template.yaml --output-template-file packaged.yaml --s3-bucket streaming-live-chat2 --region us-east-2 --profile LiveChurchSolutions",
+    "deploy": "sam deploy --template-file packaged.yaml --stack-name streaming-live-chat --capabilities CAPABILITY_IAM --region us-east-2 --profile LiveChurchSolutions",
+    "bpd": "npm-run-all build package deploy"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.720.0",
+    "chai": "^4.2.0",
+    "mocha": "^6.1.4",
+    "npm-run-all": "^4.1.5"
+  }
+}

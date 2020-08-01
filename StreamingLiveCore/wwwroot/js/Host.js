@@ -275,7 +275,7 @@ function handleMessage(data) {
 
 function init() {
 
-    socket = new WebSocket('wss://lr6pbsl0ji.execute-api.us-east-2.amazonaws.com/production');
+    socket = new WebSocket('wss://n0qw9vkmu0.execute-api.us-east-2.amazonaws.com/Prod');
     socket.onopen = function (e) {
         socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': keyName, 'displayName': displayName }));
         socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': keyName + '.host', 'displayName': displayName }));
