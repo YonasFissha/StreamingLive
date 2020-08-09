@@ -188,7 +188,7 @@ function setAttendanceArrow() {
 
 
 function prayerRequestReceived(data) {
-    $('#prayerRequests').append('<div><a id=\"' + data.guid + '\" href="javascript:claimPrayer(\'' + data.guid + '\', \'' + escape(data.name) + '\');\"">' + data.name + '</a></div>');
+    $('#prayerRequests').append('<div><a id=\"' + data.guid + '\" href="javascript:claimPrayer(\'' + data.userGuid + '\', \'' + escape(data.name) + '\');\"">' + data.name + '</a></div>');
     $('#noPrayerRequests').hide();
 }
 

@@ -1,13 +1,11 @@
 import React from 'react';
-import { UserInterface, ChatStateInterface, ChatName, ChatSend, ConfigHelper } from './';
+import { ChatStateInterface, ChatSend, ConfigHelper } from './';
 import { ChatHelper } from '../Helpers';
 import { ChatReceive } from './ChatReceive';
 
 
 interface Props {
-    user: UserInterface,
     chatState: ChatStateInterface | undefined
-    nameUpdateFunction: (displayName: string) => void,
     visible: boolean
 }
 
@@ -22,8 +20,7 @@ export const RequestPrayer: React.FC<Props> = (props) => {
 
 
     if (prayerGuid !== '') return (<div className="chatContainer" style={(props.visible) ? {} : { display: 'none' }}>
-        <ChatName user={props.user} updateFunction={props.nameUpdateFunction} />
-        <ChatReceive messages={props.chatState?.prayerMessages || []} />
+        <ChatReceive room={ChatHelper.getOrCreateRoom(props.chatState, ConfigHelper.current.keyName + prayerGuid)} />
         <ChatSend room={ConfigHelper.current.keyName + prayerGuid} />
     </div>)
 

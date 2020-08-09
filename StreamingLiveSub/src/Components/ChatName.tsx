@@ -28,15 +28,15 @@ export const ChatName: React.FC<Props> = (props) => {
         }
     }
 
-    if (!edit) return (<div id="nameBar">Chatting as: <a id="nameLink" href="about:blank" onClick={editMode}>{props.user?.displayName}</a></div>);
-    else return (<div id="nameBar">
-        <div className="input-group mb-3">
-            <input id="nameText" type="text" className="form-control" placeholder="Display name" value={displayName} onChange={handleChange} />
-            <div className="input-group-append">
-                <button id="setNameButton" className="btn btn-primary" onClick={handleUpdate}>Update</button>
+    if (!edit) return (<a href="#" className="nav-link" onClick={editMode}>Change Name</a>);
+    else return (
+        <div className="input-group input-group-sm mb-3">
+            <input id="nameText" type="text" className="form-control form-control-sm" placeholder="Display name" value={displayName} onChange={handleChange} />
+            <div className="input-group-append input-group-append-sm">
+                <button id="setNameButton" className="btn btn-primary btn-sm" onClick={handleUpdate}>Update</button>
             </div>
         </div>
-    </div>);
+    );
 }
 
 

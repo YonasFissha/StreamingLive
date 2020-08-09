@@ -1,11 +1,9 @@
 import React from 'react';
-import { ChatSend, Callout, Attendance, ChatName, ChatReceive, UserInterface, ChatStateInterface, ConfigHelper } from './';
-import { ServicesHelper } from '../Helpers';
+import { ChatSend, Callout, Attendance, ChatReceive, ChatStateInterface, ConfigHelper } from './';
+import { ServicesHelper, ChatHelper } from '../Helpers';
 
 interface Props {
-    user: UserInterface,
-    chatState: ChatStateInterface | undefined
-    nameUpdateFunction: (displayName: string) => void,
+    chatState: ChatStateInterface | undefined,
     visible: boolean
 }
 
@@ -28,10 +26,9 @@ export const Chat: React.FC<Props> = (props) => {
     var className = (chatEnabled) ? 'chatContainer' : 'chatContainer chatDisabled';
     return (
         <div className={className} style={(props.visible) ? {} : { display: 'none' }} >
-            <ChatName user={props.user} updateFunction={props.nameUpdateFunction} />
-            <Attendance viewers={props.chatState?.viewers} />
-            <Callout callout={props.chatState?.callout || ''} />
-            <ChatReceive messages={props.chatState?.messages || []} />
+            <Attendance viewers={ChatHelper.getOrCreateRoom(props.chatState, ConfigHelper.current.keyName).viewers} />
+            <Callout callout={props.chatState?.callout || ''} roomName={ConfigHelper.current.keyName} />
+            <ChatReceive room={ChatHelper.getOrCreateRoom(props.chatState, ConfigHelper.current.keyName) || {}} />
             <ChatSend room={ConfigHelper.current.keyName} />
         </div>
     );
