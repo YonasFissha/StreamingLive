@@ -7,7 +7,7 @@ export class ServicesHelper {
 
     static checkService() {
         var cs = ServicesHelper.determineCurrentService(ConfigHelper.current.services);
-        if (JSON.stringify(cs) != JSON.stringify(ServicesHelper.currentService)) {
+        if (JSON.stringify(cs) !== JSON.stringify(ServicesHelper.currentService)) {
             ServicesHelper.currentService = cs;
             if (ServicesHelper.currentServiceChangedCallback !== undefined) ServicesHelper.currentServiceChangedCallback(cs);
         }

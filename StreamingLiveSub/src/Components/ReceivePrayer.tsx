@@ -17,13 +17,13 @@ export const ReceivePrayer: React.FC<Props> = (props) => {
         e.preventDefault();
         var guid = e.currentTarget.getAttribute('data-guid');
         var name = e.currentTarget.getAttribute('data-name');
-        if (guid != undefined) setPrayerGuid(guid);
+        if (guid !== undefined && guid !== null) setPrayerGuid(guid);
         if (name !== null) setPrayerName(name);
     }
 
     const getRequests = () => {
         var links = [];
-        if (props.chatState != undefined) {
+        if (props.chatState !== undefined) {
             for (let i = 0; i < props.chatState.prayerRequests.length; i++) {
                 var pr = props.chatState.prayerRequests[i];
                 links.push(<div style={{ flex: "1 0 0" }}><a href="about:blank" data-guid={pr.userGuid} data-name={pr.name} onClick={viewPrayer}>{pr.name}</a></div>)

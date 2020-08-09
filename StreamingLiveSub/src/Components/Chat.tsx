@@ -11,17 +11,17 @@ export const Chat: React.FC<Props> = (props) => {
 
     const [chatEnabled, setChatEnabled] = React.useState(false);
 
-    const updateChatEnabled = () => {
+    const updateChatEnabled = React.useCallback(() => {
         var cs = ServicesHelper.currentService;
         var result = false;
         if (cs !== null) {
             var currentTime = new Date();
-            result = currentTime >= (cs.localChatStart || new Date()) && currentTime <= (cs.localChatEnd || new Date);
+            result = currentTime >= (cs.localChatStart || new Date()) && currentTime <= (cs.localChatEnd || new Date());
         }
-        if (result != chatEnabled) setChatEnabled(result);
-    }
+        if (result !== chatEnabled) setChatEnabled(result);
+    }, [chatEnabled]);
 
-    React.useEffect(() => { setInterval(updateChatEnabled, 1000); }, []);
+    React.useEffect(() => { setInterval(updateChatEnabled, 1000); }, [updateChatEnabled]);
 
     var className = (chatEnabled) ? 'chatContainer' : 'chatContainer chatDisabled';
     return (

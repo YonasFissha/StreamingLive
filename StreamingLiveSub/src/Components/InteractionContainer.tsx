@@ -1,5 +1,5 @@
 import React from 'react';
-import { TabInterface, Chat, HostChat, RequestPrayer, ReceivePrayer, ConfigHelper } from './';
+import { TabInterface, Chat, HostChat, RequestPrayer, ReceivePrayer } from './';
 import { ChatStateInterface, ChatHelper } from '../Helpers';
 
 
@@ -11,19 +11,14 @@ interface Props {
 export const InteractionContainer: React.FC<Props> = (props) => {
     const [selectedTab, setSelectedTab] = React.useState(0);
 
-    const selectTab = (index: number) => {
-        var tab = props.tabs[index];
-        setSelectedTab(index);
-
-
-    }
+    const selectTab = (index: number) => { setSelectedTab(index); }
 
     const getAltTabs = () => {
         var result = [];
         if (props.tabs != null) {
             for (let i = 0; i < props.tabs.length; i++) {
                 let t = props.tabs[i];
-                result.push(<td key={i}><a href="#" onClick={(e: React.MouseEvent) => { e.preventDefault(); selectTab(i); }} className="altTab"><i className={t.icon}></i></a></td>);
+                result.push(<td key={i}><a href="about:blank" onClick={(e: React.MouseEvent) => { e.preventDefault(); selectTab(i); }} className="altTab"><i className={t.icon}></i></a></td>);
             }
         }
         return result;
@@ -44,7 +39,7 @@ export const InteractionContainer: React.FC<Props> = (props) => {
                 var visible = i === selectedTab;
                 var className = getFlashing(visible, t) ? "tab flashing" : "tab";
 
-                result.push(<a key={"anchor" + i.toString()} href="#" onClick={(e: React.MouseEvent) => { e.preventDefault(); selectTab(i); }} className={className}>
+                result.push(<a key={"anchor" + i.toString()} href="about:blank" onClick={(e: React.MouseEvent) => { e.preventDefault(); selectTab(i); }} className={className}>
                     <i className={t.icon}></i>{t.text}
                 </a>);
 
@@ -60,7 +55,7 @@ export const InteractionContainer: React.FC<Props> = (props) => {
                         else result.push(<RequestPrayer key={i} chatState={props.chatState} visible={visible} />);
                         break;
                     default:
-                        result.push(<div key={i} id={"frame" + i.toString()} className="frame" style={(!visible) ? { display: 'none' } : {}}><iframe src={t.url} frameBorder="0"></iframe></div>);
+                        result.push(<div key={i} id={"frame" + i.toString()} className="frame" style={(!visible) ? { display: 'none' } : {}}><iframe src={t.url} frameBorder="0" title={"frame" + i.toString()}></iframe></div>);
                         break;
                 }
             }

@@ -1,6 +1,5 @@
 import React from 'react';
 import { NavItems, ButtonInterface, UserInterface, ChatName } from './'
-import { userInfo } from 'os';
 import { ChatHelper } from '../Helpers';
 
 interface Props {

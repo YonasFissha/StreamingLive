@@ -1,6 +1,5 @@
 import Cookies from 'js-cookie';
-import { ConfigHelper, ServicesHelper } from '../Components';
-import { join } from 'path';
+import { ConfigHelper } from '../Components';
 
 interface RawChatMessageInterface { action: string, room?: string, userGuid?: string, ts?: number, name?: string, msg?: string, totalViewers?: number, viewers?: ChatViewerInterface[], messages?: RawChatMessageInterface[] }
 
@@ -82,7 +81,7 @@ export class ChatHelper {
 
     static sendMessage(room: string, content: string) {
         var c = content.trim();
-        if (c != '') {
+        if (c !== '') {
             ChatHelper.socket.send(JSON.stringify({ 'action': 'sendMessage', 'room': room, 'userGuid': ChatHelper.user.guid, 'name': ChatHelper.user.displayName, 'msg': c }));
         }
     }
@@ -135,13 +134,13 @@ export class ChatHelper {
 
     static keepAlive() {
         var timeout = 60 * 1000;
-        console.log(ChatHelper.socket.readyState == WebSocket.OPEN);
-        if (ChatHelper.socket.readyState == WebSocket.OPEN) ChatHelper.socket.send('{"action":"keepAlive", "room":""}');
+        if (ChatHelper.socket.readyState === WebSocket.OPEN) ChatHelper.socket.send('{"action":"keepAlive", "room":""}');
         ChatHelper.timerId = setTimeout(ChatHelper.keepAlive, timeout);
     }
 
     static insertLinks(text: string) {
-        var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        //var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/ig;
         return text.replace(exp, "<a href='$1' target='_blank'>$1</a>");
     }
 

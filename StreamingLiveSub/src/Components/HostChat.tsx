@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { ChatSend, Attendance, ChatReceive, ChatStateInterface, ConfigHelper } from './';
 import { ChatHelper } from '../Helpers';
 

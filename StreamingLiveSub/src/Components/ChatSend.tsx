@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes, KeyboardEvent } from 'react';
+import React, { KeyboardEvent } from 'react';
 import { ChatHelper } from '../Helpers';
 import { Emojis } from './Emojis';
 

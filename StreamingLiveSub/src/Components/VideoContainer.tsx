@@ -34,7 +34,7 @@ export const VideoContainer: React.FC<Props> = (props) => {
                 if (cs.provider === "vimeo_watchparty") videoUrl += cs.videoUrl + '#t=0m0s';
             }
         }
-        return (<iframe id="videoFrame" src={videoUrl} frameBorder={0} allow="autoplay; fullscreen" allowFullScreen></iframe>);
+        return (<iframe id="videoFrame" src={videoUrl} frameBorder={0} allow="autoplay; fullscreen" allowFullScreen title="Sermon Video" ></iframe>);
     }
 
     const getCountdown = (cs: ServiceInterface) => {

@@ -1,5 +1,4 @@
 import React from 'react';
-import { ButtonInterface } from './';
 import { UserInterface } from '../Helpers';
 
 interface Props {
@@ -28,7 +27,7 @@ export const ChatName: React.FC<Props> = (props) => {
         }
     }
 
-    if (!edit) return (<a href="#" className="nav-link" onClick={editMode}>Change Name</a>);
+    if (!edit) return (<a href="about:blank" className="nav-link" onClick={editMode}>Change Name</a>);
     else return (
         <div className="input-group input-group-sm mb-3">
             <input id="nameText" type="text" className="form-control form-control-sm" placeholder="Display name" value={displayName} onChange={handleChange} />

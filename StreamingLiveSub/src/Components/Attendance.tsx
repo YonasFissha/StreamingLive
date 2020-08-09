@@ -1,5 +1,4 @@
 import React from 'react';
-import { ButtonInterface } from './';
 import { ChatViewerInterface } from '../Helpers';
 
 interface Props {

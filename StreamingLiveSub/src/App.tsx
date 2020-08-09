@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './App.css';
-import { ConfigHelper, ConfigurationInterface, ServiceInterface, Header, VideoContainer, InteractionContainer, Chat } from './Components';
+import { ConfigHelper, ConfigurationInterface, ServiceInterface, Header, VideoContainer, InteractionContainer } from './Components';
 import { ServicesHelper, ChatHelper, UserInterface, ChatStateInterface, TabInterface } from './Helpers';
 
 const App: React.FC = () => {
@@ -10,28 +10,30 @@ const App: React.FC = () => {
   const [user, setUser] = React.useState<UserInterface>({ displayName: 'Anonymous', guid: '', isHost: false });
   const [chatState, setChatState] = React.useState<ChatStateInterface>();
 
-  const loadConfig = (firstLoad: boolean) => {
+  const loadConfig = React.useCallback((firstLoad: boolean) => {
     const keyName = window.location.hostname.split('.')[0];
     var previewRoot = 'https://streaminglive.church';
     setCssUrl(previewRoot + '/data/' + keyName + '/data.css?nocache=' + (new Date()).getTime());
     ConfigHelper.load(keyName).then(data => {
       var d: ConfigurationInterface = data;
-      if (user?.isHost) {
-        var tab: TabInterface = { type: "hostchat", text: "Host Chat", icon: "fas fa-users", data: "", url: "" }
-        d.tabs.push(tab);
-      }
+      checkHost(d);
       setConfig(d);
-      if (firstLoad) {
-        setTimeout(function () {
-          ChatHelper.init(keyName, (state: ChatStateInterface) => { setChatState(state); setConfig(ConfigHelper.current); });
-          setChatState(ChatHelper.state);
-        }, 500);
-      }
+      if (firstLoad) initChat(keyName);
     });
-    if (firstLoad) {
-      setUser(ChatHelper.getUser());
-      ServicesHelper.initTimer((cs) => { setCurrentService(cs) });
+  }, []);
+
+  const checkHost = (d: ConfigurationInterface) => {
+    if (user?.isHost) {
+      var tab: TabInterface = { type: "hostchat", text: "Host Chat", icon: "fas fa-users", data: "", url: "" }
+      d.tabs.push(tab);
     }
+  }
+
+  const initChat = (keyName: string) => {
+    setTimeout(function () {
+      ChatHelper.init(keyName, (state: ChatStateInterface) => { setChatState(state); setConfig(ConfigHelper.current); });
+      setChatState(ChatHelper.state);
+    }, 500);
   }
 
   const handleNameUpdate = (displayName: string) => {
@@ -46,7 +48,11 @@ const App: React.FC = () => {
     loadConfig(false);
   }
 
-  React.useEffect(() => loadConfig(true), []);
+  React.useEffect(() => {
+    setUser(ChatHelper.getUser());
+    ServicesHelper.initTimer((cs) => { setCurrentService(cs) });
+    loadConfig(true)
+  }, [loadConfig]);
 
 
 

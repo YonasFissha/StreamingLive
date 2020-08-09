@@ -1,5 +1,4 @@
 import React from 'react';
-import { ChatHelper } from '../Helpers';
 
 interface Props {
     selectedFunction: (emoji: string) => void
