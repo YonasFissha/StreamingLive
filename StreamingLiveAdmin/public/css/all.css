@@ -1,0 +1,49 @@
+﻿body { font-family: 'Roboto', sans-serif; color: #333; background-color: #EEE;}
+a { color: #24b8ff; }
+h2 { font-weight: bold; }
+h2 span { color: #24b9ff; }
+.btn-primary { background-color: #77cc00; border-color: #70db86;}
+.btn-primary:hover { background-color: #55aa00; border-color: #55aa00; }
+.btn-info { background-color: #24b9ff; }
+
+#loginBox {background-color:#FFF;border:1px solid #CCC;border-radius:5px;padding:20px;}
+#loginBox input {margin-bottom:5px;}
+.smallCenterBlock {margin-top:60px;max-width:350px;margin-left:auto;margin-right:auto;}
+
+
+.btn-warning, .btn-warning:hover {color:#FFF;}
+
+.sidebar { position: fixed; top: 0px; bottom: 0; left: 0; z-index: 1000; padding: 0px; overflow-x: hidden; overflow-y: auto; border-right: 1px solid #eee; background-color:#FDFDFD !important; }
+.sidebar .nav { margin-bottom: 20px; margin-top:20px; }
+.sidebar .nav-item { width: 100%; height:30px; overflow:hidden; text-wrap:none; }
+.sidebar .nav-item + .nav-item { margin-left: 0; }
+.sidebar .nav-link { border-radius: 0; }
+.sidebar .nav-link i {width:20px;}
+.sidebar .card {border-left:0px;border-right:0px;border-radius:0px;border-top:0px;}
+.sidebar .card-header {cursor:pointer;padding-left:5px;}
+.sidebar .card-body {padding:10px;}
+#sidebar .nav-item a:hover, #sidebar .nav-item a.active {background-color:#24b8ff;color:#FFF;}
+#sidebar .nav-item {padding-top:15px; padding-bottom:15px;height:50px;}
+#sidebar a { color:#333; }
+
+.description { font-size: 12px; font-style: italic; color: #777; }
+button.datetime-local-datepicker-button {background-color:#FFF;border:0px;width:100%;}
+
+.pulsing {
+    animation-duration: 1.5s;
+    animation-name: pulse;
+    animation-iteration-count: infinite
+}
+
+@keyframes pulse {
+    0% { background-color:#77cc00; }
+
+    50% { background-color:#55aa00; }
+
+    100% { background-color:#77cc00; }
+}
+
+@media (max-width: 600px) {
+    #logo { height: 25px; margin-top: 2px; margin-bottom: 2px; }
+}
+

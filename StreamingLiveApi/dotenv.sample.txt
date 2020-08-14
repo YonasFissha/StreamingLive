@@ -1,0 +1,11 @@
+# Modify and save this file as ".env"
+NODE_ENV=development
+
+# Node.js server configuration
+SERVER_PORT=8080
+
+# MySql configuration
+DB_HOST=localhost
+DB_DATABASE=AccessManagement
+DB_USER=root
+DB_PASSWORD=
