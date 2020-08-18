@@ -1,6 +1,7 @@
 import React from 'react';
 
 interface Props {
+    id?: string,
     children?: React.ReactNode,
     headerIcon: string,
     headerText: string,
@@ -21,7 +22,7 @@ export const InputBox: React.FC<Props> = (props) => {
 
     return (
         <form method="post">
-            <div className="inputBox">
+            <div id={props.id} className="inputBox">
                 <div className="header">
                     <div className="row">
                         <div className="col-8"><i className={props.headerIcon}></i> {props.headerText}</div>

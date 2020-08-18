@@ -1,12 +1,7 @@
-import { RolePermission } from "./";
 
-export class User {
+export class Page {
   id: number;
-  email: string;
-  authGuid: string;
-  displayName: string;
-  registrationDate: Date;
-  lastLogin: Date;
-  password: string;
-  permissions: RolePermission[];
+  churchId: number;
+  name: string;
+  lastModified: Date;
 }

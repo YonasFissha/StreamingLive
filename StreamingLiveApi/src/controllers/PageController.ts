@@ -1,5 +1,5 @@
 import { inject } from "inversify";
-import { controller, httpPost } from "inversify-express-utils";
+import { controller, httpPost, httpGet } from "inversify-express-utils";
 import { TYPES } from "../constants";
 import { PageRepository } from "../repositories";
 import { Page } from "../models";
@@ -10,9 +10,14 @@ export class PageController {
   private pageRepository: PageRepository;
 
   constructor(@inject(TYPES.UserRepository) pageRepository: PageRepository) {
-    console.log("Creating page controller");
     this.pageRepository = pageRepository;
-    console.log("Page repository is set");
+  }
+
+  @httpGet("/")
+  public async loadAll(req: express.Request, res: express.Response): Promise<void> {
+    //const page = req.body.page;
+
+    return null;
   }
 
   @httpPost("/")

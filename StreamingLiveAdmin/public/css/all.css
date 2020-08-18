@@ -29,6 +29,9 @@ h2 span { color: #24b9ff; }
 .description { font-size: 12px; font-style: italic; color: #777; }
 button.datetime-local-datepicker-button {background-color:#FFF;border:0px;width:100%;}
 
+#previewWrapper { width: 100%; height: 500px; overflow: hidden; }
+#previewFrame { width: 200%; height: 1000px; -ms-transform: scale(0.5); -moz-transform: scale(0.5); -o-transform: scale(0.5); -webkit-transform: scale(0.5); transform: scale(0.5); -ms-transform-origin: 0 0; -moz-transform-origin: 0 0; -o-transform-origin: 0 0; -webkit-transform-origin: 0 0; transform-origin: 0 0; }
+
 .pulsing {
     animation-duration: 1.5s;
     animation-name: pulse;

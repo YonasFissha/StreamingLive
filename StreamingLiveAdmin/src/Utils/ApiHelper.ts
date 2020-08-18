@@ -1,8 +1,8 @@
-export interface ChurchInterface { id?: number }
-export interface PermissionInterface { contentType?: string, action?: string }
-export interface RegisterInterface { churchName?: string, firstName?: string, lastName?: string, email?: string, password?: string }
-export interface UserMappingInterface { church?: ChurchInterface, personId?: number }
-export interface UserInterface { apiKey: string, name: string }
+export interface LinkInterface { id?: number, churchId: number, url: string, text: string, sort: number }
+export interface PageInterface { id?: number, churchId: number, name: string, lastModified: Date }
+export interface ServiceInterface { id?: number, churchId: number, serviceTime: Date, earlyStart: number, duration: number, chatBefore: number, chatAfter: number, provider: string, providerKey: string, videoUrl: string, timezoneOffset: number, recurring: boolean }
+export interface StyleInterface { id?: number, churchId: number, homePage: string, logo: string, primaryColor: string, contrastColor: string }
+export interface TabInterface { id?: number, churchId: number, url: string, text: string, sort: number, icon: string, tabType: string, tabData: string }
 
 export class ApiHelper {
     //*** What's a good way to toggle this based on environment?
@@ -27,6 +27,14 @@ export class ApiHelper {
             body: JSON.stringify(data)
         };
         return fetch(this.getUrl(path), requestOptions).then(response => response.json())
+    }
+
+    static async apiDelete(path: string) {
+        const requestOptions = {
+            method: 'DELETE',
+            headers: { 'Authorization': 'Bearer ' + this.apiKey }
+        };
+        return fetch(this.baseUrl + path, requestOptions);
     }
 
     static async apiPostAnonymous(path: string, data: any[] | {}) {
