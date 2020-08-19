@@ -1,4 +1,4 @@
-export * from '../Utils'
+export * from '../utils'
 export { ErrorMessages } from './ErrorMessages'
 export { HomeBenefits } from './HomeBenefits'
 export { HomeFeatures } from './HomeFeatures'

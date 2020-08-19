@@ -1,0 +1,3 @@
+# Modify and save this file as ".env"
+ACCESSMANAGEMENT_API_URL=http://localhost:8080
+STREAMINGLIVE_API_URL=http://localhost:80001
