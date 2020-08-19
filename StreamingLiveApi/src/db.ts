@@ -20,10 +20,6 @@ export class DB {
     });
   }
 
-  public static async querySync(sql: string, params: any[]) {
-    await this.queryOne(sql, params);
-  }
-
   public static async query(sql: string, params: any[]) {
     return this.usePooledConnectionAsync(async (connection) => {
       const result: any[] = await new Promise((resolve, reject) => {

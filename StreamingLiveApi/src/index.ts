@@ -5,20 +5,17 @@ import { Container } from "inversify";
 import { InversifyExpressServer } from "inversify-express-utils";
 import { bindings } from "./inversify.config";
 import express from "express";
+import { CustomAuthProvider } from "./auth"
 
 (async () => {
   dotenv.config();
   const port = process.env.SERVER_PORT;
   const container = new Container();
   await container.loadAsync(bindings);
-  const app = new InversifyExpressServer(container);
+  const app = new InversifyExpressServer(container, null, null, null, CustomAuthProvider);
 
   const configFunction = (expApp: express.Application) => {
-    expApp.use(
-      bodyParser.urlencoded({
-        extended: true,
-      })
-    );
+    expApp.use(bodyParser.urlencoded({ extended: true }));
     expApp.use(bodyParser.json());
   };
 

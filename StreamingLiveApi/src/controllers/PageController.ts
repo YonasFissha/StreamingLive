@@ -1,16 +1,21 @@
 import { inject } from "inversify";
-import { controller, httpPost, httpGet } from "inversify-express-utils";
+import { controller, httpPost, httpGet, BaseHttpController } from "inversify-express-utils";
 import { TYPES } from "../constants";
-import { PageRepository } from "../repositories";
+import { Repositories } from "../repositories";
 import { Page } from "../models";
 import express from "express";
+import { WinstonLogger } from "../logger";
+import { AuthenticatedUser } from '../auth'
 
 @controller("/pages")
-export class PageController {
-  private pageRepository: PageRepository;
+export class PageController extends BaseHttpController {
+  private repositories: Repositories;
+  private _logger: WinstonLogger;
 
-  constructor(@inject(TYPES.UserRepository) pageRepository: PageRepository) {
-    this.pageRepository = pageRepository;
+  constructor(@inject(TYPES.Repositories) repositories: Repositories, @inject(TYPES.LoggerService) logger: WinstonLogger) {
+    super()
+    this.repositories = repositories;
+    this._logger = logger;
   }
 
   @httpGet("/")
@@ -21,11 +26,24 @@ export class PageController {
   }
 
   @httpPost("/")
-  public async save(req: express.Request, res: express.Response): Promise<void> {
-    const page = req.body.page;
-    if (page.id === 0) this.pageRepository.createNewPage(req.body.page);
-    else this.pageRepository.updateExistingPage(req.body.page);
-    return null;
+  public async save(req: express.Request<{}, {}, Page[]>, res: express.Response): Promise<any> {
+    try {
+      const au: AuthenticatedUser = new AuthenticatedUser(this.httpContext.user);
+      if (!au.checkAccess('Pages', 'Edit')) return this.json({}, 401);
+      else {
+
+        let pages: Page[] = req.body;
+        const promises: Promise<Page>[] = [];
+        pages.forEach((page) => {
+          if (page.churchId === au.churchId) promises.push(this.repositories.page.save(page));
+        });
+        pages = await Promise.all(promises);
+        return this.json(pages, 200);
+      }
+    } catch (e) {
+      this._logger.logger.error(e);
+      return this.internalServerError(e);
+    }
   }
 
 }
