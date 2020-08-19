@@ -5,11 +5,11 @@ import { Link } from "../models";
 @injectable()
 export class LinkRepository {
     public insert(link: Link) {
-        return DB.querySync("INSERT INTO links (churchId, url, text, sort) VALUES (?, ?, ?, ?);", [link.churchId, link.url, link.text, link.sort])
+        return DB.queryOne("INSERT INTO links (churchId, url, text, sort) VALUES (?, ?, ?, ?);", [link.churchId, link.url, link.text, link.sort])
     }
 
     public update(link: Link) {
-        return DB.querySync("UPDATE links SET url=?, text=?, sort=? WHERE id=?;", [link.url, link.text, link.sort, link.id]);
+        return DB.queryOne("UPDATE links SET url=?, text=?, sort=? WHERE id=?;", [link.url, link.text, link.sort, link.id]);
     }
 
     public async loadById(id: number, churchId: number): Promise<Link> {

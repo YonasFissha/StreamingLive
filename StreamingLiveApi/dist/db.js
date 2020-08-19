@@ -9,27 +9,45 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.usePooledConnectionAsync = void 0;
+exports.DB = void 0;
 const pool_1 = require("./pool");
-function usePooledConnectionAsync(actionAsync) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const connection = yield new Promise((resolve, reject) => {
-            pool_1.mySQLPool.getConnection((ex, conn) => {
-                if (ex) {
+class DB {
+    static usePooledConnectionAsync(actionAsync) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const connection = yield new Promise((resolve, reject) => {
+                pool_1.mySQLPool.getConnection((ex, conn) => { if (ex)
                     reject(ex);
-                }
-                else {
-                    resolve(conn);
-                }
+                else
+                    resolve(conn); });
+            });
+            try {
+                return yield actionAsync(connection);
+            }
+            finally {
+                connection.release();
+            }
+        });
+    }
+    static queryOne(sql, params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.query(sql, params).then((result) => {
+                return result.length > 0 ? result[0].value : null;
             });
         });
-        try {
-            return yield actionAsync(connection);
-        }
-        finally {
-            connection.release();
-        }
-    });
+    }
+    static query(sql, params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.usePooledConnectionAsync((connection) => __awaiter(this, void 0, void 0, function* () {
+                const result = yield new Promise((resolve, reject) => {
+                    connection.query(sql, params, (ex, rows) => { if (ex)
+                        reject(ex);
+                    else
+                        resolve(rows); });
+                });
+                return result;
+            }));
+        });
+    }
 }
-exports.usePooledConnectionAsync = usePooledConnectionAsync;
+exports.DB = DB;
 //# sourceMappingURL=db.js.map

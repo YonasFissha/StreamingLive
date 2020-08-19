@@ -20,7 +20,7 @@ export class PageController extends BaseHttpController {
 
   @httpGet("/")
   public async loadAll(req: express.Request, res: express.Response): Promise<void> {
-    //const page = req.body.page;
+    // const page = req.body.page;
 
     return null;
   }
@@ -29,6 +29,9 @@ export class PageController extends BaseHttpController {
   public async save(req: express.Request<{}, {}, Page[]>, res: express.Response): Promise<any> {
     try {
       const au: AuthenticatedUser = new AuthenticatedUser(this.httpContext.user);
+
+      console.log(au);
+
       if (!au.checkAccess('Pages', 'Edit')) return this.json({}, 401);
       else {
 

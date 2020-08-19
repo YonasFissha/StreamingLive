@@ -1,13 +1,16 @@
 import { AsyncContainerModule } from "inversify";
-import { UserRepository } from "./repositories";
+import { LinkRepository, PageRepository, Repositories, ServiceRepository, TabRepository } from "./repositories";
 import { TYPES } from "./constants";
+import { WinstonLogger } from "./logger";
 
 // This is where all of the binding for constructor injection takes place
 export const bindings = new AsyncContainerModule(async (bind) => {
-  console.log(" I AM MAKING BINDINGS");
   await require("./controllers");
 
-  bind<UserRepository>(TYPES.UserRepository)
-    .to(UserRepository)
-    .inSingletonScope();
+  bind<LinkRepository>(TYPES.LinkRepository).to(LinkRepository).inSingletonScope();
+  bind<PageRepository>(TYPES.PageRepository).to(PageRepository).inSingletonScope();
+  bind<Repositories>(TYPES.Repositories).to(Repositories).inSingletonScope();
+  bind<ServiceRepository>(TYPES.ServiceRepository).to(ServiceRepository).inSingletonScope();
+  bind<TabRepository>(TYPES.TabRepository).to(TabRepository).inSingletonScope();
+  bind<WinstonLogger>(TYPES.LoggerService).to(WinstonLogger);
 });

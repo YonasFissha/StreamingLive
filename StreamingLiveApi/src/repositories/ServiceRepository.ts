@@ -5,14 +5,14 @@ import { Service } from "../models";
 @injectable()
 export class ServiceRepository {
     public insert(service: Service) {
-        return DB.querySync(
+        return DB.queryOne(
             "INSERT INTO services (churchId, serviceTime, earlyStart, duration, chatBefore, chatAfter, provider, providerKey, videoUrl, timezoneOffset, recurring) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
             [service.churchId, service.serviceTime, service.earlyStart, service.duration, service.chatBefore, service.chatAfter, service.provider, service.proivderKey, service.videoUrl, service.timezoneOffset, service.recurring]
         );
     }
 
     public update(service: Service) {
-        return DB.querySync("UPDATE services SET serviceTime=?, earlyStart=?, duration=?, chatBefore=?, chatAfter=?, provider=?, providerKey=?, videoUrl=?, timezoneOffset=?, recurring=? WHERE id=?;",
+        return DB.queryOne("UPDATE services SET serviceTime=?, earlyStart=?, duration=?, chatBefore=?, chatAfter=?, provider=?, providerKey=?, videoUrl=?, timezoneOffset=?, recurring=? WHERE id=?;",
             [service.serviceTime, service.earlyStart, service.duration, service.chatBefore, service.chatAfter, service.provider, service.proivderKey, service.videoUrl, service.timezoneOffset, service.recurring, service.id]);
     }
 

@@ -19,26 +19,30 @@ export const HomeRegister: React.FC = () => {
     }
 
     const handleRegister = async (e: React.MouseEvent) => {
+
         //Create Access
+        e.preventDefault();
         var data: RegisterInterface = { churchName: churchName, displayName: email, email: email, password: password };
-        const resp: LoginResponseInterface = await ApiHelper.apiPostAnonymous(process.env.ACCESSMANAGEMENT_API_URL + '/register', data);
+
+        const resp: LoginResponseInterface = await ApiHelper.apiPostAnonymous(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/churches/register', data);
         const church = resp.churches[0];
+        ApiHelper.jwt = resp.token;
 
 
         const role: RoleInterface = { appName: "StreamingLive", churchId: church.id, name: "Admins" };
-        role.id = (await ApiHelper.apiPost(process.env.ACCESSMANAGEMENT_API_URL + '/roles', [data]))[0].id;
+        role.id = (await ApiHelper.apiPost(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/roles', [role]))[0].id;
 
         const member: RoleMemberInterface = { churchId: church.id, roleId: role.id, userId: resp.user.id };
-        member.id = (await ApiHelper.apiPost(process.env.ACCESSMANAGEMENT_API_URL + '/rolemembers', [data]))[0].id;
+        member.id = (await ApiHelper.apiPost(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/rolemembers', [member]))[0].id;
 
         const permissions: RolePermissionInterface[] = [];
         permissions.push({ churchId: church.id, contentType: "Users", action: "Edit", roleId: role.id });
         permissions.push({ churchId: church.id, contentType: "Pages", action: "Edit", roleId: role.id });
         permissions.push({ churchId: church.id, contentType: "Services", action: "Edit", roleId: role.id });
         permissions.push({ churchId: church.id, contentType: "Appearance", action: "Edit", roleId: role.id });
-        await ApiHelper.apiPost(process.env.ACCESSMANAGEMENT_API_URL + '/rolepermissions', [data]);
+        await ApiHelper.apiPost(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/rolepermissions', permissions);
 
-        await ApiHelper.apiPost(process.env.ACCESSMANAGEMENT_API_URL + '/user/switchApp', { churchId: church.id, appName: "StreamingLive" });
+        await ApiHelper.apiPost(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/users/switchApp', { churchId: church.id, appName: "StreamingLive" });
         ApiHelper.jwt = resp.token;
 
         //Configure initial settings

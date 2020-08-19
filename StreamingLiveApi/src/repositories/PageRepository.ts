@@ -15,7 +15,7 @@ export class PageRepository {
   }
 
   public async update(page: Page) {
-    await DB.queryOne("UPDATE pages SET name=?, lastModified=NOW() WHERE id=?;", [page.name, page.id]);
+    await DB.queryOne("UPDATE pages SET name=?, lastModified=NOW() WHERE id=? AND ChurchId=?;", [page.name, page.id, page.churchId]);
     return page;
   }
 

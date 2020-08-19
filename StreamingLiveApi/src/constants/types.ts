@@ -1,5 +1,5 @@
 export const TYPES = {
-  LinkRepository: Symbol("UserRepository"),
+  LinkRepository: Symbol("LinkRepository"),
   PageRepository: Symbol("PageRepository"),
   ServiceRepository: Symbol("ServiceRepository"),
   TabRepository: Symbol("TabRepository"),

@@ -5,11 +5,11 @@ import { Tab } from "../models";
 @injectable()
 export class TabRepository {
     public insert(tab: Tab) {
-        return DB.querySync("INSERT INTO tabs (churchId, url, type, data, icon, text, sort) VALUES (?, ?, ?, ?, ?, ?, ?);", [tab.churchId, tab.url, tab.type, tab.data, tab.icon, tab.text, tab.sort])
+        return DB.queryOne("INSERT INTO tabs (churchId, url, type, data, icon, text, sort) VALUES (?, ?, ?, ?, ?, ?, ?);", [tab.churchId, tab.url, tab.type, tab.data, tab.icon, tab.text, tab.sort])
     }
 
     public update(tab: Tab) {
-        return DB.querySync("UPDATE tabs SET url=?, type=?, data=?, icon=?, text=?, sort=? WHERE id=?;", [tab.url, tab.type, tab.data, tab.icon, tab.text, tab.sort, tab.id]);
+        return DB.queryOne("UPDATE tabs SET url=?, type=?, data=?, icon=?, text=?, sort=? WHERE id=?;", [tab.url, tab.type, tab.data, tab.icon, tab.text, tab.sort, tab.id]);
     }
 
     public async loadById(id: number, churchId: number): Promise<Tab> {

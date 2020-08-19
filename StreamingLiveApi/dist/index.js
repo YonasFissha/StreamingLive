@@ -18,16 +18,15 @@ require("reflect-metadata");
 const inversify_1 = require("inversify");
 const inversify_express_utils_1 = require("inversify-express-utils");
 const inversify_config_1 = require("./inversify.config");
+const auth_1 = require("./auth");
 (() => __awaiter(void 0, void 0, void 0, function* () {
     dotenv_1.default.config();
     const port = process.env.SERVER_PORT;
     const container = new inversify_1.Container();
     yield container.loadAsync(inversify_config_1.bindings);
-    const app = new inversify_express_utils_1.InversifyExpressServer(container);
+    const app = new inversify_express_utils_1.InversifyExpressServer(container, null, null, null, auth_1.CustomAuthProvider);
     const configFunction = (expApp) => {
-        expApp.use(body_parser_1.default.urlencoded({
-            extended: true,
-        }));
+        expApp.use(body_parser_1.default.urlencoded({ extended: true }));
         expApp.use(body_parser_1.default.json());
     };
     const server = app.setConfig(configFunction).build();

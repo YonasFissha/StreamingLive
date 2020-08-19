@@ -1,5 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var UserController_1 = require("./UserController");
-Object.defineProperty(exports, "UserController", { enumerable: true, get: function () { return UserController_1.UserController; } });
+var PageController_1 = require("./PageController");
+Object.defineProperty(exports, "PageController", { enumerable: true, get: function () { return PageController_1.PageController; } });
 //# sourceMappingURL=index.js.map
