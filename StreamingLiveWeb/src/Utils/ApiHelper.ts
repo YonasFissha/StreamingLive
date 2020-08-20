@@ -1,3 +1,10 @@
+export interface LinkInterface { id?: number, churchId?: number, url?: string, text?: string, sort?: number }
+export interface TabInterface { id?: number, churchId?: number, url?: string, text?: string, sort?: number, tabType: string, tabData: string, icon: string }
+export interface PageInterface { id?: number, churchId?: number, name?: string, lastModified?: Date }
+export interface ServiceInterface { id?: number, churchId?: number, serviceTime?: Date, earlyStart?: number, duration: number, chatBefore: number, chatAfter: number, provider: string, providerKey: string, videoUrl: string, timezoneOffset: number, recurring: boolean }
+export interface SettingInterface { id?: number, churchId?: number, keyName?: string, homePageUrl?: string, logoUrl?: string, primaryColor?: string, contrastColor?: string, registrationDate?: Date }
+
+//AccessManagment
 export interface ApplicationInterface { name: string, permissions: RolePermissionInterface[] }
 export interface ChurchInterface { id?: number, name: string, registrationDate?: Date, apps?: ApplicationInterface[] }
 export interface LoginResponseInterface { user: UserInterface, churches: ChurchInterface[], token: string }
@@ -8,7 +15,7 @@ export interface RoleMemberInterface { id?: number, churchId?: number, roleId?: 
 export interface UserInterface { id?: number, email?: string, authGuid?: string, displayName?: string, registrationDate?: Date, lastLogin?: Date, password?: string }
 
 export class ApiHelper {
-    static baseUrl = process.env.STREAMINGLIVE_API_URL;
+    static baseUrl = process.env.REACT_APP_STREAMINGLIVE_API_URL;
     static jwt = '';
 
     static getUrl(path: string) {

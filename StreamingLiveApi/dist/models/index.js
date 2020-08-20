@@ -4,6 +4,8 @@ var Link_1 = require("./Link");
 Object.defineProperty(exports, "Link", { enumerable: true, get: function () { return Link_1.Link; } });
 var Page_1 = require("./Page");
 Object.defineProperty(exports, "Page", { enumerable: true, get: function () { return Page_1.Page; } });
+var Setting_1 = require("./Setting");
+Object.defineProperty(exports, "Setting", { enumerable: true, get: function () { return Setting_1.Setting; } });
 var Service_1 = require("./Service");
 Object.defineProperty(exports, "Service", { enumerable: true, get: function () { return Service_1.Service; } });
 var Tab_1 = require("./Tab");

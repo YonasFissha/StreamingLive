@@ -4,16 +4,23 @@ import { Service } from "../models";
 
 @injectable()
 export class ServiceRepository {
-    public insert(service: Service) {
-        return DB.queryOne(
-            "INSERT INTO services (churchId, serviceTime, earlyStart, duration, chatBefore, chatAfter, provider, providerKey, videoUrl, timezoneOffset, recurring) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
-            [service.churchId, service.serviceTime, service.earlyStart, service.duration, service.chatBefore, service.chatAfter, service.provider, service.proivderKey, service.videoUrl, service.timezoneOffset, service.recurring]
-        );
+
+    public save(service: Service) {
+        if (service.id > 0) return this.update(service); else return this.create(service);
     }
 
-    public update(service: Service) {
-        return DB.queryOne("UPDATE services SET serviceTime=?, earlyStart=?, duration=?, chatBefore=?, chatAfter=?, provider=?, providerKey=?, videoUrl=?, timezoneOffset=?, recurring=? WHERE id=?;",
-            [service.serviceTime, service.earlyStart, service.duration, service.chatBefore, service.chatAfter, service.provider, service.proivderKey, service.videoUrl, service.timezoneOffset, service.recurring, service.id]);
+    public async create(service: Service) {
+        return DB.query(
+            "INSERT INTO services (churchId, serviceTime, earlyStart, duration, chatBefore, chatAfter, provider, providerKey, videoUrl, timezoneOffset, recurring) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+            [service.churchId, service.serviceTime, service.earlyStart, service.duration, service.chatBefore, service.chatAfter, service.provider, service.proivderKey, service.videoUrl, service.timezoneOffset, service.recurring]
+        ).then((row: any) => { service.id = row.insertId; return service; });
+    }
+
+    public async update(service: Service) {
+        return DB.query(
+            "UPDATE services SET serviceTime=?, earlyStart=?, duration=?, chatBefore=?, chatAfter=?, provider=?, providerKey=?, videoUrl=?, timezoneOffset=?, recurring=? WHERE id=?;",
+            [service.serviceTime, service.earlyStart, service.duration, service.chatBefore, service.chatAfter, service.provider, service.proivderKey, service.videoUrl, service.timezoneOffset, service.recurring, service.id]
+        ).then(() => { return service });
     }
 
     public async loadById(id: number, churchId: number): Promise<Service> {

@@ -2,8 +2,8 @@
 export class Tab {
     id: number;
     churchId: number;
-    type: string;
-    data: string;
+    tabType: string;
+    tabData: string;
     url: string;
     icon: string;
     text: string;

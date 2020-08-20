@@ -19,6 +19,7 @@ const inversify_1 = require("inversify");
 const inversify_express_utils_1 = require("inversify-express-utils");
 const inversify_config_1 = require("./inversify.config");
 const auth_1 = require("./auth");
+const cors_1 = __importDefault(require("cors"));
 (() => __awaiter(void 0, void 0, void 0, function* () {
     dotenv_1.default.config();
     const port = process.env.SERVER_PORT;
@@ -28,6 +29,7 @@ const auth_1 = require("./auth");
     const configFunction = (expApp) => {
         expApp.use(body_parser_1.default.urlencoded({ extended: true }));
         expApp.use(body_parser_1.default.json());
+        expApp.use(cors_1.default());
     };
     const server = app.setConfig(configFunction).build();
     server.listen(port, () => {

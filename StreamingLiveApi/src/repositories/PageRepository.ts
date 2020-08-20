@@ -10,13 +10,13 @@ export class PageRepository {
   }
 
   public async create(page: Page) {
-    page.id = (await DB.queryOne("INSERT INTO pages (churchId, name, lastModified) VALUES (?, ?, NOW());", [page.churchId, page.name])).insertId;
-    return page;
+    return DB.query("INSERT INTO pages (churchId, name, lastModified) VALUES (?, ?, NOW());", [page.churchId, page.name])
+      .then((row: any) => { page.id = row.insertId; return page; });
   }
 
   public async update(page: Page) {
-    await DB.queryOne("UPDATE pages SET name=?, lastModified=NOW() WHERE id=? AND ChurchId=?;", [page.name, page.id, page.churchId]);
-    return page;
+    return DB.query("UPDATE pages SET name=?, lastModified=NOW() WHERE id=? AND churchId=?;", [page.name, page.id, page.churchId])
+      .then(() => { return page });
   }
 
   public async loadById(id: number, churchId: number): Promise<Page> {

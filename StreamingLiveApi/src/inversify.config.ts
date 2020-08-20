@@ -1,5 +1,5 @@
 import { AsyncContainerModule } from "inversify";
-import { LinkRepository, PageRepository, Repositories, ServiceRepository, TabRepository } from "./repositories";
+import { LinkRepository, PageRepository, Repositories, ServiceRepository, TabRepository, SettingRepository } from "./repositories";
 import { TYPES } from "./constants";
 import { WinstonLogger } from "./logger";
 
@@ -11,6 +11,7 @@ export const bindings = new AsyncContainerModule(async (bind) => {
   bind<PageRepository>(TYPES.PageRepository).to(PageRepository).inSingletonScope();
   bind<Repositories>(TYPES.Repositories).to(Repositories).inSingletonScope();
   bind<ServiceRepository>(TYPES.ServiceRepository).to(ServiceRepository).inSingletonScope();
+  bind<SettingRepository>(TYPES.SettingRepository).to(SettingRepository).inSingletonScope();
   bind<TabRepository>(TYPES.TabRepository).to(TabRepository).inSingletonScope();
   bind<WinstonLogger>(TYPES.LoggerService).to(WinstonLogger);
 });

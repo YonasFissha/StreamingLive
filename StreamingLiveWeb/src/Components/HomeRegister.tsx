@@ -1,6 +1,5 @@
 import React, { useReducer } from 'react';
-import { ApiHelper, RegisterInterface, RoleInterface } from './';
-import { LoginResponseInterface, RolePermissionInterface, RoleMemberInterface } from '../utils';
+import { ApiHelper, RegisterInterface, RoleInterface, LoginResponseInterface, RolePermissionInterface, RoleMemberInterface, LinkInterface, TabInterface, ServiceInterface, SettingInterface } from './';
 
 export const HomeRegister: React.FC = () => {
     const [email, setEmail] = React.useState("");
@@ -22,35 +21,91 @@ export const HomeRegister: React.FC = () => {
 
         //Create Access
         e.preventDefault();
+        const churchId = await createAccess();
+
+
+        //Configure initial settings
+        const promises: Promise<any>[] = [];
+
+        //links
+        const links: LinkInterface[] = [];
+        links.push({ churchId: churchId, url: "about:blank", text: "Resources", sort: 1 });
+        links.push({ churchId: churchId, url: "about:blank", text: "Give", sort: 2 });
+        promises.push(ApiHelper.apiPost('/links', links));
+
+        //tabs
+        const tabs: TabInterface[] = [];
+        tabs.push({ churchId: churchId, url: "", text: "Chat", sort: 1, icon: "far fa-comment", tabType: "chat", tabData: "" });
+        tabs.push({ churchId: churchId, url: "https://www.bible.com/en-GB/bible/111/GEN.1.NIV", text: "Bible", sort: 2, icon: "fas fa-bible", tabType: "url", tabData: "" });
+        tabs.push({ churchId: churchId, url: "", text: "Prayer", sort: 3, icon: "fas fa-praying-hands", tabType: "prayer", tabData: "" });
+        promises.push(ApiHelper.apiPost('/tabs', tabs));
+
+        const setting: SettingInterface = {
+            churchId: churchId,
+            keyName: subDomain,
+            homePageUrl: "https://yourwebsite.com",
+            logoUrl: "",
+            primaryColor: "#24B9FF",
+            contrastColor: "#FFFFF;"
+        };
+        promises.push(ApiHelper.apiPost('/settings', [setting]));
+
+        //service
+        const service: ServiceInterface = {
+            churchId: churchId,
+            serviceTime: new Date(),
+            earlyStart: 600,
+            duration: 3600,
+            chatBefore: 600,
+            chatAfter: 600,
+            provider: "youtube_watchparty",
+            providerKey: "zFOfmAHFKNw",
+            videoUrl: "https://www.youtube.com/embed/zFOfmAHFKNw?autoplay=1&controls=0&showinfo=0&rel=0&modestbranding=1&disablekb=1",
+            timezoneOffset: 300,
+            recurring: false
+        };
+        promises.push(ApiHelper.apiPost('/services', [service]));
+
+
+
+
+        await Promise.all(promises);
+
+
+
+    }
+
+    const createAccess = async () => {
         var data: RegisterInterface = { churchName: churchName, displayName: email, email: email, password: password };
 
-        const resp: LoginResponseInterface = await ApiHelper.apiPostAnonymous(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/churches/register', data);
+        var resp: LoginResponseInterface = await ApiHelper.apiPostAnonymous(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/churches/register', data);
         const church = resp.churches[0];
         ApiHelper.jwt = resp.token;
+        console.log(ApiHelper.jwt);
+        console.log(resp);
 
 
-        const role: RoleInterface = { appName: "StreamingLive", churchId: church.id, name: "Admins" };
+        var role: RoleInterface = { appName: "StreamingLive", churchId: church.id, name: "Admins" };
         role.id = (await ApiHelper.apiPost(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/roles', [role]))[0].id;
 
         const member: RoleMemberInterface = { churchId: church.id, roleId: role.id, userId: resp.user.id };
         member.id = (await ApiHelper.apiPost(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/rolemembers', [member]))[0].id;
 
         const permissions: RolePermissionInterface[] = [];
-        permissions.push({ churchId: church.id, contentType: "Users", action: "Edit", roleId: role.id });
+        permissions.push({ churchId: church.id, contentType: "Links", action: "Edit", roleId: role.id });
+        permissions.push({ churchId: church.id, contentType: "Tabs", action: "Edit", roleId: role.id });
         permissions.push({ churchId: church.id, contentType: "Pages", action: "Edit", roleId: role.id });
         permissions.push({ churchId: church.id, contentType: "Services", action: "Edit", roleId: role.id });
-        permissions.push({ churchId: church.id, contentType: "Appearance", action: "Edit", roleId: role.id });
+        permissions.push({ churchId: church.id, contentType: "Settings", action: "Edit", roleId: role.id });
         await ApiHelper.apiPost(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/rolepermissions', permissions);
 
-        await ApiHelper.apiPost(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/users/switchApp', { churchId: church.id, appName: "StreamingLive" });
+        resp = await ApiHelper.apiPost(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/users/switchApp', { churchId: church.id, appName: "StreamingLive" });
         ApiHelper.jwt = resp.token;
+        console.log(ApiHelper.jwt);
 
-        //Configure initial settings
-        //links, pages, services, tabs
-
-
-
+        return church.id;
     }
+
 
     return (
         <div id="register">

@@ -29,17 +29,11 @@ export class PageController extends BaseHttpController {
   public async save(req: express.Request<{}, {}, Page[]>, res: express.Response): Promise<any> {
     try {
       const au: AuthenticatedUser = new AuthenticatedUser(this.httpContext.user);
-
-      console.log(au);
-
       if (!au.checkAccess('Pages', 'Edit')) return this.json({}, 401);
       else {
-
         let pages: Page[] = req.body;
         const promises: Promise<Page>[] = [];
-        pages.forEach((page) => {
-          if (page.churchId === au.churchId) promises.push(this.repositories.page.save(page));
-        });
+        pages.forEach((page) => { if (page.churchId === au.churchId) promises.push(this.repositories.page.save(page)); });
         pages = await Promise.all(promises);
         return this.json(pages, 200);
       }

@@ -6,7 +6,7 @@ import { InversifyExpressServer } from "inversify-express-utils";
 import { bindings } from "./inversify.config";
 import express from "express";
 import { CustomAuthProvider } from "./auth"
-import Cors from 'cors'
+import cors from 'cors'
 
 (async () => {
   dotenv.config();
@@ -18,6 +18,7 @@ import Cors from 'cors'
   const configFunction = (expApp: express.Application) => {
     expApp.use(bodyParser.urlencoded({ extended: true }));
     expApp.use(bodyParser.json());
+    expApp.use(cors());
   };
 
   const server = app.setConfig(configFunction).build();

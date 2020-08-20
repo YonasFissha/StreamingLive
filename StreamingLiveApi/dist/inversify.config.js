@@ -21,6 +21,7 @@ exports.bindings = new inversify_1.AsyncContainerModule((bind) => __awaiter(void
     bind(constants_1.TYPES.PageRepository).to(repositories_1.PageRepository).inSingletonScope();
     bind(constants_1.TYPES.Repositories).to(repositories_1.Repositories).inSingletonScope();
     bind(constants_1.TYPES.ServiceRepository).to(repositories_1.ServiceRepository).inSingletonScope();
+    bind(constants_1.TYPES.SettingRepository).to(repositories_1.SettingRepository).inSingletonScope();
     bind(constants_1.TYPES.TabRepository).to(repositories_1.TabRepository).inSingletonScope();
     bind(constants_1.TYPES.LoggerService).to(logger_1.WinstonLogger);
 }));

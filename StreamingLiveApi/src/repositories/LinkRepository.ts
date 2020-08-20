@@ -4,12 +4,18 @@ import { Link } from "../models";
 
 @injectable()
 export class LinkRepository {
-    public insert(link: Link) {
-        return DB.queryOne("INSERT INTO links (churchId, url, text, sort) VALUES (?, ?, ?, ?);", [link.churchId, link.url, link.text, link.sort])
+    public save(link: Link) {
+        if (link.id > 0) return this.update(link); else return this.create(link);
     }
 
-    public update(link: Link) {
-        return DB.queryOne("UPDATE links SET url=?, text=?, sort=? WHERE id=?;", [link.url, link.text, link.sort, link.id]);
+    public async create(link: Link) {
+        return DB.query("INSERT INTO links (churchId, url, text, sort) VALUES (?, ?, ?, ?);", [link.churchId, link.url, link.text, link.sort])
+            .then((row: any) => { link.id = row.insertId; return link; });
+    }
+
+    public async update(link: Link) {
+        return DB.query("UPDATE links SET url=?, text=?, sort=? WHERE id=?;", [link.url, link.text, link.sort, link.id])
+            .then(() => { return link });
     }
 
     public async loadById(id: number, churchId: number): Promise<Link> {
