@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react';
-import { InputBox, ApiHelper, StyleInterface } from './';
+import { InputBox, ApiHelper, SettingInterface } from './';
 import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
 import { Button } from 'react-bootstrap';
 
 
 interface Props {
-    style: StyleInterface,
+    settings: SettingInterface,
     updatedFunction: () => void
 }
 
@@ -56,7 +56,7 @@ export const ImageEditor: React.FC<Props> = (props) => {
     const handleSave = () => { ApiHelper.apiPost('/styles/photo', [{ url: dataUrl }]).then((d) => { props.updatedFunction(); }); }
     const handleCancel = () => { props.updatedFunction(); }
     const init = useCallback(() => {
-        var startingUrl = props.style.logo
+        var startingUrl = props.settings.logoUrl;
         setOriginalUrl(startingUrl);
         setCurrentUrl(startingUrl);
     }, []);

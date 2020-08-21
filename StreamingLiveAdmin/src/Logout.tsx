@@ -7,7 +7,7 @@ export const Logout = () => {
     const context = React.useContext(UserContext)
 
     document.cookie = "apiKey=";
-    ApiHelper.apiKey = '';
+    ApiHelper.jwt = '';
     context.setUserName('');
     return <Redirect to="/" />
 }

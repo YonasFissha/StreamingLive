@@ -31,6 +31,7 @@ export const Links = () => {
     const getLinks = () => {
         var idx = 0;
         var rows: JSX.Element[] = [];
+        console.log(links);
         links.forEach(link => {
             const upLink = (idx === 0) ? null : <a href="about:blank" onClick={(e: React.MouseEvent) => { e.preventDefault(); moveUp(idx); }}><i className="fas fa-arrow-up"></i></a>
             const downLink = (idx === links.length - 1) ? null : <a href="about:blank" onClick={(e: React.MouseEvent) => { e.preventDefault(); moveDown(idx); }}><i className="fas fa-arrow-down"></i></a>
@@ -53,7 +54,7 @@ export const Links = () => {
 
     if (currentLink !== null) return <LinkEdit currentLink={currentLink} updatedFunction={handleUpdated} />;
     else return (
-        <DisplayBox headerIcon="far fa-square" headerText="Buttons" editContent={getEditContent()} >
+        <DisplayBox headerIcon="fas fa-link" headerText="Links" editContent={getEditContent()} >
             <table className="table table-sm">
                 {getLinks()}
             </table>

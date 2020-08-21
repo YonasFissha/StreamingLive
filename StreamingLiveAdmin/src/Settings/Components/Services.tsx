@@ -8,7 +8,7 @@ export const Services = () => {
 
     const handleUpdated = () => { setCurrentService(null); loadData(); }
     const getEditContent = () => { return <a href="about:blank" onClick={handleAdd}><i className="fas fa-plus"></i></a> }
-    const loadData = () => { ApiHelper.apiGet('/services').then(data => setCurrentService(data)); }
+    const loadData = () => { ApiHelper.apiGet('/services').then(data => setServices(data)); }
     const saveChanges = () => { ApiHelper.apiPost('/services', services).then(loadData); }
 
     const handleAdd = () => {
@@ -34,6 +34,8 @@ export const Services = () => {
         })
         return rows;
     }
+
+    React.useEffect(() => { loadData(); }, []);
 
 
     if (currentService !== null) return <ServiceEdit currentService={currentService} updatedFunction={handleUpdated} />;

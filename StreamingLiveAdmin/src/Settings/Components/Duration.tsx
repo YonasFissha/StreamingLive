@@ -1,6 +1,7 @@
 import React from 'react';
-interface Props { totalSeconds: number, updatedFunction?: (totalSeconds: number) => void }
 import { Row, Col, InputGroup } from 'react-bootstrap'
+
+interface Props { totalSeconds: number, updatedFunction?: (totalSeconds: number) => void }
 
 export const Duration: React.FC<Props> = (props) => {
     var min = Math.floor(props.totalSeconds / 60);

@@ -1,46 +1,29 @@
-import { inject } from "inversify";
-import { controller, httpPost, httpGet, BaseHttpController } from "inversify-express-utils";
-import { TYPES } from "../constants";
-import { Repositories } from "../repositories";
-import { Link, Service } from "../models";
+import { controller, httpPost, httpGet } from "inversify-express-utils";
+import { Service } from "../models";
 import express from "express";
-import { WinstonLogger } from "../logger";
-import { AuthenticatedUser } from '../auth'
+import { CustomBaseController } from "./CustomBaseController";
 
 @controller("/services")
-export class ServiceController extends BaseHttpController {
-    private repositories: Repositories;
-    private _logger: WinstonLogger;
-
-    constructor(@inject(TYPES.Repositories) repositories: Repositories, @inject(TYPES.LoggerService) logger: WinstonLogger) {
-        super()
-        this.repositories = repositories;
-        this._logger = logger;
-    }
-
+export class ServiceController extends CustomBaseController {
     @httpGet("/")
-    public async loadAll(req: express.Request, res: express.Response): Promise<void> {
-        // const page = req.body.page;
-
-        return null;
+    public async loadAll(req: express.Request, res: express.Response): Promise<any> {
+        return this.actionWrapper(req, res, async () => {
+            return await this.repositories.service.loadAll(this.au().churchId);
+        });
     }
 
     @httpPost("/")
     public async save(req: express.Request<{}, {}, Service[]>, res: express.Response): Promise<any> {
-        try {
-            const au: AuthenticatedUser = new AuthenticatedUser(this.httpContext.user);
-            if (!au.checkAccess('Services', 'Edit')) return this.json({}, 401);
+        return this.actionWrapper(req, res, async () => {
+            if (!this.au().checkAccess('Services', 'Edit')) return this.json({}, 401);
             else {
                 let services: Service[] = req.body;
                 const promises: Promise<Service>[] = [];
-                services.forEach((service) => { if (service.churchId === au.churchId) promises.push(this.repositories.service.save(service)); });
+                services.forEach((service) => { if (service.churchId === this.au().churchId) promises.push(this.repositories.service.save(service)); });
                 services = await Promise.all(promises);
                 return this.json(services, 200);
             }
-        } catch (e) {
-            this._logger.logger.error(e);
-            return this.internalServerError(e);
-        }
+        });
     }
 
 }

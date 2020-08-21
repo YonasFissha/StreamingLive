@@ -23,7 +23,7 @@ export class LinkRepository {
     }
 
     public async loadAll(churchId: number): Promise<Link> {
-        return DB.query("SELECT * FROM links WHERE churchId=?;", [churchId]);
+        return DB.query("SELECT * FROM links WHERE churchId=? order by sort;", [churchId]);
     }
 
 }

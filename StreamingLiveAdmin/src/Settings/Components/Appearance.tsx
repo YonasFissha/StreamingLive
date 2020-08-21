@@ -1,36 +1,40 @@
 import React from 'react';
-import { InputBox, ApiHelper, StyleInterface } from './'
+import { InputBox, ApiHelper, SettingInterface } from './'
 import { Row, Col, FormGroup } from 'react-bootstrap'
 import { ImageEditor } from './ImageEditor';
 
 interface Props { updatedFunction?: () => void }
 
 export const Appearance: React.FC<Props> = (props) => {
-    const [currentStyle, setCurrentLink] = React.useState<StyleInterface>(null);
+    const [currentSettings, setCurrentSettings] = React.useState<SettingInterface>();
     const [editLogo, setEditLogo] = React.useState(false);
+
+    const loadData = () => { ApiHelper.apiGet('/settings').then(data => setCurrentSettings(data[0])); }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = e.currentTarget.value;
-        var s = { ...currentStyle };
+        var s = { ...currentSettings };
         switch (e.currentTarget.name) {
-            case 'homePage': s.homePage = val; break;
+            case 'homePage': s.homePageUrl = val; break;
             case 'primary': s.primaryColor = val; break;
             case 'contrast': s.contrastColor = val; break;
         }
-        setCurrentLink(s);
+        setCurrentSettings(s);
     }
 
     const getLogoEditor = () => {
         if (!editLogo) return null;
-        else return <ImageEditor style={currentStyle} updatedFunction={props.updatedFunction}></ImageEditor>
+        else return <ImageEditor settings={currentSettings} updatedFunction={props.updatedFunction}></ImageEditor>
     }
 
     const getLogoLink = () => {
-        var logoImg = (currentStyle.logo === "") ? "none" : <img src={currentStyle.logo} alt="logo" className="img-fluid" />;
+        var logoImg = (currentSettings && currentSettings?.logoUrl !== "") ? <img src={currentSettings.logoUrl} alt="logo" className="img-fluid" /> : "none";
         return <a href="about:blank" onClick={(e: React.MouseEvent) => { e.preventDefault(); setEditLogo(true); }}>{logoImg}</a>
     }
 
-    const handleSave = () => { ApiHelper.apiPost('/styles', [currentStyle]); props.updatedFunction(); }
+    const handleSave = () => { ApiHelper.apiPost('/settings', [currentSettings]); props.updatedFunction(); }
+
+    React.useEffect(() => { loadData(); }, []);
 
     return (
         <>
@@ -40,20 +44,20 @@ export const Appearance: React.FC<Props> = (props) => {
                 {getLogoLink()}
                 <FormGroup>
                     <label>Home Page Url</label>
-                    <input type="text" className="form-control" name="homePage" value={currentStyle.homePage} onChange={handleChange} />
+                    <input type="text" className="form-control" name="homePage" value={currentSettings?.homePageUrl} onChange={handleChange} />
                 </FormGroup>
                 <div className="section">Colors</div>
                 <Row>
                     <Col>
                         <FormGroup>
                             <label>Primary</label>
-                            <input type="color" className="form-control" name="primary" value={currentStyle.primaryColor} onChange={handleChange} />
+                            <input type="color" className="form-control" name="primary" value={currentSettings?.primaryColor} onChange={handleChange} />
                         </FormGroup>
                     </Col>
                     <Col>
                         <FormGroup>
                             <label>Contrast</label>
-                            <input type="color" className="form-control" name="contrast" value={currentStyle.primaryColor} onChange={handleChange} />
+                            <input type="color" className="form-control" name="contrast" value={currentSettings?.primaryColor} onChange={handleChange} />
                         </FormGroup>
                     </Col>
                 </Row>

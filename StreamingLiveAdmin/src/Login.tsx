@@ -1,5 +1,5 @@
 import React from 'react';
-import { ErrorMessages, ApiHelper, UserHelper } from './Components';
+import { ErrorMessages, ApiHelper, LoginResponseInterface, UserHelper } from './Components';
 import UserContext from './UserContext'
 import { Button, FormControl } from 'react-bootstrap'
 import { Redirect } from 'react-router-dom';
@@ -23,7 +23,7 @@ export const Login: React.FC = (props: any) => {
 
     const handleSubmit = (e: React.MouseEvent) => {
         e.preventDefault();
-        if (validate()) login({ Email: email, Password: password });
+        if (validate()) login({ email: email, password: password });
     }
 
     const init = () => {
@@ -33,26 +33,19 @@ export const Login: React.FC = (props: any) => {
     }
 
     const login = (data: {}) => {
-        const requestOptions = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) };
-        console.log('fetching');
-        fetch(ApiHelper.baseUrl + '/users/login', requestOptions)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                if (data.apiToken === undefined) document.cookie = '';
-                else {
-                    ApiHelper.apiKey = data.apiToken;
-                    UserHelper.populate(data.mappings).then(d => { ApiHelper.apiKey = data.apiToken; context.setUserName(data.name); });
-                    document.cookie = "apiKey=" + data.apiToken;
-                }
-            })
-            .catch(error => document.cookie = '');
+        ApiHelper.apiPostAnonymous(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/users/login', data).then((resp: LoginResponseInterface) => {
+            ApiHelper.jwt = resp.token;
+            UserHelper.user = resp.user;
+            UserHelper.churches = resp.churches;
+            UserHelper.currentChurch = resp.churches[0];
+            context.setUserName(resp.user.displayName);
+        });
     }
 
     const context = React.useContext(UserContext)
     React.useEffect(init, []);
 
-    if (context.userName === '' || ApiHelper.apiKey === '') {
+    if (context.userName === '' || ApiHelper.jwt === '') {
         return (
 
             <div className="smallCenterBlock">

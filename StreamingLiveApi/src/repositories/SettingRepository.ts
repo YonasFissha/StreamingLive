@@ -5,6 +5,11 @@ import { Setting } from "../models";
 @injectable()
 export class SettingRepository {
 
+    public async loadAll(churchId: number) {
+        return DB.query("SELECT * FROM settings WHERE churchId=?", [churchId]);
+    }
+
+
     public save(setting: Setting) {
         if (setting.id > 0) return this.update(setting); else return this.create(setting);
     }

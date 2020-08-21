@@ -1,30 +1,46 @@
 import React from 'react';
+import { UserHelper, NavItems } from './';
+import { Link } from 'react-router-dom'
+import { Row, Col, Container } from 'react-bootstrap';
 
 export const Header: React.FC = () => {
+    const [showUserMenu, setShowUserMenu] = React.useState(false);
 
-    /*
-     @if (StreamingLiveCore.AppUser.Current!=null && StreamingLiveCore.AppUser.Current.IsAuthenticated)
-            {
-                            <a href="javascript:toggleUserMenu();"><i class="fas fa-user"></i> &nbsp; @StreamingLiveCore.AppUser.Current.UserData.DisplayName (@StreamingLiveCore.AppUser.CurrentSite.KeyName) <i class="fas fa-caret-down"></i></a>
-                        }
-            else
-            {
-                            <a href="/cp/">Login</a>
-                        }
-    */
-    const userLink = <></>
+    const toggleUserMenu = (e: React.MouseEvent) => { e.preventDefault(); setShowUserMenu(!showUserMenu); }
+
+    const getUserMenu = () => {
+        if (showUserMenu) return (
+            <div className="container" id="userMenu">
+                <div>
+                    <ul className="nav flex-column d-xl-none"><NavItems /></ul>
+                    <Link to="/logout">Logout</Link>
+                </div>
+            </div>)
+        else return null;
+    }
+
 
     return (
         <>
-            <nav className="navbar navbar-expand navbar-dark fixed-top bg-dark">
-                <a className="navbar-brand" href="/" style={{ paddingTop: 0, paddingBottom: 0 }}><img src="/images/logo.png" id="logo" /></a>
-                <div className="collapse navbar-collapse" id="navbar">
-                    <ul className="navbar-nav mr-auto"></ul>
-                    <div className="navbar-nav ml-auto">{userLink}</div>
-                </div>
-            </nav>
-            <div id="userMenu" style={{ display: 'none' }}></div>
-            <div style={{ height: 66 }}></div>
+            <div id="navbar" className="fixed-top">
+                <Container>
+                    <Row>
+                        <div className="col-6 col-lg-2-5"><a className="navbar-brand" href="/"><img src="/images/logo.png" alt="logo" /></a></div>
+                        <Col className="d-none d-xl-block" xl={7} style={{ borderLeft: '2px solid #EEE', borderRight: '2px solid #EEE' }}>
+                            <ul className="nav nav-fill">
+                                <NavItems prefix="main" />
+                            </ul>
+                        </Col>
+                        <div className="col-6 col-lg-2-5 text-right" style={{ paddingTop: 17 }} id="navRight" >
+                            <a href="about:blank" onClick={toggleUserMenu} id="userMenuLink">
+                                <i className="fas fa-user" /> &nbsp; {UserHelper.user.displayName} <i className="fas fa-caret-down"></i>
+                            </a>
+                        </div>
+                    </Row>
+                </Container>
+            </div>
+            {getUserMenu()}
+            <div id="navSpacer" ></div>
         </>
     );
 }

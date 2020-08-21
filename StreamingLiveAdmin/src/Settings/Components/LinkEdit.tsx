@@ -27,7 +27,7 @@ export const LinkEdit: React.FC<Props> = (props) => {
     React.useEffect(() => { setCurrentLink(props.currentLink); }, [props.currentLink]);
 
     return (
-        <InputBox headerIcon="far fa-square" headerText="Edit Button" saveFunction={handleSave} cancelFunction={handleCancel} deleteFunction={checkDelete} >
+        <InputBox headerIcon="fas fa-link" headerText="Edit Link" saveFunction={handleSave} cancelFunction={handleCancel} deleteFunction={checkDelete} >
             <div className="form-group">
                 <label>Text</label>
                 <input type="text" className="form-control" name="text" onChange={handleChange} />

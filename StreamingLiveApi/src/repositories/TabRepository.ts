@@ -4,6 +4,11 @@ import { Tab } from "../models";
 
 @injectable()
 export class TabRepository {
+
+    public async loadAll(churchId: number) {
+        return DB.query("SELECT * FROM tabs WHERE churchId=? order by sort", [churchId]);
+    }
+
     public save(tab: Tab) {
         if (tab.id > 0) return this.update(tab); else return this.create(tab);
     }
@@ -24,8 +29,5 @@ export class TabRepository {
         return DB.queryOne("SELECT * FROM tabs WHERE id=? AND churchId=?;", [id, churchId]);
     }
 
-    public async loadAll(churchId: number): Promise<Tab> {
-        return DB.query("SELECT * FROM tabs WHERE churchId=?;", [churchId]);
-    }
 
 }

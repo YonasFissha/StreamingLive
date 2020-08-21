@@ -3,7 +3,6 @@ import { Preview, Services, Appearance, Links, Tabs } from './Components'
 import { Row, Col } from 'react-bootstrap'
 
 export const SettingsPage = () => {
-
     return (
         <>
             <Row style={{ marginBottom: 25 }}>
