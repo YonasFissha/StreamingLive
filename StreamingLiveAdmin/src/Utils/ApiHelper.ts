@@ -1,6 +1,6 @@
 export interface LinkInterface { id?: number, churchId?: number, url?: string, text?: string, sort?: number }
 export interface TabInterface { id?: number, churchId?: number, url?: string, text?: string, sort?: number, tabType: string, tabData: string, icon: string }
-export interface PageInterface { id?: number, churchId?: number, name?: string, lastModified?: Date }
+export interface PageInterface { id?: number, churchId?: number, name?: string, lastModified?: Date, content?: string }
 export interface ServiceInterface { id?: number, churchId?: number, serviceTime?: Date, earlyStart?: number, duration: number, chatBefore: number, chatAfter: number, provider: string, providerKey: string, videoUrl: string, timezoneOffset: number, recurring: boolean }
 export interface SettingInterface { id?: number, churchId?: number, keyName?: string, homePageUrl?: string, logoUrl?: string, primaryColor?: string, contrastColor?: string, registrationDate?: Date }
 
@@ -13,6 +13,8 @@ export interface RegisterInterface { churchName?: string, displayName?: string, 
 export interface RoleInterface { id?: number, churchId?: number, appName?: string, name?: string }
 export interface RolePermissionInterface { id?: number, churchId?: number, roleId?: number, appName?: string, contentType?: string, contentId?: number, action?: string }
 export interface RoleMemberInterface { id?: number, churchId?: number, roleId?: number, userId?: number }
+export interface SwitchAppRequestInterface { appName: string, churchId: number }
+export interface SwitchAppResponseInterface { appName: string, churchId: number }
 export interface UserInterface { id?: number, email?: string, authGuid?: string, displayName?: string, registrationDate?: Date, lastLogin?: Date, password?: string }
 
 export class ApiHelper {

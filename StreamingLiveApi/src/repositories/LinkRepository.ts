@@ -18,6 +18,10 @@ export class LinkRepository {
             .then(() => { return link });
     }
 
+    public async delete(id: number, churchId: number) {
+        DB.query("DELETE FROM links WHERE id=? AND churchId=?;", [id, churchId]);
+    }
+
     public async loadById(id: number, churchId: number): Promise<Link> {
         return DB.queryOne("SELECT * FROM links WHERE id=? AND churchId=?;", [id, churchId]);
     }

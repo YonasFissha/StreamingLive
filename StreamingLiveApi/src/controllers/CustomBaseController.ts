@@ -1,8 +1,7 @@
 import { inject } from "inversify";
-import { controller, httpPost, httpGet, BaseHttpController } from "inversify-express-utils";
+import { BaseHttpController, requestParam } from "inversify-express-utils";
 import { TYPES } from "../constants";
 import { Repositories } from "../repositories";
-import { Setting } from "../models";
 import express from "express";
 import { WinstonLogger } from "../logger";
 import { AuthenticatedUser } from '../auth'
@@ -17,16 +16,25 @@ export class CustomBaseController extends BaseHttpController {
         super()
         this.repositories = repositories;
         this.logger = logger;
-
     }
 
-    public au(): AuthenticatedUser {
+    public authUser(): AuthenticatedUser {
         return new AuthenticatedUser(this.httpContext.user);
     }
 
-    public async actionWrapper(req: express.Request, res: express.Response, fetchFunction: () => any): Promise<any> {
+    public include(req: express.Request, item: string) {
+        let result = false;
+        if (req.query.include !== undefined) {
+            const value: string = req.query.include as string;
+            const items = value.split(',');
+            if (items.indexOf(item) > -1) result = true;
+        }
+        return result;
+    }
+
+    public async actionWrapper(req: express.Request, res: express.Response, fetchFunction: (au: AuthenticatedUser) => any): Promise<any> {
         try {
-            return await fetchFunction();
+            return await fetchFunction(this.authUser());
         } catch (e) {
             this.logger.logger.error(e);
             return this.internalServerError(e);

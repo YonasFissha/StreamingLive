@@ -23,6 +23,10 @@ export class ServiceRepository {
         ).then(() => { return service });
     }
 
+    public async delete(id: number, churchId: number) {
+        DB.query("DELETE FROM services WHERE id=? AND churchId=?;", [id, churchId]);
+    }
+
     public async loadById(id: number, churchId: number): Promise<Service> {
         return DB.queryOne("SELECT * FROM services WHERE id=? AND churchId=?;", [id]);
     }

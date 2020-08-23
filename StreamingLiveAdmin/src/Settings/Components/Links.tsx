@@ -1,5 +1,6 @@
 import React from 'react';
 import { DisplayBox, LinkInterface, LinkEdit, ApiHelper } from '.'
+import { UserHelper } from '../../Utils';
 
 export const Links = () => {
     const [links, setLinks] = React.useState<LinkInterface[]>([]);
@@ -10,19 +11,29 @@ export const Links = () => {
     const loadData = () => { ApiHelper.apiGet('/links').then(data => setLinks(data)); }
     const saveChanges = () => { ApiHelper.apiPost('/links', links).then(loadData); }
 
-    const handleAdd = () => {
-        var link: LinkInterface = { churchId: 1, sort: 0, text: "", url: "" }
+    const handleAdd = (e: React.MouseEvent) => {
+        e.preventDefault();
+        var link: LinkInterface = { churchId: UserHelper.currentChurch.id, sort: links.length, text: "", url: "" }
         setCurrentLink(link);
-        loadData();
     }
 
-    const moveUp = (idx: number) => {
+    const makeSortSequential = () => {
+        for (let i = 0; i < links.length; i++) links[i].sort = i + 1;
+    }
+
+    const moveUp = (e: React.MouseEvent) => {
+        e.preventDefault();
+        const idx = parseInt(e.currentTarget.getAttribute("data-idx"));
+        makeSortSequential();
         links[idx - 1].sort++;
         links[idx].sort--;
         saveChanges();
     }
 
-    const moveDown = (idx: number) => {
+    const moveDown = (e: React.MouseEvent) => {
+        e.preventDefault();
+        const idx = parseInt(e.currentTarget.getAttribute("data-idx"));
+        makeSortSequential();
         links[idx].sort++;
         links[idx + 1].sort--;
         saveChanges();
@@ -33,8 +44,8 @@ export const Links = () => {
         var rows: JSX.Element[] = [];
         console.log(links);
         links.forEach(link => {
-            const upLink = (idx === 0) ? null : <a href="about:blank" onClick={(e: React.MouseEvent) => { e.preventDefault(); moveUp(idx); }}><i className="fas fa-arrow-up"></i></a>
-            const downLink = (idx === links.length - 1) ? null : <a href="about:blank" onClick={(e: React.MouseEvent) => { e.preventDefault(); moveDown(idx); }}><i className="fas fa-arrow-down"></i></a>
+            const upLink = (idx === 0) ? null : <a href="about:blank" data-idx={idx} onClick={moveUp}><i className="fas fa-arrow-up"></i></a>
+            const downLink = (idx === links.length - 1) ? null : <a href="about:blank" data-idx={idx} onClick={moveDown}><i className="fas fa-arrow-down"></i></a>
             rows.push(
                 <tr>
                     <td><a href={link.url}>{link.text}</a></td>

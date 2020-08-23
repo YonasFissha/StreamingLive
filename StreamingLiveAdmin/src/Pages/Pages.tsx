@@ -7,11 +7,16 @@ export const Pages = () => {
     const [currentPage, setCurrentPage] = React.useState<PageInterface>(null);
 
     const loadData = () => { ApiHelper.apiGet('/pages').then(data => setPages(data)); }
-    const handleUpdate = () => { setCurrentPage(null); }
+    const loadPage = (id: number) => { ApiHelper.apiGet('/pages/' + id + '?include=content').then(data => setCurrentPage(data)); }
+    const handleUpdate = () => { setCurrentPage(null); loadData(); }
     const handleAdd = () => { setCurrentPage({ churchId: 1, lastModified: new Date(), name: "" }) }
-    const handleEdit = (page: PageInterface) => { setCurrentPage(page); }
+    const handleEdit = (page: PageInterface) => { loadPage(page.id); }
 
     React.useEffect(() => { loadData(); }, []);
+
+    const getEdit = () => {
+        if (currentPage !== null) return <PageEdit page={currentPage} updatedFunction={handleUpdate} />;
+    }
 
     return (
         <>
@@ -23,7 +28,7 @@ export const Pages = () => {
                     <PageList pages={pages} addFunction={handleAdd} editFunction={handleEdit} />
                 </Col>
                 <Col md={4}>
-                    <PageEdit page={currentPage} updatedFunction={handleUpdate} />
+                    {getEdit()}
                 </Col>
             </Row>
         </>

@@ -20,7 +20,7 @@ export const PageEdit: React.FC<Props> = (props) => {
         const val = e.currentTarget.value;
         var p = { ...page };
         switch (e.currentTarget.name) {
-            //case 'text': t.text = val; break;
+            case 'name': p.name = val; break;
             //case 'type': t.tabType = val; break;
             //case 'page': t.tabData = val; break;
             //case 'url': t.url = val; break;
@@ -29,9 +29,8 @@ export const PageEdit: React.FC<Props> = (props) => {
     }
 
     const handleSave = () => {
-        //var content = editorState.getCurrentContent();
-        ApiHelper.apiPost('/pages', [page]);
-        props.updatedFunction();
+        var content = editorState.getCurrentContent();
+        ApiHelper.apiPost('/pages', [page]).then(props.updatedFunction);
     }
 
     const handleEditorChange = (e: EditorState) => {
@@ -40,7 +39,10 @@ export const PageEdit: React.FC<Props> = (props) => {
 
     const init = () => {
         setPage(props.page);
-        //setEditorState(EditorState.createWithContent(ContentState.createFromText(page.content)));
+        const content = props.page?.content;
+
+        if (content !== undefined && content !== null) setEditorState(EditorState.createWithContent(ContentState.createFromText(content)));
+        else setEditorState(EditorState.createWithContent(ContentState.createFromText("")));
     }
 
     React.useEffect(() => { init(); }, [props.page]);
@@ -49,11 +51,11 @@ export const PageEdit: React.FC<Props> = (props) => {
         <InputBox headerIcon="fas fa-code" headerText="Edit Page" saveFunction={handleSave} cancelFunction={handleCancel} deleteFunction={checkDelete} >
             <FormGroup>
                 <label>Page Name</label>
-                <input type="text" className="form-control" name="name" />
+                <input type="text" className="form-control" name="name" value={page?.name} onChange={handleChange} />
             </FormGroup>
             <FormGroup>
                 <label>Contents</label>
-                <Editor editorState={editorState} onEditorStateChange={handleEditorChange} />
+                <Editor editorState={editorState} onEditorStateChange={handleEditorChange} editorStyle={{ height: 400 }} />
             </FormGroup>
         </InputBox>
     );

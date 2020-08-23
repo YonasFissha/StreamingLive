@@ -19,6 +19,10 @@ export class PageRepository {
       .then(() => { return page });
   }
 
+  public async delete(id: number, churchId: number) {
+    DB.query("DELETE FROM pages WHERE id=? AND churchId=?;", [id, churchId]);
+  }
+
   public async loadById(id: number, churchId: number): Promise<Page> {
     return DB.queryOne("SELECT * FROM pages WHERE id=? AND churchId=?;", [id, churchId]);
   }
@@ -26,5 +30,6 @@ export class PageRepository {
   public async loadAll(churchId: number): Promise<Page> {
     return DB.query("SELECT * FROM pages WHERE churchId=?;", [churchId]);
   }
+
 
 }

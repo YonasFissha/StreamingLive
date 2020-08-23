@@ -1,5 +1,5 @@
 import React from 'react';
-import { ErrorMessages, ApiHelper, LoginResponseInterface, UserHelper } from './Components';
+import { ErrorMessages, ApiHelper, LoginResponseInterface, UserHelper, SettingInterface, SwitchAppRequestInterface } from './Components';
 import UserContext from './UserContext'
 import { Button, FormControl } from 'react-bootstrap'
 import { Redirect } from 'react-router-dom';
@@ -37,8 +37,19 @@ export const Login: React.FC = (props: any) => {
             ApiHelper.jwt = resp.token;
             UserHelper.user = resp.user;
             UserHelper.churches = resp.churches;
-            UserHelper.currentChurch = resp.churches[0];
-            context.setUserName(resp.user.displayName);
+            selectChurch();
+        });
+    }
+
+    const selectChurch = () => {
+        UserHelper.currentChurch = UserHelper.churches[0];
+        const data: SwitchAppRequestInterface = { appName: "StreamingLive", churchId: UserHelper.currentChurch.id };
+        ApiHelper.apiPost(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/users/switchApp', data).then((resp: LoginResponseInterface) => {
+            ApiHelper.jwt = resp.token;
+            ApiHelper.apiGet('/settings').then((settings: SettingInterface[]) => {
+                UserHelper.currentSettings = settings[0];
+                context.setUserName(UserHelper.user.displayName);
+            });
         });
     }
 

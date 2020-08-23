@@ -16,7 +16,7 @@ export class DB {
 
   public static async queryOne(sql: string, params: any[]) {
     return this.query(sql, params).then((result: any[]) => {
-      return result.length > 0 ? result[0].value : null;
+      return result.length > 0 ? result[0] : null;
     });
   }
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { UserHelper } from '../../Utils';
 
 
 export const Preview = () => {
@@ -7,9 +8,9 @@ export const Preview = () => {
             <div className="header"><i className="far fa-calendar-alt"></i> Preview</div>
             <div className="content">
                 <div id="previewWrapper">
-                    <iframe id="previewFrame" src="https://@(AppUser.CurrentSite.KeyName).streaminglive.church/?preview=1"></iframe>
+                    <iframe id="previewFrame" src={"https://" + UserHelper.currentSettings.keyName + ".streaminglive.church/?preview=1"}></iframe>
                 </div>
-                <p className="margin-top:10px;margin-bottom:0px;">View your live site: <a href="https://@(AppUser.CurrentSite.KeyName).streaminglive.church/" target="_blank">https://@(AppUser.CurrentSite.KeyName).streaminglive.church/</a></p>
+                <p style={{ marginTop: 10, marginBottom: 10 }}>View your live site: <a href={"https://" + UserHelper.currentSettings.keyName + ".streaminglive.church/"} target="_blank">{"https://" + UserHelper.currentSettings.keyName + ".streaminglive.church/"}</a></p>
             </div>
         </div>
     );
