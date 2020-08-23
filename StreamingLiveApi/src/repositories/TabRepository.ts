@@ -20,6 +20,10 @@ export class TabRepository {
         ).then((row: any) => { tab.id = row.insertId; return tab; });
     }
 
+    public async delete(id: number, churchId: number) {
+        DB.query("DELETE FROM tabs WHERE id=? AND churchId=?;", [id, churchId]);
+    }
+
     public async update(tab: Tab) {
         return DB.query("UPDATE tabs SET url=?, tabType=?, tabData=?, icon=?, text=?, sort=? WHERE id=?;", [tab.url, tab.tabType, tab.tabData, tab.icon, tab.text, tab.sort, tab.id])
             .then(() => { return tab });

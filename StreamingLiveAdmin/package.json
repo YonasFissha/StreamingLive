@@ -47,6 +47,7 @@
     ]
   },
   "devDependencies": {
+    "@types/jquery": "^3.5.1",
     "@types/react-draft-wysiwyg": "^1.13.0",
     "google-charts": "^2.0.0"
   }

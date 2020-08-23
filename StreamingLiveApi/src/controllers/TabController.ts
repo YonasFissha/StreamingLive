@@ -1,5 +1,5 @@
 
-import { controller, httpPost, httpGet } from "inversify-express-utils";
+import { controller, httpPost, httpGet, httpDelete, requestParam } from "inversify-express-utils";
 import { Tab } from "../models";
 import express from "express";
 import { CustomBaseController } from "./CustomBaseController";
@@ -26,6 +26,17 @@ export class TabController extends CustomBaseController {
             }
         });
     }
+
+
+    @httpDelete("/:id")
+    public async delete(@requestParam("id") id: number, req: express.Request, res: express.Response): Promise<void> {
+        return this.actionWrapper(req, res, async (au) => {
+            await this.repositories.tab.delete(id, au.churchId);
+            return null;
+        });
+    }
+
+
 
 }
 

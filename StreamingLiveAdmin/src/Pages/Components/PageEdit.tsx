@@ -11,8 +11,12 @@ export const PageEdit: React.FC<Props> = (props) => {
     const [page, setPage] = React.useState<PageInterface>(null);
     const [editorState, setEditorState] = React.useState<EditorState>(EditorState.createEmpty());
 
-    const handleDelete = () => { ApiHelper.apiDelete('/pages/' + page.id).then(() => { setPage(null); }); props.updatedFunction(); }
-    const checkDelete = () => { if (page.id > 0) return handleDelete; else return null; }
+    const handleDelete = () => {
+        if (window.confirm('Are you sure you wish to permanently delete this page?')) {
+            ApiHelper.apiDelete('/pages/' + page.id).then(() => { setPage(null); props.updatedFunction(); });
+        }
+    }
+    const checkDelete = () => { if (page?.id > 0) return handleDelete; else return null; }
     const handleCancel = () => { props.updatedFunction(); }
 
 
@@ -48,7 +52,7 @@ export const PageEdit: React.FC<Props> = (props) => {
     React.useEffect(() => { init(); }, [props.page]);
 
     return (
-        <InputBox headerIcon="fas fa-code" headerText="Edit Page" saveFunction={handleSave} cancelFunction={handleCancel} deleteFunction={checkDelete} >
+        <InputBox headerIcon="fas fa-code" headerText="Edit Page" saveFunction={handleSave} cancelFunction={handleCancel} deleteFunction={checkDelete()} >
             <FormGroup>
                 <label>Page Name</label>
                 <input type="text" className="form-control" name="name" value={page?.name} onChange={handleChange} />
