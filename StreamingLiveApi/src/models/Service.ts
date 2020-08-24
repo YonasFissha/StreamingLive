@@ -8,7 +8,7 @@ export class Service {
     chatBefore: number;
     chatAfter: number;
     provider: string;
-    proivderKey: string;
+    providerKey: string;
     videoUrl: string;
     timezoneOffset: number;
     recurring: boolean;

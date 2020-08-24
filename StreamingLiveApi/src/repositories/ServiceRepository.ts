@@ -12,14 +12,14 @@ export class ServiceRepository {
     public async create(service: Service) {
         return DB.query(
             "INSERT INTO services (churchId, serviceTime, earlyStart, duration, chatBefore, chatAfter, provider, providerKey, videoUrl, timezoneOffset, recurring) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
-            [service.churchId, service.serviceTime, service.earlyStart, service.duration, service.chatBefore, service.chatAfter, service.provider, service.proivderKey, service.videoUrl, service.timezoneOffset, service.recurring]
+            [service.churchId, service.serviceTime, service.earlyStart, service.duration, service.chatBefore, service.chatAfter, service.provider, service.providerKey, service.videoUrl, service.timezoneOffset, service.recurring]
         ).then((row: any) => { service.id = row.insertId; return service; });
     }
 
     public async update(service: Service) {
         return DB.query(
             "UPDATE services SET serviceTime=?, earlyStart=?, duration=?, chatBefore=?, chatAfter=?, provider=?, providerKey=?, videoUrl=?, timezoneOffset=?, recurring=? WHERE id=?;",
-            [service.serviceTime, service.earlyStart, service.duration, service.chatBefore, service.chatAfter, service.provider, service.proivderKey, service.videoUrl, service.timezoneOffset, service.recurring, service.id]
+            [service.serviceTime, service.earlyStart, service.duration, service.chatBefore, service.chatAfter, service.provider, service.providerKey, service.videoUrl, service.timezoneOffset, service.recurring, service.id]
         ).then(() => { return service });
     }
 
@@ -32,7 +32,7 @@ export class ServiceRepository {
     }
 
     public async loadAll(churchId: number): Promise<Service> {
-        return DB.query("SELECT * FROM services WHERE churchId=?;", [churchId]);
+        return DB.query("SELECT * FROM services WHERE churchId=? ORDER BY serviceTime;", [churchId]);
     }
 
 }
