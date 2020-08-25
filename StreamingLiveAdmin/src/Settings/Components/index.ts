@@ -1,5 +1,6 @@
 export * from '../../Components'
 export { Appearance } from './Appearance'
+export { AppearanceEdit } from './AppearanceEdit'
 export { ImageEditor } from './ImageEditor'
 export { Links } from './Links'
 export { LinkEdit } from './LinkEdit'

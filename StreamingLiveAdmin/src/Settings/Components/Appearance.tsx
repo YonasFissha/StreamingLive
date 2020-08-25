@@ -1,67 +1,43 @@
 import React from 'react';
-import { InputBox, ApiHelper, SettingInterface } from './'
+import { ApiHelper, SettingInterface, AppearanceEdit, ImageEditor, DisplayBox } from '.'
 import { Row, Col, FormGroup } from 'react-bootstrap'
-import { ImageEditor } from './ImageEditor';
 
 interface Props { updatedFunction?: () => void }
 
 export const Appearance: React.FC<Props> = (props) => {
     const [currentSettings, setCurrentSettings] = React.useState<SettingInterface>();
-    const [editLogo, setEditLogo] = React.useState(false);
+    const [mode, setMode] = React.useState("display");
 
     const loadData = () => { ApiHelper.apiGet('/settings').then(data => setCurrentSettings(data[0])); }
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const val = e.currentTarget.value;
-        var s = { ...currentSettings };
-        switch (e.currentTarget.name) {
-            case 'homePage': s.homePageUrl = val; break;
-            case 'primary': s.primaryColor = val; break;
-            case 'contrast': s.contrastColor = val; break;
-        }
-        setCurrentSettings(s);
-    }
-
-    const getLogoEditor = () => {
-        if (!editLogo) return null;
-        else return <ImageEditor settings={currentSettings} updatedFunction={props.updatedFunction}></ImageEditor>
-    }
+    const handleEdit = () => { setMode("edit"); }
+    const handleUpdate = () => { setMode("display"); loadData() }
 
     const getLogoLink = () => {
-        var logoImg = (currentSettings && currentSettings?.logoUrl !== "") ? <img src={currentSettings.logoUrl} alt="logo" className="img-fluid" /> : "none";
-        return <a href="about:blank" onClick={(e: React.MouseEvent) => { e.preventDefault(); setEditLogo(true); }}>{logoImg}</a>
+        var logoImg = (currentSettings && currentSettings?.logoUrl !== "") ? <img src={currentSettings.logoUrl} alt="logo" className="img-fluid" /> : "No Logo";
+        return <a href={currentSettings?.homePageUrl} target="_blank">{logoImg}</a>
     }
-
-    const handleSave = () => { ApiHelper.apiPost('/settings', [currentSettings]); props.updatedFunction(); }
 
     React.useEffect(() => { loadData(); }, []);
 
-    return (
-        <>
-            {getLogoEditor()}
-            <InputBox headerIcon="fas fa-palette" headerText="Appearance" saveFunction={handleSave} >
-                <div className="section">Logo</div>
-                {getLogoLink()}
-                <FormGroup>
-                    <label>Home Page Url</label>
-                    <input type="text" className="form-control" name="homePage" value={currentSettings?.homePageUrl} onChange={handleChange} />
-                </FormGroup>
-                <div className="section">Colors</div>
-                <Row>
-                    <Col>
-                        <FormGroup>
-                            <label>Primary</label>
-                            <input type="color" className="form-control" name="primary" value={currentSettings?.primaryColor} onChange={handleChange} />
-                        </FormGroup>
-                    </Col>
-                    <Col>
-                        <FormGroup>
-                            <label>Contrast</label>
-                            <input type="color" className="form-control" name="contrast" value={currentSettings?.primaryColor} onChange={handleChange} />
-                        </FormGroup>
-                    </Col>
-                </Row>
-            </InputBox>
-        </>
+    if (mode === "edit") return (<AppearanceEdit settings={currentSettings} updatedFunction={handleUpdate} />)
+    else return (
+        <DisplayBox headerIcon="fas fa-palette" headerText="Appearance" editFunction={handleEdit} >
+            {getLogoLink()}
+            <div className="section">Colors</div>
+            <Row>
+                <Col>
+                    <FormGroup>
+                        <label>Primary</label>
+                        <input type="color" className="form-control" name="primary" value={currentSettings?.primaryColor} disabled={true} />
+                    </FormGroup>
+                </Col>
+                <Col>
+                    <FormGroup>
+                        <label>Contrast</label>
+                        <input type="color" className="form-control" name="contrast" value={currentSettings?.contrastColor} disabled={true} />
+                    </FormGroup>
+                </Col>
+            </Row>
+        </DisplayBox>
     );
 }

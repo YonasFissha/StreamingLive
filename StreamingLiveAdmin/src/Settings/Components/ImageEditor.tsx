@@ -7,7 +7,7 @@ import { Button } from 'react-bootstrap';
 
 interface Props {
     settings: SettingInterface,
-    updatedFunction: () => void
+    updatedFunction: (dataUrl: string) => void
 }
 
 export const ImageEditor: React.FC<Props> = (props) => {
@@ -40,7 +40,10 @@ export const ImageEditor: React.FC<Props> = (props) => {
 
     const cropCallback = () => {
         if (cropper.current !== null) {
-            var url = cropper.current.getCroppedCanvas({ width: 400, height: 300 }).toDataURL();
+            const data = cropper.current.getCropBoxData();
+            const ratio = parseInt((150.0 / data.height).toString());
+            const width = data.width * ratio;
+            var url = cropper.current.getCroppedCanvas({ width: width, height: 150 }).toDataURL();
             setDataUrl(url);
         }
     }
@@ -53,8 +56,8 @@ export const ImageEditor: React.FC<Props> = (props) => {
         timeout = window.setTimeout(cropCallback, 200);
     }
 
-    const handleSave = () => { ApiHelper.apiPost('/styles/photo', [{ url: dataUrl }]).then((d) => { props.updatedFunction(); }); }
-    const handleCancel = () => { props.updatedFunction(); }
+    const handleSave = () => { props.updatedFunction(dataUrl); }
+    const handleCancel = () => { props.updatedFunction(null); }
     const init = useCallback(() => {
         var startingUrl = props.settings.logoUrl;
         setOriginalUrl(startingUrl);
@@ -62,14 +65,15 @@ export const ImageEditor: React.FC<Props> = (props) => {
     }, []);
 
     React.useEffect(init, []);
+    //aspectRatio={4 / 3}
 
     return (
         <InputBox id="cropperBox" headerIcon="" headerText="Crop" saveFunction={handleSave} saveText={"Update"} cancelFunction={handleCancel} headerActionContent={getHeaderButton()}  >
             <Cropper
                 ref={cropper}
                 src={currentUrl}
-                style={{ height: 360, width: '100%' }}
-                aspectRatio={4 / 3}
+                style={{ height: 150, width: '100%' }}
+
                 guides={false}
                 crop={handleCrop} />
         </InputBox>

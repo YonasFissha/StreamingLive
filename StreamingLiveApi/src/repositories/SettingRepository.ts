@@ -23,8 +23,8 @@ export class SettingRepository {
 
     public async update(setting: Setting) {
         return DB.query(
-            "UPDATE settings SET keyName=?, homePageUrl=?, logoUrl=?, primaryColor=?, contrastColor=?, registrationDate=? WHERE id=?;",
-            [setting.churchId, setting.keyName, setting.homePageUrl, setting.logoUrl, setting.primaryColor, setting.contrastColor]
+            "UPDATE settings SET keyName=?, homePageUrl=?, logoUrl=?, primaryColor=?, contrastColor=? WHERE id=?;",
+            [setting.keyName, setting.homePageUrl, setting.logoUrl, setting.primaryColor, setting.contrastColor, setting.id]
         ).then(() => { return setting });
     }
 

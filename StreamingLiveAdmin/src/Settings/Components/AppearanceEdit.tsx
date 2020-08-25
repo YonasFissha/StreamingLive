@@ -1,0 +1,80 @@
+import React from 'react';
+import { InputBox, ApiHelper, SettingInterface } from '.'
+import { Row, Col, FormGroup } from 'react-bootstrap'
+import { ImageEditor } from './ImageEditor';
+
+interface Props {
+    updatedFunction?: () => void,
+    settings?: SettingInterface
+}
+
+export const AppearanceEdit: React.FC<Props> = (props) => {
+    const [currentSettings, setCurrentSettings] = React.useState<SettingInterface>();
+    const [editLogo, setEditLogo] = React.useState(false);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const val = e.currentTarget.value;
+        var s = { ...currentSettings };
+        switch (e.currentTarget.name) {
+            case 'homePage': s.homePageUrl = val; break;
+            case 'primary': s.primaryColor = val; break;
+            case 'contrast': s.contrastColor = val; break;
+        }
+        setCurrentSettings(s);
+    }
+
+    const imageUpdated = (dataUrl: string) => {
+        if (dataUrl !== null) {
+            var s = { ...currentSettings };
+            s.logoUrl = dataUrl;
+            setCurrentSettings(s);
+            setEditLogo(false);
+        }
+    }
+
+    const getLogoEditor = () => {
+        if (!editLogo) return null;
+        else return <ImageEditor settings={currentSettings} updatedFunction={imageUpdated}></ImageEditor>
+    }
+
+    const getLogoLink = () => {
+        var logoImg = (currentSettings && currentSettings?.logoUrl !== "") ? <img src={currentSettings.logoUrl} alt="logo" className="img-fluid" /> : "none";
+        return <a href="about:blank" onClick={(e: React.MouseEvent) => { e.preventDefault(); setEditLogo(true); }}>{logoImg}</a>
+    }
+
+    const handleSave = () => { ApiHelper.apiPost('/settings', [currentSettings]).then(props.updatedFunction); }
+
+    React.useEffect(() => { setCurrentSettings(props.settings); }, [props.settings]);
+
+    return (
+        <>
+            {getLogoEditor()}
+            <InputBox headerIcon="fas fa-palette" headerText="Appearance" saveFunction={handleSave} >
+                <FormGroup>
+                    <label>Logo</label><br />
+                    {getLogoLink()}
+                </FormGroup>
+
+                <FormGroup>
+                    <label>Home Page Url</label>
+                    <input type="text" className="form-control" name="homePage" value={currentSettings?.homePageUrl} onChange={handleChange} />
+                </FormGroup>
+                <div className="section">Colors</div>
+                <Row>
+                    <Col>
+                        <FormGroup>
+                            <label>Primary</label>
+                            <input type="color" className="form-control" name="primary" value={currentSettings?.primaryColor} onChange={handleChange} />
+                        </FormGroup>
+                    </Col>
+                    <Col>
+                        <FormGroup>
+                            <label>Contrast</label>
+                            <input type="color" className="form-control" name="contrast" value={currentSettings?.contrastColor} onChange={handleChange} />
+                        </FormGroup>
+                    </Col>
+                </Row>
+            </InputBox>
+        </>
+    );
+}

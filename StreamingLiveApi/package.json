@@ -18,6 +18,7 @@
   "keywords": [],
   "author": "Live Church Solutions",
   "dependencies": {
+    "atob": "^2.1.2",
     "aws-sdk": "^2.738.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
@@ -31,6 +32,7 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
+    "@types/atob": "^2.1.2",
     "@types/aws-sdk": "^2.7.0",
     "@types/cors": "^2.8.7",
     "@types/express": "^4.17.7",
