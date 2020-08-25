@@ -26,7 +26,7 @@ export class LinkRepository {
         return DB.queryOne("SELECT * FROM links WHERE id=? AND churchId=?;", [id, churchId]);
     }
 
-    public async loadAll(churchId: number): Promise<Link> {
+    public async loadAll(churchId: number): Promise<Link[]> {
         return DB.query("SELECT * FROM links WHERE churchId=? order by sort;", [churchId]);
     }
 

@@ -40,7 +40,6 @@ export class PageController extends CustomBaseController {
               if (page.content !== undefined) {
                 const settings = await this.repositories.setting.loadAll(au.churchId);
                 const path = 'data/' + settings[0].keyName + '/page' + p.id + '.html';
-                console.log(path);
                 const buffer = Buffer.from(page.content, 'binary');
                 await AwsHelper.S3Upload(path, "text/html", buffer)
               }

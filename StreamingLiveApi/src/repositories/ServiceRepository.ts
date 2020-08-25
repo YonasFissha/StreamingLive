@@ -31,7 +31,7 @@ export class ServiceRepository {
         return DB.queryOne("SELECT * FROM services WHERE id=? AND churchId=?;", [id]);
     }
 
-    public async loadAll(churchId: number): Promise<Service> {
+    public async loadAll(churchId: number): Promise<Service[]> {
         return DB.query("SELECT * FROM services WHERE churchId=? ORDER BY serviceTime;", [churchId]);
     }
 
