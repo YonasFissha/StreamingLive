@@ -2,9 +2,7 @@ import { controller, httpPost, httpGet } from "inversify-express-utils";
 import { Setting } from "../models";
 import express from "express";
 import { CustomBaseController } from "./CustomBaseController";
-import { S3 } from "aws-sdk";
 import { AwsHelper } from "../helpers";
-import atob from 'atob';
 
 @controller("/settings")
 export class SettingController extends CustomBaseController {
