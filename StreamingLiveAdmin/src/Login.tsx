@@ -35,6 +35,7 @@ export const Login: React.FC = (props: any) => {
     const login = (data: {}) => {
         ApiHelper.apiPostAnonymous(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/users/login', data).then((resp: LoginResponseInterface) => {
             ApiHelper.jwt = resp.token;
+            ApiHelper.amJwt = resp.token;
             UserHelper.user = resp.user;
             UserHelper.churches = resp.churches;
             selectChurch();

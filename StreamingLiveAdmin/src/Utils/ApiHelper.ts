@@ -12,7 +12,7 @@ export interface LoginResponseInterface { user: UserInterface, churches: ChurchI
 export interface RegisterInterface { churchName?: string, displayName?: string, email?: string, password?: string }
 export interface RoleInterface { id?: number, churchId?: number, appName?: string, name?: string }
 export interface RolePermissionInterface { id?: number, churchId?: number, roleId?: number, appName?: string, contentType?: string, contentId?: number, action?: string }
-export interface RoleMemberInterface { id?: number, churchId?: number, roleId?: number, userId?: number }
+export interface RoleMemberInterface { id?: number, churchId?: number, roleId?: number, userId?: number, user?: UserInterface }
 export interface SwitchAppRequestInterface { appName: string, churchId: number }
 export interface SwitchAppResponseInterface { appName: string, churchId: number }
 export interface UserInterface { id?: number, email?: string, authGuid?: string, displayName?: string, registrationDate?: Date, lastLogin?: Date, password?: string }
@@ -20,6 +20,7 @@ export interface UserInterface { id?: number, email?: string, authGuid?: string,
 export class ApiHelper {
     static baseUrl = process.env.REACT_APP_STREAMINGLIVE_API_URL;
     static jwt = '';
+    static amJwt = '';
 
     static getUrl(path: string) {
         if (path.indexOf("://") > -1) return path;
@@ -45,7 +46,7 @@ export class ApiHelper {
             method: 'DELETE',
             headers: { 'Authorization': 'Bearer ' + this.jwt }
         };
-        return fetch(this.baseUrl + path, requestOptions);
+        return fetch(this.getUrl(path), requestOptions);
     }
 
     static async apiPostAnonymous(path: string, data: any[] | {}) {
