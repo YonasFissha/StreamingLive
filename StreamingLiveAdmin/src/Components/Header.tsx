@@ -13,7 +13,8 @@ export const Header: React.FC = () => {
             <div className="container" id="userMenu">
                 <div>
                     <ul className="nav flex-column d-xl-none"><NavItems /></ul>
-                    <Link to="/logout">Logout</Link>
+                    <a href="mailto:support@streaminglive.church"><i className="fas fa-envelope"></i> Support</a>
+                    <Link to="/logout"><i className="fas fa-lock"></i> Logout</Link>
                 </div>
             </div>)
         else return null;
