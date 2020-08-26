@@ -7,8 +7,19 @@ import { bindings } from "./inversify.config";
 import express from "express";
 import { CustomAuthProvider } from "./auth"
 import cors from 'cors'
+import winston from "winston";
+import WinstonCloudWatch from "winston-cloudwatch";
+import AWS from 'aws-sdk';
 
 export const init = async () => {
+  AWS.config.update({ region: 'us-east-2' });
+  let logger = winston.createLogger({
+    transports: [new WinstonCloudWatch({ logGroupName: 'StreamingLiveStage', logStreamName: 'API' })],
+    format: winston.format.json()
+  });
+  logger.error("App Logger initialized");
+
+
   dotenv.config();
   const container = new Container();
   await container.loadAsync(bindings);

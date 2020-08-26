@@ -1,12 +1,26 @@
-//import { createServer, proxy } from 'aws-serverless-express';
-//import { init } from './src/app';
 const { createServer, proxy } = require('aws-serverless-express');
 const { init } = require('./dist/app');
 
+const winston = require("winston");
+const WinstonCloudWatch = require("winston-cloudwatch");
+const AWS = require('aws-sdk');
 
-const server = createServer(init);
+
+
 
 module.exports.universal = function universal(event, context) {
+    AWS.config.update({ region: 'us-east-2' });
+    let logger = winston.createLogger({
+        transports: [new WinstonCloudWatch({ logGroupName: 'StreamingLiveStage', logStreamName: 'API' })],
+        format: winston.format.json()
+    });
+    logger.error("Lambda Logger initialized");
+    logger.error(JSON.stringify(event));
+    logger.error(JSON.stringify(context));
 
-    return proxy(server, event, context);
+    init().then(app => {
+        const server = createServer(app);
+        return proxy(server, event, context);
+    });
+
 }
