@@ -12,7 +12,7 @@ export const Login: React.FC = (props: any) => {
     const [password, setPassword] = React.useState('');
     const [errors, setErrors] = React.useState([]);
 
-    const getCookieValue = (a: string) => { var b = document.cookie.match('(^|;)\\s*' + a + '\\s*=\\s*([^;]+)'); return b ? b.pop() : ''; }
+    //const getCookieValue = (a: string) => { var b = document.cookie.match('(^|;)\\s*' + a + '\\s*=\\s*([^;]+)'); return b ? b.pop() : ''; }
     const validate = () => {
         var errors = [];
         if (email === '') errors.push('Please enter your email address.');
@@ -28,8 +28,8 @@ export const Login: React.FC = (props: any) => {
 
     const init = () => {
         let search = new URLSearchParams(props.location.search);
-        var apiKey = search.get('guid') || getCookieValue('apiKey');
-        if (apiKey !== '') login({ resetGuid: apiKey });
+        var auth = search.get('auth');; // || getCookieValue('apiKey');
+        if (auth !== '') login({ authGuid: auth });
     }
 
     const login = (data: {}) => {
@@ -61,7 +61,7 @@ export const Login: React.FC = (props: any) => {
         return (
 
             <div className="smallCenterBlock">
-
+                <img src="/images/logo-login.png" alt="logo" className="img-fluid" style={{ marginBottom: 50 }} />
                 <ErrorMessages errors={errors} />
                 <div id="loginBox">
                     <h2>Please sign in</h2>
@@ -70,7 +70,7 @@ export const Login: React.FC = (props: any) => {
                     <Button id="signInButton" size="lg" variant="primary" block onClick={handleSubmit} >Sign in</Button>
                     <br />
                     <div className="text-right">
-                        <a href="https://streaminglive.church/#register">Register</a> &nbsp; | &nbsp;
+                        <a href={process.env.REACT_APP_WEB_URL + "/#register"}>Register</a> &nbsp; | &nbsp;
                         <a href="/forgot">Forgot Password</a>&nbsp;
                     </div>
                 </div>

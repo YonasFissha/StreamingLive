@@ -1,8 +1,7 @@
 import React from 'react';
-import { ErrorMessages, ApiHelper } from './Components';
+import { ErrorMessages, ApiHelper, ResetPasswordRequestInterface, ResetPasswordResponseInterface } from './Components';
 import { Button } from 'react-bootstrap';
 
-interface ForgotResponse { emailed: boolean }
 
 export const Forgot = () => {
     const [email, setEmail] = React.useState('');
@@ -22,11 +21,17 @@ export const Forgot = () => {
     }
 
     const reset = (email: string) => {
-        var data = { Email: email };
-        const requestOptions = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) };
-        fetch(ApiHelper.baseUrl + '/users/forgot', requestOptions).then(response => response.json()).then(data => {
-            var d = data as ForgotResponse;
-            if (d.emailed) {
+        const resetUrl = window.location.href.replace(window.location.pathname, '') + '/login?auth={auth}';
+
+        var req: ResetPasswordRequestInterface = {
+            userEmail: email,
+            fromEmail: "support@streaminglive.church",
+            subject: "StreamingLive Password Reset",
+            body: "Please click here to reset your password: <a href=\"" + resetUrl + "\">" + resetUrl + "</a>"
+        };
+
+        ApiHelper.apiPostAnonymous(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/users/forgot', req).then((resp: ResetPasswordResponseInterface) => {
+            if (resp.emailed) {
                 setErrors([]);
                 setSuccessMessage(<div className="alert alert-success" role="alert">Password reset email sent</div>);
             } else {
@@ -34,7 +39,6 @@ export const Forgot = () => {
                 setSuccessMessage(<></>);
             }
         });
-
     }
 
     return (
@@ -47,7 +51,7 @@ export const Forgot = () => {
                 <input name="email" type="text" className="form-control" value={email} onChange={e => { e.preventDefault(); setEmail(e.currentTarget.value) }} placeholder="Email address" />
                 <Button size="lg" variant="primary" block onClick={handleSubmit}>Reset</Button>
                 <br />
-                <div className="text-right"><a href="https://streaminglive.church/#register">Register</a> &nbsp; | &nbsp;<a href="/login">Login</a>&nbsp;</div>
+                <div className="text-right"><a href={process.env.REACT_APP_WEB_URL + "/#register"}>Register</a> &nbsp; | &nbsp;<a href="/login">Login</a>&nbsp;</div>
             </div>
         </div>
     );
