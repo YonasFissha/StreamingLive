@@ -1,5 +1,5 @@
 import React from 'react';
-import { ServiceInterface } from './';
+import { ServiceInterface } from '.';
 
 interface Props {
     currentService: ServiceInterface | null

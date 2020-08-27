@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChatHelper } from '../Helpers';
+import { ChatHelper } from '../helpers';
 
 interface Props { callout: string, roomName: string }
 

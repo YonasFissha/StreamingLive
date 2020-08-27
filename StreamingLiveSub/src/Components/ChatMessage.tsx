@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChatMessageInterface, ChatHelper } from '../Helpers';
+import { ChatMessageInterface, ChatHelper } from '../helpers';
 
 interface Props { message: ChatMessageInterface, roomName: string }
 

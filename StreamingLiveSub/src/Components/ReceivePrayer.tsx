@@ -1,6 +1,6 @@
 import React from 'react';
-import { ChatStateInterface, ChatSend, ConfigHelper } from './';
-import { ChatHelper } from '../Helpers';
+import { ChatStateInterface, ChatSend, ConfigHelper } from '.';
+import { ChatHelper } from '../helpers';
 import { ChatReceive } from './ChatReceive';
 
 

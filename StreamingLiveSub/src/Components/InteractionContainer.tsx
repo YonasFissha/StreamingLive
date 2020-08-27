@@ -1,6 +1,6 @@
 import React from 'react';
-import { TabInterface, Chat, HostChat, RequestPrayer, ReceivePrayer } from './';
-import { ChatStateInterface, ChatHelper } from '../Helpers';
+import { TabInterface, Chat, HostChat, RequestPrayer, ReceivePrayer } from '.';
+import { ChatStateInterface, ChatHelper } from '../helpers';
 
 
 interface Props {

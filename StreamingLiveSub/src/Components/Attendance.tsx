@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChatViewerInterface } from '../Helpers';
+import { ChatViewerInterface } from '../helpers';
 
 interface Props {
     viewers: ChatViewerInterface[] | undefined

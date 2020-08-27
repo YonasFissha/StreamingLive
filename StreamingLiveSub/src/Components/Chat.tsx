@@ -1,6 +1,6 @@
 import React from 'react';
-import { ChatSend, Callout, Attendance, ChatReceive, ChatStateInterface, ConfigHelper } from './';
-import { ServicesHelper, ChatHelper } from '../Helpers';
+import { ChatSend, Callout, Attendance, ChatReceive, ChatStateInterface, ConfigHelper } from '.';
+import { ServicesHelper, ChatHelper } from '../helpers';
 
 interface Props {
     chatState: ChatStateInterface | undefined,

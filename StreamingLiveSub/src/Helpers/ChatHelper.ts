@@ -1,9 +1,9 @@
 import Cookies from 'js-cookie';
-import { ConfigHelper } from '../Components';
+import { ConfigHelper, UserInterface } from '../components';
 
 interface RawChatMessageInterface { action: string, room?: string, userGuid?: string, ts?: number, name?: string, msg?: string, totalViewers?: number, viewers?: ChatViewerInterface[], messages?: RawChatMessageInterface[] }
 
-export interface UserInterface { displayName: string, guid: string, authGuid?: string, isHost: boolean }
+export interface ChatUserInterface { displayName: string, guid: string, authGuid?: string, isHost: boolean }
 export interface ChatStateInterface { rooms: ChatRoomInterface[], callout: string, chatEnabled: boolean, prayerRequests: RawChatMessageInterface[] }
 export interface ChatRoomInterface { roomName: string, messages: ChatMessageInterface[], viewers: ChatViewerInterface[] }
 export interface ChatMessageInterface { message: string, userGuid: string, timestamp: number, displayName: string }
@@ -13,13 +13,11 @@ export class ChatHelper {
     static timerId: any;
     static socket: WebSocket
     static state: ChatStateInterface
-    static user: UserInterface
+    static user: ChatUserInterface
     static prayerGuid: string = ''
     static socketConnected = false;
 
     static joinRoom(roomName: string) {
-        console.log('joinRoom ' + roomName);
-        console.log(ChatHelper.socketConnected);
         if (ChatHelper.socketConnected) ChatHelper.socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': roomName }));
     }
 
@@ -149,7 +147,7 @@ export class ChatHelper {
         var guid = Cookies.get('userGuid');
         if (name === undefined || name === null || name === '') { name = 'Anonymous'; Cookies.set('name', name); }
         if (guid === undefined || guid === null || guid === '') { guid = ChatHelper.generateGuid(); Cookies.set('guid', guid); }
-        var result: UserInterface = { displayName: name, guid: guid, isHost: false };
+        var result: ChatUserInterface = { displayName: name, guid: guid, isHost: false };
         ChatHelper.user = result;
         return result;
     }

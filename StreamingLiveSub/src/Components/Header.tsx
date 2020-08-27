@@ -1,6 +1,7 @@
 import React from 'react';
-import { NavItems, ButtonInterface, UserInterface, ChatName } from './'
-import { ChatHelper } from '../Helpers';
+import { NavItems, ButtonInterface, UserInterface, ChatName } from '.'
+import { ChatHelper, ApiHelper } from '../helpers';
+import { Link } from 'react-router-dom'
 
 interface Props {
     logoUrl: string,
@@ -28,8 +29,12 @@ export const Header: React.FC<Props> = (props) => {
         props.nameUpdateFunction(displayName);
     }
 
+    const getLoginLink = () => {
+        if (ApiHelper.jwt === '') return (<Link to="/login" className="nav-link">Login</Link>);
+        else return (<Link to="/logout" className="nav-link">Logout</Link>);
+    }
+
     const getUserMenu = () => {
-        const loginLink = <a href="about:blank" className="nav-link" onClick={login}>Login</a>;
         if (showUserMenu) return (
             <div id="userMenu">
                 <div>
@@ -38,11 +43,11 @@ export const Header: React.FC<Props> = (props) => {
                     </ul>
                     <ul className="nav flex-column">
                         <li className="nav-item" ><ChatName user={props.user} updateFunction={updateName} /></li>
+                        <li className="nav-item" >{getLoginLink()}</li>
                     </ul>
                 </div>
             </div>)
         else return null;
-        //<li className="nav-item" >{loginLink}</li>
     }
 
     return (

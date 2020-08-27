@@ -1,5 +1,5 @@
 import React, { KeyboardEvent } from 'react';
-import { ChatHelper } from '../Helpers';
+import { ChatHelper } from '../helpers';
 import { Emojis } from './Emojis';
 
 interface Props {

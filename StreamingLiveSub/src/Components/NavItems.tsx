@@ -1,5 +1,5 @@
 import React from 'react';
-import { ButtonInterface } from './';
+import { ButtonInterface } from '.';
 
 interface Props {
     buttons: ButtonInterface[]

@@ -1,5 +1,5 @@
 import { ConfigurationInterface, ServiceInterface } from './'
-import { ConfigHelper } from '../Components';
+import { ConfigHelper } from '../components';
 
 export class ServicesHelper {
     static currentServiceChangedCallback: (currentService: ServiceInterface | null) => void;
