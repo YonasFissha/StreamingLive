@@ -25,11 +25,13 @@
     "typescript": "^3.9.5"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "SET REACT_APP_STAGE=dev && react-scripts start",
     "build": "react-scripts build",
-    "deploy-staging": "npm run build && aws s3 sync build/ s3://staging-streaminglive-admin --profile LiveChurchSolutions",
-    "deploy-prod": "npm run build && aws s3 sync build/ s3://streaminglive-admin --profile LiveChurchSolutions",
-    "test": "react-scripts test",
+    "test": "react-scripts test --env=jsdom",
+    "predeploy-staging": "SET REACT_APP_STAGE=staging && npm run build",
+    "exec-deploy-staging": "npm run build && aws s3 sync build/ s3://staging-streaminglive-admin",
+    "postdeploy-staging": "aws cloudfront create-invalidation --distribution-id E3SMEG3Q7CJ1B9 --paths /*",
+    "deploy-staging": "npm run predeploy-staging && npm run exec-deploy-staging && npm run postdeploy-staging",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

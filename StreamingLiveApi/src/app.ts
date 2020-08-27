@@ -13,7 +13,7 @@ import AWS from 'aws-sdk';
 
 export const init = async () => {
   AWS.config.update({ region: 'us-east-2' });
-  let logger = winston.createLogger({
+  const logger = winston.createLogger({
     transports: [new WinstonCloudWatch({ logGroupName: 'StreamingLiveStage', logStreamName: 'API' })],
     format: winston.format.json()
   });

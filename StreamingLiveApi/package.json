@@ -6,9 +6,8 @@
   "scripts": {
     "clean": "rimraf dist/*",
     "copy-assets": "ts-node tools/copyAssets",
-    "test-local": "serverless invoke local -f api",
+    "serverless-local": "serverless invoke local -f api",
     "deploy-staging": "serverless deploy --stage Staging",
-    "deploy-prod": "npm run build && aws s3 sync dist/ s3://streaming-live-api --profile LiveChurchSolutions",
     "initdb": "ts-node tools/initdb",
     "lint": "tslint -c tslint.json -p tsconfig.json --fix",
     "tsc": "tsc",

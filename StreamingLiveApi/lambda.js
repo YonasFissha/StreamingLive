@@ -5,18 +5,13 @@ const winston = require("winston");
 const WinstonCloudWatch = require("winston-cloudwatch");
 const AWS = require('aws-sdk');
 
-
-
-
 module.exports.universal = function universal(event, context) {
     AWS.config.update({ region: 'us-east-2' });
     let logger = winston.createLogger({
         transports: [new WinstonCloudWatch({ logGroupName: 'StreamingLiveStage', logStreamName: 'API' })],
         format: winston.format.json()
     });
-    logger.error("Lambda Logger initialized");
-    logger.error(JSON.stringify(event));
-    logger.error(JSON.stringify(context));
+    logger.info("Lambda Logger initialized");
 
     init().then(app => {
         const server = createServer(app);
