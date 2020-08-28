@@ -21,6 +21,6 @@
     },
     "include": [
         "src/**/*",
-        "src/LambdaEntry.js"
+        "LambdaEntry.js"
     ]
 }

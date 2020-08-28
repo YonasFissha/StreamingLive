@@ -30,12 +30,12 @@ export class Delivery {
     static deleteConnection = async (apiUrl: string, connectionId: string) => {
         const rooms = await DB.loadRooms(connectionId);
         const promises: Promise<any>[] = [];
-        rooms.forEach(room => { promises.push(Delivery.deleteRoom(apiUrl, room, connectionId, false)); });
+        rooms.forEach(room => { promises.push(Delivery.deleteRoom(apiUrl, room.room, connectionId, false)); });
         await Promise.all(promises);
     }
 
     static deleteRoom = async (apiUrl: string, room: string, connectionId: string, silent: boolean) => {
-        const key = { room, connectionId };
+        const key: AWS.DynamoDB.DocumentClient.Key = { "room": room, "connectionId": connectionId };
         await DB.delete("connections", key);
         if (!silent) Delivery.sendAttendance(apiUrl, room);
     }

@@ -1,7 +1,7 @@
 
-const { Connection } = require('../dist/Connection');
-const { Delivery } = require('../dist/Delivery');
-const { Message } = require('../dist/Message');
+const { Connection } = require('./dist/Connection');
+const { Delivery } = require('./dist/Delivery');
+const { Message } = require('./dist/Message');
 const dotenv = require('dotenv');
 
 

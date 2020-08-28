@@ -108,11 +108,12 @@ export class DB {
         return ddb.update(updateParams).promise();
     }
 
-    static delete = async (tableName: string, key: any) => {
-        const delParams = {
+    static delete = async (tableName: string, key: AWS.DynamoDB.DocumentClient.Key) => {
+        const delParams: AWS.DynamoDB.DocumentClient.DeleteItemInput = {
             TableName: tableName,
             Key: key
         };
+        // throw (JSON.stringify(delParams));
         return ddb.delete(delParams).promise();
     }
 }

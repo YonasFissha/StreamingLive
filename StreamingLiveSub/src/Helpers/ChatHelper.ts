@@ -23,7 +23,7 @@ export class ChatHelper {
 
     static init(keyName: string, messageReceived: (state: ChatStateInterface) => void) {
         ChatHelper.state = { rooms: [], callout: '', chatEnabled: false, prayerRequests: [] };
-        ChatHelper.socket = new WebSocket('wss://n0qw9vkmu0.execute-api.us-east-2.amazonaws.com/Prod');
+        ChatHelper.socket = new WebSocket(process.env.REACT_APP_CHAT_API || "");
         ChatHelper.socket.onopen = function (e) {
             ChatHelper.socketConnected = true;
             console.log('connected');

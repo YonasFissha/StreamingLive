@@ -11,6 +11,6 @@ provider:
 
 functions:
   default:
-    handler: LambdaEntry.handler
+    handler: LambdaEntry.handleMessage
     events:
       - websocket: $default
