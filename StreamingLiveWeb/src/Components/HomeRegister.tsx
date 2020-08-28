@@ -1,6 +1,6 @@
 import React, { useReducer } from 'react';
 import { ApiHelper, RegisterInterface, RoleInterface, LoginResponseInterface, RolePermissionInterface, RoleMemberInterface, LinkInterface, TabInterface, ServiceInterface, SettingInterface } from './';
-import { ChurchInterface, UserInterface } from '../utils';
+import { ChurchInterface, UserInterface, EnvironmentHelper } from '../utils';
 
 export const HomeRegister: React.FC = () => {
     const [email, setEmail] = React.useState("");
@@ -19,12 +19,16 @@ export const HomeRegister: React.FC = () => {
     }
 
     const handleRegister = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        const btn = e.currentTarget;
+        btn.innerHTML = "Registering. Please wait..."
+        btn.setAttribute("disabled", "disabled");
 
         //Create Access
-        e.preventDefault();
         const churchId = await createAccess();
 
 
+        btn.innerHTML = "Configuring..."
         //Configure initial settings
         const promises: Promise<any>[] = [];
 
@@ -66,20 +70,19 @@ export const HomeRegister: React.FC = () => {
             recurring: false
         };
         promises.push(ApiHelper.apiPost('/services', [service]));
-
-
-
-
         await Promise.all(promises);
 
 
+        btn.innerHTML = "Publishing..."
+        await ApiHelper.apiPost("/settings/publish", []);
+        window.location.href = EnvironmentHelper.AdminUrl;
 
     }
 
     const createAccess = async () => {
         var data: RegisterInterface = { churchName: churchName, displayName: email, email: email, password: password };
 
-        var resp: LoginResponseInterface = await ApiHelper.apiPostAnonymous(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/churches/register', data);
+        var resp: LoginResponseInterface = await ApiHelper.apiPostAnonymous(EnvironmentHelper.AccessManagementApiUrl + '/churches/register', data);
         const church = resp.churches[0];
         ApiHelper.jwt = resp.token;
 
@@ -88,7 +91,7 @@ export const HomeRegister: React.FC = () => {
         promises.push(addHostRole(church, resp.user));
         await Promise.all(promises);
 
-        resp = await ApiHelper.apiPost(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/users/switchApp', { churchId: church.id, appName: "StreamingLive" });
+        resp = await ApiHelper.apiPost(EnvironmentHelper.AccessManagementApiUrl + '/users/switchApp', { churchId: church.id, appName: "StreamingLive" });
         ApiHelper.jwt = resp.token;
 
         return church.id;
@@ -96,10 +99,10 @@ export const HomeRegister: React.FC = () => {
 
     const addAdminRole = async (church: ChurchInterface, user: UserInterface) => {
         var role: RoleInterface = { appName: "StreamingLive", churchId: church.id, name: "Admins" };
-        role.id = (await ApiHelper.apiPost(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/roles', [role]))[0].id;
+        role.id = (await ApiHelper.apiPost(EnvironmentHelper.AccessManagementApiUrl + '/roles', [role]))[0].id;
 
         const member: RoleMemberInterface = { churchId: church.id, roleId: role.id, userId: user.id };
-        member.id = (await ApiHelper.apiPost(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/rolemembers', [member]))[0].id;
+        member.id = (await ApiHelper.apiPost(EnvironmentHelper.AccessManagementApiUrl + '/rolemembers', [member]))[0].id;
 
         const permissions: RolePermissionInterface[] = [];
         permissions.push({ churchId: church.id, contentType: "Roles", action: "View", roleId: role.id });
@@ -111,16 +114,16 @@ export const HomeRegister: React.FC = () => {
         permissions.push({ churchId: church.id, contentType: "Services", action: "Edit", roleId: role.id });
         permissions.push({ churchId: church.id, contentType: "Settings", action: "Edit", roleId: role.id });
         permissions.push({ churchId: church.id, contentType: "Chat", action: "Host", roleId: role.id });
-        await ApiHelper.apiPost(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/rolepermissions', permissions);
+        await ApiHelper.apiPost(EnvironmentHelper.AccessManagementApiUrl + '/rolepermissions', permissions);
     }
 
     const addHostRole = async (church: ChurchInterface, user: UserInterface) => {
         var role: RoleInterface = { appName: "StreamingLive", churchId: church.id, name: "Hosts" };
-        role.id = (await ApiHelper.apiPost(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/roles', [role]))[0].id;
+        role.id = (await ApiHelper.apiPost(EnvironmentHelper.AccessManagementApiUrl + '/roles', [role]))[0].id;
 
         const permissions: RolePermissionInterface[] = [];
         permissions.push({ churchId: church.id, contentType: "Chat", action: "Host", roleId: role.id });
-        await ApiHelper.apiPost(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/rolepermissions', permissions);
+        await ApiHelper.apiPost(EnvironmentHelper.AccessManagementApiUrl + '/rolepermissions', permissions);
     }
 
 

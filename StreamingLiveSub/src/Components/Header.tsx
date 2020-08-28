@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavItems, ButtonInterface, UserInterface, ChatName } from '.'
-import { ChatHelper, ApiHelper } from '../helpers';
+import { ChatHelper, ApiHelper, EnvironmentHelper } from '../helpers';
 import { Link } from 'react-router-dom'
 
 interface Props {
@@ -55,7 +55,7 @@ export const Header: React.FC<Props> = (props) => {
             <div id="header">
                 <div id="logo">
                     <a href={props.homeUrl} target="_blank" rel="noopener noreferrer">
-                        <img src={"https://streaminglive.church" + props.logoUrl} alt="logo" />
+                        <img src={EnvironmentHelper.ContentRoot + props.logoUrl} alt="logo" />
                     </a>
                 </div>
                 <div id="liveButtons" className="d-none d-xl-flex" >

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ConfigHelper, ConfigurationInterface, ServiceInterface, Header, VideoContainer, InteractionContainer } from './components';
-import { ServicesHelper, ChatHelper, ChatUserInterface, ChatStateInterface, TabInterface, ApiHelper, UserHelper } from './helpers';
+import { ServicesHelper, ChatHelper, ChatUserInterface, ChatStateInterface, TabInterface, ApiHelper, UserHelper, EnvironmentHelper } from './helpers';
 
 export const Home: React.FC = () => {
   const [cssUrl, setCssUrl] = React.useState('about:blank');
@@ -11,8 +11,7 @@ export const Home: React.FC = () => {
 
   const loadConfig = React.useCallback((firstLoad: boolean) => {
     const keyName = window.location.hostname.split('.')[0];
-    var previewRoot = 'https://streaminglive.church';
-    setCssUrl(previewRoot + '/data/' + keyName + '/data.css?nocache=' + (new Date()).getTime());
+    setCssUrl(EnvironmentHelper.ContentRoot + keyName + '/data.css?nocache=' + (new Date()).getTime());
     ConfigHelper.load(keyName).then(data => {
       var d: ConfigurationInterface = data;
       checkHost(d);

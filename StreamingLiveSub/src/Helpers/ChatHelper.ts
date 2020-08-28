@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import { ConfigHelper, UserInterface } from '../components';
+import { ConfigHelper, UserInterface, EnvironmentHelper } from '../components';
 
 interface RawChatMessageInterface { action: string, room?: string, userGuid?: string, ts?: number, name?: string, msg?: string, totalViewers?: number, viewers?: ChatViewerInterface[], messages?: RawChatMessageInterface[] }
 
@@ -23,7 +23,7 @@ export class ChatHelper {
 
     static init(keyName: string, messageReceived: (state: ChatStateInterface) => void) {
         ChatHelper.state = { rooms: [], callout: '', chatEnabled: false, prayerRequests: [] };
-        ChatHelper.socket = new WebSocket(process.env.REACT_APP_CHAT_API || "");
+        ChatHelper.socket = new WebSocket(EnvironmentHelper.ChatApiUrl || "");
         ChatHelper.socket.onopen = function (e) {
             ChatHelper.socketConnected = true;
             console.log('connected');

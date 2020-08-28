@@ -1,3 +1,5 @@
+import { EnvironmentHelper } from "../components";
+
 export interface LinkInterface { id?: number, churchId?: number, url?: string, text?: string, sort?: number }
 export interface TabInterface { id?: number, churchId?: number, url?: string, text?: string, sort?: number, tabType: string, tabData: string, icon: string }
 export interface PageInterface { id?: number, churchId?: number, name?: string, lastModified?: Date }
@@ -15,12 +17,11 @@ export interface RoleMemberInterface { id?: number, churchId?: number, roleId?: 
 export interface UserInterface { id?: number, email?: string, authGuid?: string, displayName?: string, registrationDate?: Date, lastLogin?: Date, password?: string }
 
 export class ApiHelper {
-    static baseUrl = process.env.REACT_APP_STREAMINGLIVE_API_URL;
     static jwt = '';
 
     static getUrl(path: string) {
         if (path.indexOf("://") > -1) return path;
-        else return this.baseUrl + path;
+        else return EnvironmentHelper.StreamingLiveApiUrl + path;
     }
 
     static async apiGet(path: string) {

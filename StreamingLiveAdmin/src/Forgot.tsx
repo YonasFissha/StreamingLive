@@ -1,5 +1,5 @@
 import React from 'react';
-import { ErrorMessages, ApiHelper, ResetPasswordRequestInterface, ResetPasswordResponseInterface } from './Components';
+import { ErrorMessages, ApiHelper, ResetPasswordRequestInterface, ResetPasswordResponseInterface, EnvironmentHelper } from './Components';
 import { Button } from 'react-bootstrap';
 
 
@@ -30,7 +30,7 @@ export const Forgot = () => {
             body: "Please click here to reset your password: <a href=\"" + resetUrl + "\">" + resetUrl + "</a>"
         };
 
-        ApiHelper.apiPostAnonymous(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/users/forgot', req).then((resp: ResetPasswordResponseInterface) => {
+        ApiHelper.apiPostAnonymous(EnvironmentHelper.AccessManagementApiUrl + '/users/forgot', req).then((resp: ResetPasswordResponseInterface) => {
             if (resp.emailed) {
                 setErrors([]);
                 setSuccessMessage(<div className="alert alert-success" role="alert">Password reset email sent</div>);
@@ -51,7 +51,7 @@ export const Forgot = () => {
                 <input name="email" type="text" className="form-control" value={email} onChange={e => { e.preventDefault(); setEmail(e.currentTarget.value) }} placeholder="Email address" />
                 <Button size="lg" variant="primary" block onClick={handleSubmit}>Reset</Button>
                 <br />
-                <div className="text-right"><a href={process.env.REACT_APP_WEB_URL + "/#register"}>Register</a> &nbsp; | &nbsp;<a href="/login">Login</a>&nbsp;</div>
+                <div className="text-right"><a href={EnvironmentHelper.WebUrl + "/#register"}>Register</a> &nbsp; | &nbsp;<a href="/login">Login</a>&nbsp;</div>
             </div>
         </div>
     );

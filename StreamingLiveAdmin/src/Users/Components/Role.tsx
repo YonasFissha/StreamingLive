@@ -1,7 +1,7 @@
 import React from 'react';
 import { DisplayBox } from '.'
 import { ApiHelper, RoleInterface, RoleMemberInterface } from './'
-import { UserHelper } from '../../Utils';
+import { UserHelper, EnvironmentHelper } from '../../Utils';
 
 interface Props { role: RoleInterface, addFunction: (role: RoleInterface) => void }
 
@@ -17,14 +17,14 @@ export const Role: React.FC<Props> = (props) => {
     }
 
     const loadData = () => {
-        ApiHelper.apiGet(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/rolemembers/roles/' + props.role.id + "?include=users")
+        ApiHelper.apiGet(EnvironmentHelper.AccessManagementApiUrl + '/rolemembers/roles/' + props.role.id + "?include=users")
             .then((data: RoleMemberInterface[]) => setRoleMembers(data));
     }
 
     const handleDelete = (e: React.MouseEvent) => {
         e.preventDefault();
         const id = parseInt(e.currentTarget.getAttribute("data-id"));
-        ApiHelper.apiDelete(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/rolemembers/' + id).then(() => loadData());
+        ApiHelper.apiDelete(EnvironmentHelper.AccessManagementApiUrl + '/rolemembers/' + id).then(() => loadData());
     }
 
     const getMembers = () => {

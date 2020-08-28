@@ -5,16 +5,15 @@ import { AnalysisError } from 'aws-sdk/clients/quicksight';
 
 export class AwsHelper {
     private static _isConfigured = false;
-    private static _s3Bucket = process.env.AWS_S3_BUCKET;
+    private static _s3Bucket = process.env.AMAZON_S3_BUCKET;
 
     private static configure() {
         if (!this._isConfigured) {
             const config = {
-                accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-                secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-                region: process.env.AWS_REGION
+                accessKeyId: process.env.AMAZON_ACCESS_KEY_ID,
+                secretAccessKey: process.env.AMAZON_SECRET_ACCESS_KEY,
+                region: process.env.AMAZON_REGION
             }
-            console.log(config);
             AWS.config.update(config);
             this._isConfigured = true;
         }

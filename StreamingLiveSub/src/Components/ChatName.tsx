@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserInterface, UserHelper, ApiHelper } from '../helpers';
+import { UserInterface, UserHelper, ApiHelper, EnvironmentHelper } from '../helpers';
 
 interface Props {
     user: UserInterface,
@@ -22,7 +22,7 @@ export const ChatName: React.FC<Props> = (props) => {
         e.preventDefault();
         if (displayName === '') alert('Please enter a name');
         else {
-            if (ApiHelper.jwt !== "") ApiHelper.apiPost(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/users/setDisplayName', { displayName: displayName });
+            if (ApiHelper.jwt !== "") ApiHelper.apiPost(EnvironmentHelper.AccessManagementApiUrl + '/users/setDisplayName', { displayName: displayName });
             props.updateFunction(displayName);
             setEdit(false);
         }

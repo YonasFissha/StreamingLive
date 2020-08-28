@@ -2,6 +2,7 @@ import React from 'react';
 import { InputBox, RoleInterface } from '.'
 import { FormGroup } from 'react-bootstrap';
 import { ApiHelper, UserInterface, RoleMemberInterface, UserHelper } from './';
+import { EnvironmentHelper } from '../../Utils';
 
 interface Props {
     role: RoleInterface,
@@ -13,9 +14,9 @@ export const UserAdd: React.FC<Props> = (props) => {
 
     const handleSave = () => {
         const user: UserInterface = { email: email, displayName: email };
-        ApiHelper.apiPost(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/users/loadOrCreate', user).then(u => {
+        ApiHelper.apiPost(EnvironmentHelper.AccessManagementApiUrl + '/users/loadOrCreate', user).then(u => {
             const rm: RoleMemberInterface = { userId: u.id, roleId: props.role.id, churchId: UserHelper.currentChurch.id };
-            ApiHelper.apiPost(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/rolemembers/', [rm]).then(() => { props.updatedFunction() });
+            ApiHelper.apiPost(EnvironmentHelper.AccessManagementApiUrl + '/rolemembers/', [rm]).then(() => { props.updatedFunction() });
         });
     }
 

@@ -45,7 +45,7 @@ export class SettingController extends CustomBaseController {
 
     private async saveLogo(setting: Setting) {
         const base64 = setting.logoUrl.split(',')[1];
-        const key = "data/" + setting.keyName + "/logo.png";
+        const key = setting.keyName + "/logo.png";
         await AwsHelper.S3Upload(key, "image/png", Buffer.from(base64, 'base64'))
     }
 
@@ -102,7 +102,7 @@ export class SettingController extends CustomBaseController {
                 providerKey: s.providerKey
             });
         });
-        const path = 'data/' + settings.keyName + '/data.json';
+        const path = settings.keyName + '/data.json';
         const buffer = Buffer.from(JSON.stringify(result), 'utf8');
         return AwsHelper.S3Upload(path, "application/json", buffer)
     }
@@ -110,7 +110,7 @@ export class SettingController extends CustomBaseController {
 
     private publishCss(settings: Setting): Promise<any> {
         const result = ":root { --primaryColor: " + settings.primaryColor + "; --contrastColor: " + settings.contrastColor + "; --headerColor: " + settings.primaryColor + " }"
-        const path = 'data/' + settings.keyName + '/data.css';
+        const path = settings.keyName + '/data.css';
         const buffer = Buffer.from(result, 'utf8');
         return AwsHelper.S3Upload(path, "text/css", buffer)
     }

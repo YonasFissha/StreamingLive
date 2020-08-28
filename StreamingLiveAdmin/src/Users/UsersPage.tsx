@@ -1,12 +1,12 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap'
-import { ApiHelper, RoleInterface, Role, UserAdd } from './Components'
+import { ApiHelper, RoleInterface, Role, UserAdd, EnvironmentHelper } from './Components'
 
 
 export const UsersPage = () => {
     const [roles, setRoles] = React.useState<RoleInterface[]>(null);
     const [addForRole, setAddForRole] = React.useState<RoleInterface>(null);
-    const loadData = () => { ApiHelper.apiGet(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/roles/app/StreamingLive').then((data: RoleInterface[]) => setRoles(data)); }
+    const loadData = () => { ApiHelper.apiGet(EnvironmentHelper.AccessManagementApiUrl + '/roles/app/StreamingLive').then((data: RoleInterface[]) => setRoles(data)); }
 
 
     const showAdd = (role: RoleInterface) => { setAddForRole(role); }

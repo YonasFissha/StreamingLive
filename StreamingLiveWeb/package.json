@@ -1,5 +1,5 @@
 {
-  "name": "chums",
+  "name": "streaming-live-web",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -23,10 +23,10 @@
     "typescript": "^3.9.5"
   },
   "scripts": {
-    "start": "SET REACT_APP_STAGE=dev && react-scripts start",
+    "start": "SET REACT_APP_STAGE=dev&& react-scripts start",
     "build": "react-scripts build",
-    "predeploy-staging": "SET REACT_APP_STAGE=staging && npm run build",
-    "exec-deploy-staging": "npm run build && aws s3 sync build/ s3://staging-streaminglive-web",
+    "predeploy-staging": "SET REACT_APP_STAGE=staging&& npm run build",
+    "exec-deploy-staging": "aws s3 sync build/ s3://staging-streaminglive-web",
     "postdeploy-staging": "aws cloudfront create-invalidation --distribution-id EZS5Z2QZNKQU7 --paths /*",
     "deploy-staging": "npm run predeploy-staging && npm run exec-deploy-staging && npm run postdeploy-staging",
     "test": "react-scripts test --env=jsdom",

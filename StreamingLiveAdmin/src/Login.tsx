@@ -1,5 +1,5 @@
 import React from 'react';
-import { ErrorMessages, ApiHelper, LoginResponseInterface, UserHelper, SettingInterface, SwitchAppRequestInterface } from './Components';
+import { ErrorMessages, ApiHelper, LoginResponseInterface, UserHelper, SettingInterface, SwitchAppRequestInterface, EnvironmentHelper } from './Components';
 import UserContext from './UserContext'
 import { Button, FormControl } from 'react-bootstrap'
 import { Redirect } from 'react-router-dom';
@@ -33,7 +33,7 @@ export const Login: React.FC = (props: any) => {
     }
 
     const login = (data: {}) => {
-        ApiHelper.apiPostAnonymous(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/users/login', data).then((resp: LoginResponseInterface) => {
+        ApiHelper.apiPostAnonymous(EnvironmentHelper.AccessManagementApiUrl + '/users/login', data).then((resp: LoginResponseInterface) => {
             ApiHelper.jwt = resp.token;
             ApiHelper.amJwt = resp.token;
             UserHelper.user = resp.user;
@@ -45,7 +45,7 @@ export const Login: React.FC = (props: any) => {
     const selectChurch = () => {
         UserHelper.currentChurch = UserHelper.churches[0];
         const data: SwitchAppRequestInterface = { appName: "StreamingLive", churchId: UserHelper.currentChurch.id };
-        ApiHelper.apiPost(process.env.REACT_APP_ACCESSMANAGEMENT_API_URL + '/users/switchApp', data).then((resp: LoginResponseInterface) => {
+        ApiHelper.apiPost(EnvironmentHelper.AccessManagementApiUrl + '/users/switchApp', data).then((resp: LoginResponseInterface) => {
             ApiHelper.jwt = resp.token;
             ApiHelper.apiGet('/settings').then((settings: SettingInterface[]) => {
                 UserHelper.currentSettings = settings[0];
@@ -70,7 +70,7 @@ export const Login: React.FC = (props: any) => {
                     <Button id="signInButton" size="lg" variant="primary" block onClick={handleSubmit} >Sign in</Button>
                     <br />
                     <div className="text-right">
-                        <a href={process.env.REACT_APP_WEB_URL + "/#register"}>Register</a> &nbsp; | &nbsp;
+                        <a href={EnvironmentHelper.WebUrl + "/#register"}>Register</a> &nbsp; | &nbsp;
                         <a href="/forgot">Forgot Password</a>&nbsp;
                     </div>
                 </div>

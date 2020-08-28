@@ -1,3 +1,5 @@
+import { EnvironmentHelper } from "./";
+
 //AccessManagment
 export interface ApplicationInterface { name: string, permissions: RolePermissionInterface[] }
 export interface ChurchInterface { id?: number, name: string, registrationDate?: Date, apps?: ApplicationInterface[] }
@@ -13,13 +15,12 @@ export interface SwitchAppResponseInterface { appName: string, churchId: number 
 export interface UserInterface { id?: number, email?: string, authGuid?: string, displayName?: string, registrationDate?: Date, lastLogin?: Date, password?: string }
 
 export class ApiHelper {
-    static baseUrl = process.env.REACT_APP_STREAMINGLIVE_API_URL;
     static jwt = '';
     static amJwt = '';
 
     static getUrl(path: string) {
         if (path.indexOf("://") > -1) return path;
-        else return this.baseUrl + path;
+        else return EnvironmentHelper.StreamingLiveApiUrl + path;
     }
 
     static async apiGet(path: string) {
