@@ -36,7 +36,7 @@ export class Delivery {
 
     static deleteRoom = async (apiUrl: string, room: string, connectionId: string, silent: boolean) => {
         const key: AWS.DynamoDB.DocumentClient.Key = { "room": room, "connectionId": connectionId };
-        await DB.delete("connections", key);
+        await DB.delete(process.env.CONNECTIONS_TABLE, key);
         if (!silent) Delivery.sendAttendance(apiUrl, room);
     }
 

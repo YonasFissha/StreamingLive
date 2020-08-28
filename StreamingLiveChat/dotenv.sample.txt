@@ -1,0 +1,4 @@
+#Modify and rename to .env
+
+CONNECTIONS_TABLE=staging-sl-connections
+CATCHUP_TABLE=staging-sl-catchup

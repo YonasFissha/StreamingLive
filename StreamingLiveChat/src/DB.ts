@@ -5,11 +5,11 @@ const ddb = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10', region: 
 export class DB {
     // *** Catchup
     static deleteCatchup = (room: string) => {
-        return DB.delete("catchup", { room });
+        return DB.delete(process.env.CATCHUP_TABLE, { room });
     }
 
     static loadCatchup = async (room: string) => {
-        const data = await DB.loadData("catchup", "room = :room", { ":room": room }, "messages");
+        const data = await DB.loadData(process.env.CATCHUP_TABLE, "room = :room", { ":room": room }, "messages");
         let messages: any[] = [];
         if (data.Items.length > 0) {
             messages = JSON.parse(data.Items[0].messages);
@@ -29,12 +29,12 @@ export class DB {
             ts: parseInt(Date.now().toString(), 0),
             messages: JSON.stringify(messages)
         };
-        await DB.storeData("catchup", record);
+        await DB.storeData(process.env.CATCHUP_TABLE, record);
     }
 
     // *** Connections
     static loadRooms = async (connectionId: string) => {
-        const data = await DB.scan("connections", "connectionId = :connectionId", { ":connectionId": connectionId }, "room");
+        const data = await DB.scan(process.env.CONNECTIONS_TABLE, "connectionId = :connectionId", { ":connectionId": connectionId }, "room");
         const items = data.Items;
         const result: any[] = [];
         items.forEach(item => result.push(item));
@@ -50,19 +50,19 @@ export class DB {
             joinTime: Date.now(),
             prettyJoinTime: Date.now().toString()
         };
-        await DB.storeData("connections", record);
+        await DB.storeData(process.env.CONNECTIONS_TABLE, record);
     }
 
 
     static loadAttendance = async (room: string) => {
-        const data = await DB.loadData("connections", "room = :room", { ":room": room }, "displayName");
+        const data = await DB.loadData(process.env.CONNECTIONS_TABLE, "room = :room", { ":room": room }, "displayName");
         const result: any[] = [];
         data.Items.forEach(item => { result.push(item.displayName); });
         return result;
     }
 
     static getConnectionIds = async (room: string) => {
-        const data = await DB.loadData("connections", "room = :room", { ":room": room }, "connectionId");
+        const data = await DB.loadData(process.env.CONNECTIONS_TABLE, "room = :room", { ":room": room }, "connectionId");
         const result: any[] = [];
         data.Items.forEach(item => { result.push(item.connectionId); });
         return result;

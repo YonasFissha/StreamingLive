@@ -10,6 +10,7 @@ module.exports.handleMessage = async function handleMessage(event) {
     const eventType = rc.eventType;
     const connectionId = rc.connectionId;
     const apiUrl = rc.domainName + '/' + rc.stage;
+    dotenv.config();
 
     if (eventType == "DISCONNECT") await LambdaEntry.routeChat(apiUrl, connectionId, "disconnect", null, null);
     else {
