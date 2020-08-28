@@ -1,4 +1,4 @@
-const LambdaEntry = require('LambdaEntry');
+const LambdaEntry = require('./LambdaEntry');
 
 exports.handler = async event => {
     try {

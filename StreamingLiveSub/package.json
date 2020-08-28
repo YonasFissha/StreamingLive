@@ -22,9 +22,12 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "deploy": "aws s3 sync build/ s3://streaming-live-sub --profile LiveChurchSolutions",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy-staging": "SET REACT_APP_STAGE=staging && npm run build",
+    "exec-deploy-staging": "npm run build && aws s3 sync build/ s3://staging-streaminglive-sub",
+    "postdeploy-staging": "aws cloudfront create-invalidation --distribution-id E2CBYEJ9SM6ZSJ --paths /*",
+    "deploy-staging": "npm run predeploy-staging && npm run exec-deploy-staging && npm run postdeploy-staging"
   },
   "eslintConfig": {
     "extends": "react-app"

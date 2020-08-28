@@ -1,0 +1,16 @@
+service: streaming-live-chat
+
+provider:
+ name: aws
+ runtime: nodejs12.x
+ memorySize: 128
+ timeout: 10
+ region: us-east-2
+ websocketApiRouteSelectionExpression: $request.body.action
+
+
+functions:
+  default:
+    handler: LambdaEntry.handler
+    events:
+      - websocket: $default
