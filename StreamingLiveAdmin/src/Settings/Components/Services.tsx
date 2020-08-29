@@ -36,7 +36,7 @@ export const Services: React.FC<Props> = (props) => {
         var rows: JSX.Element[] = [];
         services.forEach(service => {
             var localServiceTime = new Date(service.serviceTime);
-            localServiceTime.setMinutes(localServiceTime.getMinutes() - service.timezoneOffset);
+            //localServiceTime.setMinutes(localServiceTime.getMinutes() - service.timezoneOffset);
 
 
 

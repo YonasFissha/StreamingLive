@@ -22,8 +22,6 @@ export const ServiceEdit: React.FC<Props> = (props) => {
         switch (e.currentTarget.name) {
             case 'serviceTime':
                 var date = new Date(val);
-                s.timezoneOffset = new Date().getTimezoneOffset();
-                date.setMinutes(date.getMinutes() + s.timezoneOffset);
                 s.serviceTime = date;
                 break;
             case 'chatBefore': s.chatBefore = parseInt(val) * 60; break;
@@ -87,12 +85,7 @@ export const ServiceEdit: React.FC<Props> = (props) => {
 
     if (localServiceTime !== undefined && localServiceTime !== null) {
         localServiceTime = new Date(localServiceTime);
-        console.log("BEFORE");
-        console.log(localServiceTime);
-        console.log(new Date().getTimezoneOffset());
-        localServiceTime.setMinutes(localServiceTime.getMinutes() - new Date().getTimezoneOffset() * 2);
-        console.log("AFTER");
-        console.log(localServiceTime);
+        localServiceTime.setMinutes(localServiceTime.getMinutes() - new Date().getTimezoneOffset());
     }
 
 

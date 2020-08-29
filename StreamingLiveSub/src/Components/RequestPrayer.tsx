@@ -20,8 +20,8 @@ export const RequestPrayer: React.FC<Props> = (props) => {
 
 
     if (prayerGuid !== '') return (<div className="chatContainer" style={(props.visible) ? {} : { display: 'none' }}>
-        <ChatReceive room={ChatHelper.getOrCreateRoom(props.chatState, ConfigHelper.current.churchId + prayerGuid)} />
-        <ChatSend room={ConfigHelper.current.churchId + prayerGuid} />
+        <ChatReceive room={ChatHelper.getOrCreateRoom(props.chatState, "church_" + ConfigHelper.current.churchId + "_" + prayerGuid)} />
+        <ChatSend room={"church_" + ConfigHelper.current.churchId + "_" + prayerGuid} />
     </div>)
 
     else return (<div id="prayerContainer" style={(props.visible) ? {} : { display: 'none' }}>
