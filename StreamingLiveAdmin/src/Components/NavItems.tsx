@@ -33,9 +33,9 @@ export const NavItems: React.FC<Props> = (props) => {
 
     const getTabs = () => {
         var tabs = [];
-        tabs.push(getTab('settings', '/settings', 'fas fa-video', 'Settings'));
-        tabs.push(getTab('pages', '/pages', 'fas fa-code', 'Pages'));
-        tabs.push(getTab('users', '/users', 'fas fa-user', 'Users'));
+        if (UserHelper.checkAccess('Settings', 'Edit')) tabs.push(getTab('settings', '/settings', 'fas fa-video', 'Settings'));
+        if (UserHelper.checkAccess('Pages', 'Edit')) tabs.push(getTab('pages', '/pages', 'fas fa-code', 'Pages'));
+        if (UserHelper.checkAccess('RoleMembers', 'Edit')) tabs.push(getTab('users', '/users', 'fas fa-user', 'Users'));
         tabs.push(getTab('chat', '/chat', 'fas fa-comments', 'Host Chat'));
         //tabs.push(getTab('traffic', '/traffic', 'fas fa-chart-area', 'Traffic'));
         //tabs.push(getTab('support', 'mailto:support@streaminglive.church', 'fas fa-envelope', 'Support'));

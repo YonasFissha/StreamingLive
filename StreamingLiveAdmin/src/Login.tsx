@@ -24,16 +24,19 @@ export const Login: React.FC = (props: any) => {
     const handleSubmit = (e: React.MouseEvent) => {
         e.preventDefault();
         const btn = e.currentTarget;
-        btn.setAttribute("disabled", "disabled");
-        btn.innerHTML = "Please wait..";
 
-        if (validate()) login({ email: email, password: password });
+
+        if (validate()) {
+            btn.setAttribute("disabled", "disabled");
+            btn.innerHTML = "Please wait..";
+            login({ email: email, password: password });
+        }
     }
 
     const init = () => {
         let search = new URLSearchParams(window.location.search);
         var auth = search.get('auth');; // || getCookieValue('apiKey');
-        if (auth !== '') login({ authGuid: auth });
+        if (auth !== null && auth !== '') login({ authGuid: auth });
     }
 
     const login = (data: {}) => {
@@ -41,12 +44,21 @@ export const Login: React.FC = (props: any) => {
             ApiHelper.jwt = resp.token;
             ApiHelper.amJwt = resp.token;
             UserHelper.user = resp.user;
-            UserHelper.churches = resp.churches;
+            UserHelper.churches = [];
+            resp.churches.forEach(c => {
+                var add = false;
+                c.apps.forEach(a => { if (a.name === "StreamingLive") add = true; })
+                if (add) UserHelper.churches.push(c);
+            });
             selectChurch();
+        }).catch((e) => {
+            window.location.href = '/';
         });
     }
 
     const selectChurch = () => {
+        UserHelper.selectChurch(UserHelper.churches[0].id, context);
+        /*
         UserHelper.currentChurch = UserHelper.churches[0];
         const data: SwitchAppRequestInterface = { appName: "StreamingLive", churchId: UserHelper.currentChurch.id };
         ApiHelper.apiPost(EnvironmentHelper.AccessManagementApiUrl + '/users/switchApp', data).then((resp: LoginResponseInterface) => {
@@ -55,8 +67,10 @@ export const Login: React.FC = (props: any) => {
                 UserHelper.currentSettings = settings[0];
                 context.setUserName(UserHelper.user.displayName);
             });
-        });
+        });*/
     }
+
+
 
     const context = React.useContext(UserContext)
     React.useEffect(init, []);
