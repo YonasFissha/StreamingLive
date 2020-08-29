@@ -26,10 +26,10 @@ export const Chat: React.FC<Props> = (props) => {
     var className = (chatEnabled) ? 'chatContainer' : 'chatContainer chatDisabled';
     return (
         <div className={className} style={(props.visible) ? {} : { display: 'none' }} >
-            <Attendance viewers={ChatHelper.getOrCreateRoom(props.chatState, ConfigHelper.current.keyName).viewers} />
-            <Callout callout={props.chatState?.callout || ''} roomName={ConfigHelper.current.keyName} />
-            <ChatReceive room={ChatHelper.getOrCreateRoom(props.chatState, ConfigHelper.current.keyName) || {}} />
-            <ChatSend room={ConfigHelper.current.keyName} />
+            <Attendance viewers={ChatHelper.getOrCreateRoom(props.chatState, ConfigHelper.current.churchId).viewers} />
+            <Callout callout={props.chatState?.callout || ''} roomName={ConfigHelper.current.churchId} />
+            <ChatReceive room={ChatHelper.getOrCreateRoom(props.chatState, ConfigHelper.current.churchId) || {}} />
+            <ChatSend room={ConfigHelper.current.churchId} />
         </div>
     );
 }

@@ -11,9 +11,9 @@ interface Props {
 export const HostChat: React.FC<Props> = (props) => {
     return (
         <div className="chatContainer" style={(props.visible) ? {} : { display: 'none' }} >
-            <Attendance viewers={ChatHelper.getOrCreateRoom(props.chatState, ConfigHelper.current.keyName + '.host').viewers} />
-            <ChatReceive room={ChatHelper.getOrCreateRoom(props.chatState, ConfigHelper.current.keyName + '.host')} />
-            <ChatSend room={ConfigHelper.current.keyName + ".host"} />
+            <Attendance viewers={ChatHelper.getOrCreateRoom(props.chatState, ConfigHelper.current.churchId + '.host').viewers} />
+            <ChatReceive room={ChatHelper.getOrCreateRoom(props.chatState, ConfigHelper.current.churchId + '.host')} />
+            <ChatSend room={ConfigHelper.current.churchId + ".host"} />
         </div>
     );
 }

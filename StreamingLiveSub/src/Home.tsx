@@ -20,22 +20,20 @@ export const Home: React.FC = () => {
       var d: ConfigurationInterface = data;
       checkHost(d);
       setConfig(d);
-      if (firstLoad) initChat(keyName);
+      if (firstLoad) initChat();
     });
   }, []);
 
   const checkHost = (d: ConfigurationInterface) => {
-    console.log("CHECKING HOST")
     if (UserHelper.isHost) {
-      console.log("IS HOST")
       var tab: TabInterface = { type: "hostchat", text: "Host Chat", icon: "fas fa-users", data: "", url: "" }
       d.tabs.push(tab);
     }
   }
 
-  const initChat = (keyName: string) => {
+  const initChat = () => {
     setTimeout(function () {
-      ChatHelper.init(keyName, (state: ChatStateInterface) => { setChatState(state); setConfig(ConfigHelper.current); });
+      ChatHelper.init((state: ChatStateInterface) => { setChatState(state); setConfig(ConfigHelper.current); });
       setChatState(ChatHelper.state);
     }, 500);
   }

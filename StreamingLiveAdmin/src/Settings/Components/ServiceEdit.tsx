@@ -20,7 +20,12 @@ export const ServiceEdit: React.FC<Props> = (props) => {
         const val = e.currentTarget.value;
         var s = { ...currentService };
         switch (e.currentTarget.name) {
-            case 'serviceTime': s.serviceTime = new Date(new Date(val).toUTCString()); break;
+            case 'serviceTime':
+                var date = new Date(val);
+                s.timezoneOffset = new Date().getTimezoneOffset();
+                date.setMinutes(date.getMinutes() + s.timezoneOffset);
+                s.serviceTime = date;
+                break;
             case 'chatBefore': s.chatBefore = parseInt(val) * 60; break;
             case 'chatAfter': s.chatAfter = parseInt(val) * 60; break;
             case 'provider': s.provider = val; break;
@@ -79,10 +84,15 @@ export const ServiceEdit: React.FC<Props> = (props) => {
 
 
     var localServiceTime = currentService?.serviceTime;
-    console.log(localServiceTime);
+
     if (localServiceTime !== undefined && localServiceTime !== null) {
         localServiceTime = new Date(localServiceTime);
-        localServiceTime.setMinutes(localServiceTime.getMinutes() - currentService.timezoneOffset);
+        console.log("BEFORE");
+        console.log(localServiceTime);
+        console.log(new Date().getTimezoneOffset());
+        localServiceTime.setMinutes(localServiceTime.getMinutes() - new Date().getTimezoneOffset() * 2);
+        console.log("AFTER");
+        console.log(localServiceTime);
     }
 
 
@@ -92,7 +102,7 @@ export const ServiceEdit: React.FC<Props> = (props) => {
                 <Col>
                     <FormGroup>
                         <label>Service Time</label>
-                        <input type="datetime-local" className="form-control" defaultValue={FormatHelper.html5DateTime(localServiceTime)} onChange={handleChange} />
+                        <input type="datetime-local" className="form-control" name="serviceTime" defaultValue={FormatHelper.html5DateTime(localServiceTime)} onChange={handleChange} />
                     </FormGroup>
                 </Col>
                 <Col>

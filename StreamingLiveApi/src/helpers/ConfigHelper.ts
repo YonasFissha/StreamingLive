@@ -8,6 +8,7 @@ export class ConfigHelper {
 
     static generateJson = (settings: Setting, tabs: Tab[], links: Link[], services: Service[]) => {
         const result: any = {};
+        result.churchId = settings.churchId;
         result.colors = { primary: settings.primaryColor, contrast: settings.contrastColor };
         result.logo = { url: settings.homePageUrl, image: settings.logoUrl };
         result.buttons = [];

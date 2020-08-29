@@ -21,14 +21,11 @@ export class ChatHelper {
         if (ChatHelper.socketConnected) ChatHelper.socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': roomName }));
     }
 
-    static init(keyName: string, messageReceived: (state: ChatStateInterface) => void) {
+    static init(messageReceived: (state: ChatStateInterface) => void) {
         ChatHelper.state = { rooms: [], callout: '', chatEnabled: false, prayerRequests: [] };
         ChatHelper.socket = new WebSocket(EnvironmentHelper.ChatApiUrl || "");
         ChatHelper.socket.onopen = function (e) {
             ChatHelper.socketConnected = true;
-            console.log('connected');
-            console.log(ChatHelper.state.rooms);
-            //ChatHelper.socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': keyName }));
             for (let i = 0; i < ChatHelper.state.rooms.length; i++) ChatHelper.joinRoom(ChatHelper.state.rooms[i].roomName);
             if (ChatHelper.user.displayName !== 'Anonymous') ChatHelper.setName(ChatHelper.user.displayName);
             setTimeout(ChatHelper.keepAlive, 30 * 1000);
@@ -48,9 +45,7 @@ export class ChatHelper {
 
     static requestPrayer() {
         ChatHelper.prayerGuid = ChatHelper.user.guid; //ChatHelper.generateGuid();
-        var keyName = ConfigHelper.current.keyName;
-        ChatHelper.socket.send(JSON.stringify({ 'action': 'requestPrayer', 'room': keyName, 'name': ChatHelper.user.displayName, 'userGuid': ChatHelper.user.guid }));
-        //ChatHelper.socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': keyName + ChatHelper.prayerGuid }));
+        ChatHelper.socket.send(JSON.stringify({ 'action': 'requestPrayer', 'room': ConfigHelper.current.churchId, 'name': ChatHelper.user.displayName, 'userGuid': ChatHelper.user.guid }));
         ChatHelper.getOrCreateRoom(ChatHelper.state, ChatHelper.user.guid);
     }
 
@@ -125,8 +120,8 @@ export class ChatHelper {
             timestamp: msg.ts || 0
         };
         ChatHelper.getOrCreateRoom(ChatHelper.state, msg.room).messages.push(message);
-        if (msg.room === ConfigHelper.current.keyName) ConfigHelper.setTabUpdated('chat');
-        else if (msg.room === ConfigHelper.current.keyName + 'host') ConfigHelper.setTabUpdated('hostchat');
+        if (msg.room === ConfigHelper.current.churchId) ConfigHelper.setTabUpdated('chat');
+        else if (msg.room === ConfigHelper.current.churchId + 'host') ConfigHelper.setTabUpdated('hostchat');
         else ConfigHelper.setTabUpdated('prayer');
     }
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import { DisplayBox, LinkInterface, LinkEdit, ApiHelper } from '.'
 import { UserHelper } from '../../Utils';
-import { propTypes } from 'react-bootstrap/esm/Image';
 
 interface Props { updatedFunction?: () => void }
 
