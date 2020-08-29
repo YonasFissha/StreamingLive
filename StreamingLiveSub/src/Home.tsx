@@ -54,9 +54,6 @@ export const Home: React.FC = () => {
     ChatHelper.socketConnected = false;
 
     const chatUser = ChatHelper.getUser();
-    console.log(chatUser);
-    console.log("JWT IS:");
-    console.log(ApiHelper.jwt);
     if (ApiHelper.jwt !== "") {
       chatUser.displayName = UserHelper.user?.displayName || "Anonymous";
       chatUser.isHost = true;

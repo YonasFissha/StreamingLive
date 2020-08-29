@@ -1,13 +1,17 @@
 import { DB } from './DB';
 import { Catchup } from './Catchup';
 import { Delivery } from './Delivery';
+import { Utils } from './Utils';
 
 export class Connection {
     static join = async (apiUrl: string, connectionId: string, room: string, data: any) => {
         const name = data.displayName === undefined ? "Anonymous" : data.displayName;
-        await DB.storeConnection(room, connectionId, name);
-        await Catchup.sendCatchup(apiUrl, connectionId, room);
-        await Delivery.sendAttendance(apiUrl, room);
+        const canJoin = (room.indexOf("_host") === -1) ? true : Utils.isHost(data.token, room);
+        if (canJoin) {
+            await DB.storeConnection(room, connectionId, name);
+            await Catchup.sendCatchup(apiUrl, connectionId, room);
+            await Delivery.sendAttendance(apiUrl, room);
+        }
     }
 
     static cleanup = async (apiUrl: string) => {

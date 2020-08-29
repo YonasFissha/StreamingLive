@@ -23,8 +23,6 @@ export class ServicesHelper {
             for (var i = 0; i < config.services.length; i++) {
                 var s = config.services[i];
                 s.localCountdownTime = new Date(new Date(s.serviceTime).getTime());
-                console.log(s.serviceTime);
-                console.log(s.localCountdownTime);
                 s.localStartTime = new Date(s.localCountdownTime.getTime());
                 s.localStartTime.setSeconds(s.localStartTime.getSeconds() - this.getSeconds(s.earlyStart));
                 s.localEndTime = new Date(s.localStartTime.getTime());

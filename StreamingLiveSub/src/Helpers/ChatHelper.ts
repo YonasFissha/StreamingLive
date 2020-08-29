@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import { ConfigHelper, UserInterface, EnvironmentHelper } from '../components';
+import { ConfigHelper, UserInterface, EnvironmentHelper, ApiHelper } from '../components';
 
 interface RawChatMessageInterface { action: string, room?: string, userGuid?: string, ts?: number, name?: string, msg?: string, totalViewers?: number, viewers?: ChatViewerInterface[], messages?: RawChatMessageInterface[] }
 
@@ -19,8 +19,8 @@ export class ChatHelper {
 
     static joinRoom(roomName: string) {
         if (ChatHelper.socketConnected) {
-            console.log("JOINING: " + roomName);
-            ChatHelper.socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': roomName }));
+            console.log(JSON.stringify({ 'action': 'joinRoom', 'room': roomName, 'token': ApiHelper.jwt }));
+            ChatHelper.socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': roomName, 'token': ApiHelper.jwt }));
         }
     }
 
@@ -57,7 +57,6 @@ export class ChatHelper {
     }
 
     static getOrCreateRoom(state: ChatStateInterface | undefined, roomName: string | undefined) {
-        console.log("GETORCREATEROOM: " + roomName);
         if (state === undefined) state = { rooms: [], callout: '', chatEnabled: false, prayerRequests: [] };
         for (let i = 0; i < state.rooms.length; i++) if (state.rooms[i].roomName === roomName) return state.rooms[i];
         var room: ChatRoomInterface = { roomName: roomName || '', messages: [], viewers: [] }
@@ -83,16 +82,16 @@ export class ChatHelper {
     static sendMessage(room: string, content: string) {
         var c = content.trim();
         if (c !== '') {
-            ChatHelper.socket.send(JSON.stringify({ 'action': 'sendMessage', 'room': room, 'userGuid': ChatHelper.user.guid, 'name': ChatHelper.user.displayName, 'msg': c }));
+            ChatHelper.socket.send(JSON.stringify({ 'action': 'sendMessage', 'room': room, 'userGuid': ChatHelper.user.guid, 'name': ChatHelper.user.displayName, 'msg': c, 'token': ApiHelper.jwt }));
         }
     }
 
     static sendDelete(room: string, ts: number) {
-        ChatHelper.socket.send(JSON.stringify({ 'action': 'deleteMessage', 'room': room, 'ts': ts }));
+        ChatHelper.socket.send(JSON.stringify({ 'action': 'deleteMessage', 'room': room, 'ts': ts, 'token': ApiHelper.jwt }));
     }
 
     static setCallout(room: string, content: string) {
-        ChatHelper.socket.send(JSON.stringify({ 'action': 'setCallout', 'room': room, 'msg': content }));
+        ChatHelper.socket.send(JSON.stringify({ 'action': 'setCallout', 'room': room, 'msg': content, 'token': ApiHelper.jwt }));
     }
 
     static deleteMessage(msg: RawChatMessageInterface) {
@@ -101,20 +100,14 @@ export class ChatHelper {
         for (let i = messages.length - 1; i >= 0; i--) {
             if (messages[i].timestamp === ts) {
                 var m = messages.splice(i, 1);
-                console.log('removing ');
-                console.log(m);
             }
         }
         ChatHelper.getOrCreateRoom(ChatHelper.state, msg.room).messages = messages;
     }
 
     static catchup(msg: RawChatMessageInterface) {
-        console.log('catchup received');
-        console.log(msg);
         if (msg.messages !== undefined) {
             for (var i = 0; i < msg.messages.length; i++) {
-                console.log('catchup');
-                console.log(msg.messages[i]);
                 ChatHelper.handleMessage(msg.messages[i]);
             }
         }
