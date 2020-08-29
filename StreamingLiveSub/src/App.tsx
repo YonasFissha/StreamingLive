@@ -4,15 +4,19 @@ import { UserProvider } from './UserContext'
 import { Home } from "./Home"
 import { Login } from './Login';
 import { Logout } from './Logout';
+import { ApiHelper } from './helpers';
+import { Unauthenticated } from "./Unauthenticated"
+import { Authenticated } from "./Authenticated"
 
 const App: React.FC = () => {
+    const getHandler = () => { return (ApiHelper.jwt === '') ? <Unauthenticated /> : <Authenticated />; }
+
     return (
         <UserProvider>
             <Router>
                 <Switch>
-                    <Route path="/login"><Login /></Route>
                     <Route path="/logout"><Logout /></Route>
-                    <Route path="/"><Home /></Route>
+                    <Route path="/">{getHandler()}</Route>
                 </Switch>
             </Router>
         </UserProvider>

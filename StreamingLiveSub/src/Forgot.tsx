@@ -3,7 +3,7 @@ import { ErrorMessages, ApiHelper, ResetPasswordRequestInterface, ResetPasswordR
 import { Button } from 'react-bootstrap';
 
 
-export const Forgot = () => {
+export const Forgot: React.FC = () => {
     const [email, setEmail] = React.useState('');
     const [errors, setErrors] = React.useState<string[]>([]);
     const [successMessage, setSuccessMessage] = React.useState<React.ReactElement>(<></>);

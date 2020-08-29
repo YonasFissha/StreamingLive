@@ -7,6 +7,7 @@ export const Authenticated: React.FC = () => {
     return (
         <Switch>
             <Route path="/login"><Redirect to="/" /></Route>
+            <Route path="/forgot"  ><Redirect to="/" /></Route>
             <Route path="/logout"><Logout /></Route>
             <Route path="/"><Home /></Route>
         </Switch>

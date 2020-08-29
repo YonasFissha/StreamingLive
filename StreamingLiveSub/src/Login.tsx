@@ -1,5 +1,5 @@
 import React from 'react';
-import { ErrorMessages, ApiHelper, LoginResponseInterface, UserHelper, SwitchAppRequestInterface, ChatHelper, EnvironmentHelper } from './components';
+import { ErrorMessages, ApiHelper, LoginResponseInterface, UserHelper, SwitchAppRequestInterface, ChatHelper, EnvironmentHelper, ConfigHelper } from './components';
 import UserContext from './UserContext'
 import { Button, FormControl } from 'react-bootstrap'
 import { Redirect } from 'react-router-dom';
@@ -28,9 +28,13 @@ export const Login: React.FC = (props: any) => {
     }
 
     const init = () => {
-        let search = new URLSearchParams(window.location?.search || "");
-        var auth = search.get('auth');;
-        if (auth !== '') login({ authGuid: auth });
+        const keyName = window.location.hostname.split('.')[0];
+        ConfigHelper.load(keyName).then(() => {
+            let search = new URLSearchParams(window.location?.search || "");
+            var auth = search.get('auth');;
+            if (auth !== undefined && auth !== null && auth !== '') login({ authGuid: auth });
+        })
+
     }
 
     const login = (data: {}) => {
@@ -45,17 +49,18 @@ export const Login: React.FC = (props: any) => {
     }
 
     const selectChurch = () => {
-        UserHelper.currentChurch = UserHelper.churches[0];
-        const data: SwitchAppRequestInterface = { appName: "StreamingLive", churchId: UserHelper.currentChurch?.id || 0 };
-        ApiHelper.apiPost(EnvironmentHelper.AccessManagementApiUrl + '/users/switchApp', data).then((resp: LoginResponseInterface) => {
-            ApiHelper.jwt = resp.token;
-            context?.setUserName(UserHelper.user?.displayName || "");
-            /*
-            ApiHelper.apiGet('/settings').then((settings: SettingInterface[]) => {
-                UserHelper.currentSettings = settings[0];
-                context?.setUserName(UserHelper.user.displayName);
-            });*/
+
+        UserHelper.churches?.forEach(c => {
+            var churchId: string = c.id?.toString() || "";
+            if (churchId === ConfigHelper.current.churchId.toString()) UserHelper.currentChurch = c;
         });
+        if (UserHelper.currentChurch !== undefined) {
+            const data: SwitchAppRequestInterface = { appName: "StreamingLive", churchId: UserHelper.currentChurch?.id || 0 };
+            ApiHelper.apiPost(EnvironmentHelper.AccessManagementApiUrl + '/users/switchApp', data).then((resp: LoginResponseInterface) => {
+                ApiHelper.jwt = resp.token;
+                context?.setUserName(UserHelper.user?.displayName || "");
+            });
+        }
     }
 
     const context = React.useContext(UserContext)
