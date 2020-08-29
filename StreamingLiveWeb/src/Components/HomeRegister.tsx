@@ -158,11 +158,11 @@ export const HomeRegister: React.FC = () => {
                                 <div className="form-group">
                                     <input type="password" name="password" value={password} className="form-control" placeholder="Password" onChange={handleChange} />
                                 </div>
-                                <a href="about:blank" className="btn btn-lg btn-primary btn-block" onClick={handleRegister}>Register</a>
+                                <button className="btn btn-lg btn-primary btn-block" onClick={handleRegister}>Register</button>
                             </form>
                             <br />
                             <div>
-                                Already have a site? <a href="https://admin.streaminglive.church/">Login</a>
+                                Already have a site? <a href={EnvironmentHelper.AdminUrl}>Login</a>
                             </div>
                         </div>
                     </div>

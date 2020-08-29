@@ -1,6 +1,7 @@
 import React from 'react';
 import { ApiHelper, SettingInterface, AppearanceEdit, ImageEditor, DisplayBox } from '.'
 import { Row, Col, FormGroup } from 'react-bootstrap'
+import { EnvironmentHelper } from '../../Utils';
 
 interface Props { updatedFunction?: () => void }
 
@@ -10,10 +11,10 @@ export const Appearance: React.FC<Props> = (props) => {
 
     const loadData = () => { ApiHelper.apiGet('/settings').then(data => setCurrentSettings(data[0])); }
     const handleEdit = () => { setMode("edit"); }
-    const handleUpdate = () => { setMode("display"); loadData() }
+    const handleUpdate = () => { setMode("display"); loadData(); props.updatedFunction(); }
 
     const getLogoLink = () => {
-        var logoImg = (currentSettings && currentSettings?.logoUrl !== "") ? <img src={currentSettings.logoUrl} alt="logo" className="img-fluid" /> : "No Logo";
+        var logoImg = (currentSettings && currentSettings?.logoUrl !== "") ? <img src={EnvironmentHelper.ContentRoot + currentSettings.logoUrl.replace("/data/", "")} alt="logo" className="img-fluid" /> : "No Logo";
         return <a href={currentSettings?.homePageUrl} target="_blank">{logoImg}</a>
     }
 

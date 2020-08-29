@@ -23,6 +23,10 @@ export const Login: React.FC = (props: any) => {
 
     const handleSubmit = (e: React.MouseEvent) => {
         e.preventDefault();
+        const btn = e.currentTarget;
+        btn.setAttribute("disabled", "disabled");
+        btn.innerHTML = "Please wait..";
+
         if (validate()) login({ email: email, password: password });
     }
 

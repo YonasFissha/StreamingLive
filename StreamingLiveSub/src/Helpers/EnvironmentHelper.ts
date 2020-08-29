@@ -28,7 +28,7 @@ export class EnvironmentHelper {
         EnvironmentHelper.StreamingLiveApiUrl = "https://ozok30w9g5.execute-api.us-east-2.amazonaws.com/Staging";
         EnvironmentHelper.ChatApiUrl = "wss://83yfhgzin0.execute-api.us-east-2.amazonaws.com/Staging";
         EnvironmentHelper.AdminUrl = "https://admin.staging.streaminglive.church";
-        EnvironmentHelper.ContentRoot = "/data/";
+        EnvironmentHelper.ContentRoot = "";
     }
 
 }

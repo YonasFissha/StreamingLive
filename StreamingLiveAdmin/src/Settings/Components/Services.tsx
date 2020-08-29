@@ -2,11 +2,13 @@ import React from 'react';
 import { DisplayBox, TabEdit, ServiceInterface, ApiHelper, FormatHelper } from './';
 import { ServiceEdit } from './ServiceEdit';
 
-export const Services = () => {
+interface Props { updatedFunction?: () => void }
+
+export const Services: React.FC<Props> = (props) => {
     const [services, setServices] = React.useState<ServiceInterface[]>([]);
     const [currentService, setCurrentService] = React.useState<ServiceInterface>(null);
 
-    const handleUpdated = () => { setCurrentService(null); loadData(); }
+    const handleUpdated = () => { setCurrentService(null); loadData(); props.updatedFunction(); }
     const getEditContent = () => { return <a href="about:blank" onClick={handleAdd}><i className="fas fa-plus"></i></a> }
     const loadData = () => { ApiHelper.apiGet('/services').then(data => setServices(data)); }
 

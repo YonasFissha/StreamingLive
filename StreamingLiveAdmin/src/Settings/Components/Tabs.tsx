@@ -1,11 +1,12 @@
 import React from 'react';
 import { DisplayBox, TabEdit, TabInterface, ApiHelper, UserHelper } from './';
 
-export const Tabs = () => {
+interface Props { updatedFunction?: () => void }
+export const Tabs: React.FC<Props> = (props) => {
     const [tabs, setTabs] = React.useState<TabInterface[]>([]);
     const [currentTab, setCurrentTab] = React.useState<TabInterface>(null);
 
-    const handleUpdated = () => { setCurrentTab(null); loadData(); }
+    const handleUpdated = () => { setCurrentTab(null); loadData(); props.updatedFunction(); }
     const getEditContent = () => { return <a href="about:blank" onClick={handleAdd}><i className="fas fa-plus"></i></a> }
     const loadData = () => { ApiHelper.apiGet('/tabs').then(data => setTabs(data)); }
     const saveChanges = () => { ApiHelper.apiPost('/tabs', tabs).then(loadData); }

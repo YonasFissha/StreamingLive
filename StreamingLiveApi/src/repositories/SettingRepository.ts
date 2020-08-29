@@ -9,6 +9,10 @@ export class SettingRepository {
         return DB.query("SELECT * FROM settings WHERE churchId=?", [churchId]);
     }
 
+    public async loadByKey(keyName: string) {
+        return DB.queryOne("SELECT * FROM settings WHERE keyName=?", [keyName]);
+    }
+
 
     public save(setting: Setting) {
         if (setting.id > 0) return this.update(setting); else return this.create(setting);

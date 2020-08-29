@@ -2,7 +2,7 @@ import { controller, httpPost, httpGet } from "inversify-express-utils";
 import { Setting, Tab, Link, Service } from "../models";
 import express from "express";
 import { CustomBaseController } from "./CustomBaseController";
-import { AwsHelper } from "../helpers";
+import { AwsHelper, ConfigHelper } from "../helpers";
 
 @controller("/settings")
 export class SettingController extends CustomBaseController {
@@ -45,7 +45,7 @@ export class SettingController extends CustomBaseController {
 
     private async saveLogo(setting: Setting) {
         const base64 = setting.logoUrl.split(',')[1];
-        const key = setting.keyName + "/logo.png";
+        const key = "data/" + setting.keyName + "/logo.png";
         await AwsHelper.S3Upload(key, "image/png", Buffer.from(base64, 'base64'))
     }
 
@@ -75,50 +75,18 @@ export class SettingController extends CustomBaseController {
     }
 
     private publishData(settings: Setting, tabs: Tab[], links: Link[], services: Service[]): Promise<any> {
-        const result: any = {};
-        result.colors = { primary: settings.primaryColor, contrast: settings.contrastColor };
-        result.logo = { url: settings.homePageUrl, image: settings.logoUrl };
-        result.buttons = [];
-        result.tabs = [];
-        result.services = [];
-
-        tabs.forEach(t => {
-            result.tabs.push({ text: t.text, url: t.url, type: t.tabType, data: t.tabData, icon: t.icon });
-        });
-
-        links.forEach(l => {
-            result.buttons.push({ text: l.text, url: l.url });
-        });
-
-        services.forEach(s => {
-            result.services.push({
-                videoUrl: s.videoUrl,
-                serviceTime: s.serviceTime,
-                duration: this.formatTime(s.duration),
-                earlyStart: this.formatTime(s.earlyStart),
-                chatBefore: this.formatTime(s.chatBefore),
-                chatAfter: this.formatTime(s.chatAfter),
-                provider: s.provider,
-                providerKey: s.providerKey
-            });
-        });
-        const path = settings.keyName + '/data.json';
+        const result = ConfigHelper.generateJson(settings, tabs, links, services);
+        const path = "data/" + settings.keyName + '/data.json';
         const buffer = Buffer.from(JSON.stringify(result), 'utf8');
         return AwsHelper.S3Upload(path, "application/json", buffer)
     }
 
 
     private publishCss(settings: Setting): Promise<any> {
-        const result = ":root { --primaryColor: " + settings.primaryColor + "; --contrastColor: " + settings.contrastColor + "; --headerColor: " + settings.primaryColor + " }"
-        const path = settings.keyName + '/data.css';
+        const result = ConfigHelper.generateCss(settings);
+        const path = "data/" + settings.keyName + '/data.css';
         const buffer = Buffer.from(result, 'utf8');
         return AwsHelper.S3Upload(path, "text/css", buffer)
-    }
-
-    private formatTime(seconds: number) {
-        const min = Math.floor(seconds / 60);
-        const sec = seconds - (min * 60);
-        return min.toString() + ":" + sec.toString().padStart(2, "0");
     }
 
 }

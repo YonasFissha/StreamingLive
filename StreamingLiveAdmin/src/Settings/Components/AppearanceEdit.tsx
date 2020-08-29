@@ -1,5 +1,5 @@
 import React from 'react';
-import { InputBox, ApiHelper, SettingInterface } from '.'
+import { InputBox, ApiHelper, SettingInterface, EnvironmentHelper } from '.'
 import { Row, Col, FormGroup } from 'react-bootstrap'
 import { ImageEditor } from './ImageEditor';
 
@@ -37,8 +37,12 @@ export const AppearanceEdit: React.FC<Props> = (props) => {
         else return <ImageEditor settings={currentSettings} updatedFunction={imageUpdated}></ImageEditor>
     }
 
+    const getLogoUrl = (logoUrl: string) => {
+        if (logoUrl.indexOf('/data/') === 0) return EnvironmentHelper.ContentRoot + currentSettings.logoUrl.replace("/data/", "");
+        else return logoUrl;
+    }
     const getLogoLink = () => {
-        var logoImg = (currentSettings && currentSettings?.logoUrl !== "") ? <img src={currentSettings.logoUrl} alt="logo" className="img-fluid" /> : "none";
+        var logoImg = (currentSettings && currentSettings?.logoUrl !== "") ? <img src={getLogoUrl(currentSettings.logoUrl)} alt="logo" className="img-fluid" /> : "none";
         return <a href="about:blank" onClick={(e: React.MouseEvent) => { e.preventDefault(); setEditLogo(true); }}>{logoImg}</a>
     }
 

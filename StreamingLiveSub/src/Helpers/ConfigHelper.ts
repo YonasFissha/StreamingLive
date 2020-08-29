@@ -12,8 +12,8 @@ export class ConfigHelper {
     static current: ConfigurationInterface;
 
     static async load(keyName: string) {
-        var jsonUrl = EnvironmentHelper.ContentRoot + keyName + '/data.json?nocache=' + (new Date()).getTime();
-        if (await ConfigHelper.getQs('preview') === '1') jsonUrl = EnvironmentHelper.AdminUrl + '/preview/data?key=' + keyName + '&nocache=' + (new Date()).getTime();
+        var jsonUrl = EnvironmentHelper.ContentRoot + '/data/' + keyName + '/data.json?nocache=' + (new Date()).getTime();
+        if (await ConfigHelper.getQs('preview') === '1') { jsonUrl = EnvironmentHelper.StreamingLiveApiUrl + '/preview/data/' + keyName; }
         var result: ConfigurationInterface = await fetch(jsonUrl).then(response => response.json());
         ServicesHelper.updateServiceTimes(result);
         result.keyName = keyName;

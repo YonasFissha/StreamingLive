@@ -11,7 +11,11 @@ export const Home: React.FC = () => {
 
   const loadConfig = React.useCallback((firstLoad: boolean) => {
     const keyName = window.location.hostname.split('.')[0];
-    setCssUrl(EnvironmentHelper.ContentRoot + keyName + '/data.css?nocache=' + (new Date()).getTime());
+    setCssUrl(EnvironmentHelper.ContentRoot + '/data/' + keyName + '/data.css?nocache=' + (new Date()).getTime());
+    ConfigHelper.getQs('preview').then(v => {
+      if (v === "1") setCssUrl(EnvironmentHelper.StreamingLiveApiUrl + '/preview/css/' + keyName);
+    });
+
     ConfigHelper.load(keyName).then(data => {
       var d: ConfigurationInterface = data;
       checkHost(d);

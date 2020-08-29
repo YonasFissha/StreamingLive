@@ -4,9 +4,15 @@ import { Row, Col } from 'react-bootstrap'
 
 export const SettingsPage = () => {
 
+    const [ts, setTs] = React.useState(Date.now());
+
     const publish = (e: React.MouseEvent) => {
         e.preventDefault();
         ApiHelper.apiPost("/settings/publish", []).then(() => window.alert('Your changes have been published.'));
+    }
+
+    const updatePreview = () => {
+        setTs(Date.now());
     }
 
     return (
@@ -17,13 +23,13 @@ export const SettingsPage = () => {
             </Row>
             <Row>
                 <Col md={8}>
-                    <Preview />
-                    <Services />
+                    <Preview ts={ts} />
+                    <Services updatedFunction={updatePreview} />
                 </Col>
                 <Col md={4}>
-                    <Appearance />
-                    <Links />
-                    <Tabs />
+                    <Appearance updatedFunction={updatePreview} />
+                    <Links updatedFunction={updatePreview} />
+                    <Tabs updatedFunction={updatePreview} />
                 </Col>
             </Row>
         </>

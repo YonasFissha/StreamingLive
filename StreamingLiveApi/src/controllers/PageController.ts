@@ -21,7 +21,7 @@ export class PageController extends CustomBaseController {
       const result = await this.repositories.page.loadById(id, au.churchId);
       if (this.include(req, 'content')) {
         const settings = await this.repositories.setting.loadAll(au.churchId);
-        const path = settings[0].keyName + '/page' + id + '.html';
+        const path = "data/" + settings[0].keyName + '/page' + id + '.html';
         result.content = await AwsHelper.S3Read(path);
       }
       return result;
@@ -40,7 +40,7 @@ export class PageController extends CustomBaseController {
             this.repositories.page.save(page).then(async (p) => {
               if (page.content !== undefined) {
                 const settings = await this.repositories.setting.loadAll(au.churchId);
-                const path = settings[0].keyName + '/page' + p.id + '.html';
+                const path = "data/" + settings[0].keyName + '/page' + p.id + '.html';
                 const buffer = Buffer.from(page.content, 'binary');
                 await AwsHelper.S3Upload(path, "text/html", buffer)
               }

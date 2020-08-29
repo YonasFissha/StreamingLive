@@ -1,12 +1,15 @@
 import React from 'react';
 import { DisplayBox, LinkInterface, LinkEdit, ApiHelper } from '.'
 import { UserHelper } from '../../Utils';
+import { propTypes } from 'react-bootstrap/esm/Image';
 
-export const Links = () => {
+interface Props { updatedFunction?: () => void }
+
+export const Links: React.FC<Props> = (props) => {
     const [links, setLinks] = React.useState<LinkInterface[]>([]);
     const [currentLink, setCurrentLink] = React.useState<LinkInterface>(null);
 
-    const handleUpdated = () => { setCurrentLink(null); loadData(); }
+    const handleUpdated = () => { setCurrentLink(null); loadData(); props.updatedFunction() }
     const getEditContent = () => { return <a href="about:blank" onClick={handleAdd}><i className="fas fa-plus"></i></a> }
     const loadData = () => { ApiHelper.apiGet('/links').then(data => setLinks(data)); }
     const saveChanges = () => { ApiHelper.apiPost('/links', links).then(loadData); }
