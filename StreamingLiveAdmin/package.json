@@ -32,6 +32,10 @@
     "exec-deploy-staging": "aws s3 sync build/ s3://staging-streaminglive-admin",
     "postdeploy-staging": "aws cloudfront create-invalidation --distribution-id E3SMEG3Q7CJ1B9 --paths /*",
     "deploy-staging": "npm run predeploy-staging && npm run exec-deploy-staging && npm run postdeploy-staging",
+    "predeploy-prod": "SET REACT_APP_STAGE=prod&& npm run build",
+    "exec-deploy-prod": "aws s3 sync build/ s3://streaminglive-admin",
+    "postdeploy-prod": "aws cloudfront create-invalidation --distribution-id E28L6GBY351H3W --paths /*",
+    "deploy-prod": "npm run predeploy-prod && npm run exec-deploy-prod && npm run postdeploy-prod",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

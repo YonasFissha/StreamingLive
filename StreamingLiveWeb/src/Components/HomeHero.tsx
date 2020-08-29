@@ -1,4 +1,5 @@
 import React from 'react';
+import { EnvironmentHelper } from '../utils';
 
 export const HomeHero: React.FC = () => {
     return (
@@ -10,7 +11,7 @@ export const HomeHero: React.FC = () => {
                     </div>
                     <div className="col-6 text-right">
                         <a href="#register" className="btn btn-info btn-sm">Register</a> &nbsp;
-                        <a href="/cp/" className="btn btn-primary btn-sm">Login</a>
+                        <a href={EnvironmentHelper.AdminUrl} className="btn btn-primary btn-sm">Login</a>
                     </div>
                 </div>
                 <div className="text-center">

@@ -10,6 +10,7 @@ export class EnvironmentHelper {
     static init = () => {
         switch (process.env.REACT_APP_STAGE) {
             case "staging": EnvironmentHelper.initStaging(); break;
+            case "prod": EnvironmentHelper.initProd(); break;
             default: EnvironmentHelper.initDev(); break;
         }
     }
@@ -26,9 +27,18 @@ export class EnvironmentHelper {
     static initStaging = () => {
         EnvironmentHelper.AccessManagementApiUrl = "https://vfj29fb54h.execute-api.us-east-2.amazonaws.com/Staging";
         EnvironmentHelper.StreamingLiveApiUrl = "https://ozok30w9g5.execute-api.us-east-2.amazonaws.com/Staging";
-        EnvironmentHelper.WebUrl = "https://admin.staging.streaminglive.church";
+        EnvironmentHelper.WebUrl = "https://staging.streaminglive.church";
         EnvironmentHelper.ContentRoot = "https://data.staging.streaminglive.church/data/";
         EnvironmentHelper.SubUrl = "https://{key}.staging.streaminglive.church";
+    }
+
+    //NOTE: None of these values are secret.
+    static initProd = () => {
+        EnvironmentHelper.AccessManagementApiUrl = "https://3dcjx8bln0.execute-api.us-east-2.amazonaws.com/Prod";
+        EnvironmentHelper.StreamingLiveApiUrl = "https://u1xzhc2hy5.execute-api.us-east-2.amazonaws.com/Prod";
+        EnvironmentHelper.WebUrl = "https://streaminglive.church";
+        EnvironmentHelper.ContentRoot = "https://data.streaminglive.church/data/";
+        EnvironmentHelper.SubUrl = "https://{key}.streaminglive.church";
     }
 
 }

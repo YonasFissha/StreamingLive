@@ -9,6 +9,8 @@
     "serverless-local": "serverless invoke local -f api",
     "exec-deploy-staging": "serverless deploy --stage Staging",
     "deploy-staging": "npm-run-all build exec-deploy-staging",
+    "exec-deploy-prod": "serverless deploy --stage Prod",
+    "deploy-prod": "npm-run-all build exec-deploy-prod",
     "initdb": "ts-node tools/initdb",
     "lint": "tslint -c tslint.json -p tsconfig.json --fix",
     "tsc": "tsc",

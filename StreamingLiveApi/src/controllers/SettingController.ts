@@ -1,4 +1,4 @@
-import { controller, httpPost, httpGet } from "inversify-express-utils";
+import { controller, httpPost, httpGet, requestParam } from "inversify-express-utils";
 import { Setting, Tab, Link, Service } from "../models";
 import express from "express";
 import { CustomBaseController } from "./CustomBaseController";
@@ -47,6 +47,32 @@ export class SettingController extends CustomBaseController {
         const base64 = setting.logoUrl.split(',')[1];
         const key = "data/" + setting.keyName + "/logo.png";
         await AwsHelper.S3Upload(key, "image/png", Buffer.from(base64, 'base64'))
+    }
+
+    @httpGet("/tmpPublish/:key")
+    public async tmpPublish(@requestParam("key") key: string, req: express.Request<{}, {}, []>, res: express.Response): Promise<any> {
+        try {
+            const settings: Setting = await this.repositories.setting.loadByKey(key);
+            let tabs: Tab[] = null;
+            let links: Link[] = null;
+            let services: Service[] = null;
+
+            let promises: Promise<any>[] = [];
+            promises.push(this.repositories.tab.loadAll(settings.churchId).then(d => tabs = d));
+            promises.push(this.repositories.link.loadAll(settings.churchId).then(d => links = d));
+            promises.push(this.repositories.service.loadAll(settings.churchId).then(d => services = d));
+            await Promise.all(promises);
+
+            promises = [];
+            promises.push(this.publishData(settings, tabs, links, services));
+            promises.push(this.publishCss(settings));
+            await Promise.all(promises);
+
+            return this.json([], 200);
+        } catch (e) {
+            this.logger.logger.error(e);
+            return this.internalServerError(e);
+        }
     }
 
 

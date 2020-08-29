@@ -19,6 +19,8 @@
     "build": "npm-run-all clean lint tsc",
     "exec-deploy-staging": "serverless deploy --stage Staging",
     "deploy-staging": "npm-run-all build exec-deploy-staging",
+    "exec-deploy-prod": "serverless deploy --stage Prod",
+    "deploy-prod": "npm-run-all build exec-deploy-prod",
     "serverless-local": "npm run build && serverless invoke local -f defaultHandler",
     "test": "mocha tests/unit/"
   },
