@@ -7,8 +7,10 @@ import { Header } from "./Components";
 import { ChatPage } from './Chat/ChatPage';
 import { ProfilePage } from './Profile/ProfilePage';
 import { UserHelper } from "./Utils"
+import UserContext from "./UserContext";
 
 export const Authenticated = () => {
+    var user = React.useContext(UserContext)?.userName; //to force rerender on login
     const defaultRedirect = (UserHelper.checkAccess('Settings', 'Edit')) ? <Redirect to="/settings" /> : <Redirect to="/chat" />
     return (
         <>
