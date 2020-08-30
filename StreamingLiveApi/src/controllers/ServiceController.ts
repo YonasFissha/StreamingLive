@@ -8,7 +8,11 @@ export class ServiceController extends CustomBaseController {
     @httpGet("/")
     public async loadAll(req: express.Request, res: express.Response): Promise<any> {
         return this.actionWrapper(req, res, async (au) => {
-            return await this.repositories.service.loadAll(au.churchId);
+            const services = await this.repositories.service.loadAll(au.churchId);
+            services.forEach(s => {
+                s.serviceTime.setMinutes(s.serviceTime.getMinutes() - s.timezoneOffset);
+            })
+            return services;
         });
     }
 

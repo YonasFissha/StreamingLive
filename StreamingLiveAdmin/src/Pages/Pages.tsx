@@ -1,6 +1,6 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap'
-import { PageList, PageEdit, ApiHelper, PageInterface } from './Components'
+import { PageList, PageEdit, ApiHelper, PageInterface, UserHelper } from './Components'
 
 export const Pages = () => {
     const [pages, setPages] = React.useState<PageInterface[]>([]);
@@ -9,7 +9,7 @@ export const Pages = () => {
     const loadData = () => { ApiHelper.apiGet('/pages').then(data => setPages(data)); }
     const loadPage = (id: number) => { ApiHelper.apiGet('/pages/' + id + '?include=content').then(data => setCurrentPage(data)); }
     const handleUpdate = () => { setCurrentPage(null); loadData(); }
-    const handleAdd = () => { setCurrentPage({ churchId: 1, lastModified: new Date(), name: "" }) }
+    const handleAdd = () => { setCurrentPage({ churchId: UserHelper.currentChurch.id, lastModified: new Date(), name: "" }) }
     const handleEdit = (page: PageInterface) => { loadPage(page.id); }
 
     React.useEffect(() => { loadData(); }, []);

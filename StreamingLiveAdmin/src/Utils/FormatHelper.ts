@@ -11,9 +11,7 @@ export class FormatHelper {
     static html5DateTime(date: Date): string {
         if (date === undefined || date === null) return '';
         else {
-            var result = new Date(date).toISOString().split('.')[0];
-            result = result.substring(0, result.length - 3);
-            return result;
+            return this.formatDateTime(date, 'yyyy-MM-dd') + "T" + this.formatDateTime(date, 'HH:mm');
         }
     }
 
@@ -47,7 +45,7 @@ export class FormatHelper {
 
     private static formatDateTime(date: Date, format: string) {
         try {
-            return dateFormat(new Date(date), format);
+            return dateFormat(date, format);
         } catch { return ''; }
     }
 

@@ -1,21 +1,8 @@
 context('Admin - Service Inactive', () => {
     Cypress.Cookies.defaults({ whitelist: (cookie) => { return true } });
-    logIntoAdmin();
+    it('Log into admin', () => { cy.adminLogin() });
     editService();
 });
-
-function logIntoAdmin() {
-    it('Log Into Admin', () => {
-        cy.visit(Cypress.env('adminUrl') + '/cp/login?ReturnUrl=%2Fcp%2Fsettings');
-
-        cy.get('#Email').type(Cypress.env('email'));
-        cy.get('#Password').type(Cypress.env('password'));
-        cy.get('#SigninButton').click();
-        cy.get('body').should('contain', 'View your live site:');
-
-    });
-}
-
 
 function editService() {
     it('Set Service for 1 hour later', () => {

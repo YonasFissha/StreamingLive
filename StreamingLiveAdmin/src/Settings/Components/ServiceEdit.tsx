@@ -82,13 +82,6 @@ export const ServiceEdit: React.FC<Props> = (props) => {
 
 
     var localServiceTime = currentService?.serviceTime;
-
-    if (localServiceTime !== undefined && localServiceTime !== null) {
-        localServiceTime = new Date(localServiceTime);
-        localServiceTime.setMinutes(localServiceTime.getMinutes() - new Date().getTimezoneOffset());
-    }
-
-
     return (
         <InputBox headerIcon="far fa-calendar-alt" headerText="Edit Service" saveFunction={handleSave} cancelFunction={handleCancel} deleteFunction={checkDelete()} >
             <Row>

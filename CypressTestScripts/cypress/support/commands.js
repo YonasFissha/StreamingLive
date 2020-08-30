@@ -23,3 +23,19 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+Cypress.Commands.add("adminLogin", () => {
+    cy.visit(Cypress.env('adminUrl') + '/');
+    cy.get('#email').type(Cypress.env('email'));
+    cy.get('#password').type(Cypress.env('password'));
+    cy.get('#SigninButton').click();
+    cy.get('body').should('contain', 'View your live site:');
+});
+
+Cypress.Commands.add("loadPublic", () => {
+    cy.visit(Cypress.env('adminUrl') + '/');
+    cy.get('#Email').type(Cypress.env('email'));
+    cy.get('#Password').type(Cypress.env('password'));
+    cy.get('#SigninButton').click();
+    cy.get('body').should('contain', 'View your live site:');
+});

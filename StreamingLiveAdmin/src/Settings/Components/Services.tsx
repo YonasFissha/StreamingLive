@@ -1,6 +1,7 @@
 import React from 'react';
 import { DisplayBox, TabEdit, ServiceInterface, ApiHelper, FormatHelper } from './';
 import { ServiceEdit } from './ServiceEdit';
+import { UserHelper } from '../../Utils';
 
 interface Props { updatedFunction?: () => void }
 
@@ -10,17 +11,25 @@ export const Services: React.FC<Props> = (props) => {
 
     const handleUpdated = () => { setCurrentService(null); loadData(); props.updatedFunction(); }
     const getEditContent = () => { return <a href="about:blank" onClick={handleAdd}><i className="fas fa-plus"></i></a> }
-    const loadData = () => { ApiHelper.apiGet('/services').then(data => setServices(data)); }
+    const loadData = () => {
+        ApiHelper.apiGet('/services').then(data => {
+            data.forEach((s: ServiceInterface) => {
+                s.serviceTime = new Date(Date.parse(s.serviceTime.toString()));
+            })
+            setServices(data);
+        });
+    }
+
 
     const handleAdd = (e: React.MouseEvent) => {
         e.preventDefault();
 
         var tz = new Date().getTimezoneOffset();
-        console.log(tz);
         var defaultDate = getNextSunday();
-        defaultDate.setTime(defaultDate.getTime() + (9 * 60 * 60 * 1000) - (tz * 60 * 1000));
+        //defaultDate.setTime(defaultDate.getTime() + (9 * 60 * 60 * 1000) - (tz * 60 * 1000));
+        defaultDate.setTime(defaultDate.getTime() + (9 * 60 * 60 * 1000));
 
-        var link: ServiceInterface = { churchId: 1, serviceTime: defaultDate, chatBefore: 600, chatAfter: 600, duration: 3600, earlyStart: 600, provider: "youtube_live", providerKey: "", recurring: false, timezoneOffset: tz, videoUrl: "" }
+        var link: ServiceInterface = { churchId: UserHelper.currentChurch.id, serviceTime: defaultDate, chatBefore: 600, chatAfter: 600, duration: 3600, earlyStart: 600, provider: "youtube_live", providerKey: "", recurring: false, timezoneOffset: tz, videoUrl: "" }
         setCurrentService(link);
         loadData();
     }
@@ -35,14 +44,9 @@ export const Services: React.FC<Props> = (props) => {
         var idx = 0;
         var rows: JSX.Element[] = [];
         services.forEach(service => {
-            var localServiceTime = new Date(service.serviceTime);
-            //localServiceTime.setMinutes(localServiceTime.getMinutes() - service.timezoneOffset);
-
-
-
             rows.push(
                 <tr>
-                    <td>{FormatHelper.prettyDateTime(localServiceTime)}</td>
+                    <td>{FormatHelper.prettyDateTime(service.serviceTime)}</td>
                     <td className="text-right">
                         <a href="about:blank" onClick={(e: React.MouseEvent) => { e.preventDefault(); setCurrentService(service); }}><i className="fas fa-pencil-alt"></i></a>
                     </td>

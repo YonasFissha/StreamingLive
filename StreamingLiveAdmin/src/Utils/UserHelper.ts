@@ -17,7 +17,6 @@ export class UserHelper {
             UserHelper.currentChurch = church;
 
             UserHelper.currentChurch.apps.forEach(app => {
-                console.log(app);
                 if (app.name === "StreamingLive") UserHelper.currentPermissions = app.permissions;
             })
 

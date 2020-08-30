@@ -11,8 +11,8 @@
     "gstatic.com"
   ],
   "env": {
-    "url": "https://localhost.streaminglive.church",
-    "adminUrl": "https://streaminglive.church",
+    "url": "https://localhost.staging.streaminglive.church",
+    "adminUrl": "https://admin.staging.streaminglive.church",
     "email": "localhost@streaminglive.church",
     "password": "password"
   },

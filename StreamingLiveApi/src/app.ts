@@ -12,13 +12,14 @@ import WinstonCloudWatch from "winston-cloudwatch";
 import AWS from 'aws-sdk';
 
 export const init = async () => {
+  /*
   AWS.config.update({ region: 'us-east-2' });
   const logger = winston.createLogger({
     transports: [new WinstonCloudWatch({ logGroupName: 'StreamingLiveStage', logStreamName: 'API' })],
     format: winston.format.json()
   });
   logger.error("App Logger initialized");
-
+*/
 
   dotenv.config();
   const container = new Container();
