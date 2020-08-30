@@ -44,12 +44,11 @@ export const Links: React.FC<Props> = (props) => {
     const getLinks = () => {
         var idx = 0;
         var rows: JSX.Element[] = [];
-        console.log(links);
         links.forEach(link => {
             const upLink = (idx === 0) ? null : <a href="about:blank" data-idx={idx} onClick={moveUp}><i className="fas fa-arrow-up"></i></a>
             const downLink = (idx === links.length - 1) ? null : <a href="about:blank" data-idx={idx} onClick={moveDown}><i className="fas fa-arrow-down"></i></a>
             rows.push(
-                <tr>
+                <tr key={idx}>
                     <td><a href={link.url}>{link.text}</a></td>
                     <td className="text-right">
                         {upLink}
@@ -69,7 +68,9 @@ export const Links: React.FC<Props> = (props) => {
     else return (
         <DisplayBox headerIcon="fas fa-link" headerText="Links" editContent={getEditContent()} >
             <table className="table table-sm">
-                {getLinks()}
+                <tbody>
+                    {getLinks()}
+                </tbody>
             </table>
         </DisplayBox>
     );

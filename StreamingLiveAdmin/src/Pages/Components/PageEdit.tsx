@@ -33,7 +33,7 @@ export const PageEdit: React.FC<Props> = (props) => {
     }
 
     const handleSave = () => {
-        var content = editorState.getCurrentContent();
+        //var content = editorState.getCurrentContent();
         ApiHelper.apiPost('/pages', [page]).then(props.updatedFunction);
     }
 

@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { InputBox, ApiHelper, SettingInterface } from './';
+import { InputBox, SettingInterface } from './';
 import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
 import { Button } from 'react-bootstrap';
@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const ImageEditor: React.FC<Props> = (props) => {
-    const [originalUrl, setOriginalUrl] = React.useState('about:blank');
+    //const [originalUrl, setOriginalUrl] = React.useState('about:blank');
     const [currentUrl, setCurrentUrl] = React.useState('about:blank');
     const [dataUrl, setDataUrl] = React.useState(null);
     var timeout: any = null;
@@ -60,7 +60,7 @@ export const ImageEditor: React.FC<Props> = (props) => {
     const handleCancel = () => { props.updatedFunction(null); }
     const init = useCallback(() => {
         var startingUrl = props.settings.logoUrl;
-        setOriginalUrl(startingUrl);
+        //setOriginalUrl(startingUrl);
         setCurrentUrl(startingUrl);
     }, []);
 

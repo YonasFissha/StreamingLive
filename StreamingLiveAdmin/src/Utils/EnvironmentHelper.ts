@@ -1,5 +1,3 @@
-import React from 'react'
-
 export class EnvironmentHelper {
     static AccessManagementApiUrl = "";
     static StreamingLiveApiUrl = "";

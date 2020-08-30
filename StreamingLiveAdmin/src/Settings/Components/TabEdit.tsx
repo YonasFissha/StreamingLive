@@ -87,7 +87,7 @@ export const TabEdit: React.FC<Props> = (props) => {
                     <div className="input-group">
                         <input type="text" className="form-control" name="text" value={currentTab?.text} onChange={handleChange} />
                         <div className="input-group-append">
-                            <button className="btn btn-secondary iconpicker dropdown-toggle" role="iconpicker" name="TabIcon" id="TabIcon" data-icon={currentTab?.icon} data-iconset="fontawesome5" onClick={initIcon} >
+                            <button className="btn btn-secondary iconpicker dropdown-toggle" name="TabIcon" id="TabIcon" data-icon={currentTab?.icon} data-iconset="fontawesome5" onClick={initIcon} >
                                 <i className={currentTab?.icon}></i>
                                 <span className="caret"></span>
                             </button>

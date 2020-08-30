@@ -47,7 +47,7 @@ export const Tabs: React.FC<Props> = (props) => {
             const upLink = (idx === 0) ? null : <a href="about:blank" data-idx={idx} onClick={moveUp}><i className="fas fa-arrow-up"></i></a>
             const downLink = (idx === tabs.length - 1) ? null : <a href="about:blank" data-idx={idx} onClick={moveDown}><i className="fas fa-arrow-down"></i></a>
             rows.push(
-                <tr>
+                <tr key={idx}>
                     <td><a href={tab.url}><i className={tab.icon} /> {tab.text}</a></td>
                     <td className="text-right">
                         {upLink}
@@ -67,7 +67,9 @@ export const Tabs: React.FC<Props> = (props) => {
     else return (
         <DisplayBox headerIcon="fas fa-folder" headerText="Tabs" editContent={getEditContent()} >
             <table className="table table-sm">
-                {getRows()}
+                <tbody>
+                    {getRows()}
+                </tbody>
             </table>
         </DisplayBox>
 

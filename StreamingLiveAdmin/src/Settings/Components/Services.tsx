@@ -1,5 +1,5 @@
 import React from 'react';
-import { DisplayBox, TabEdit, ServiceInterface, ApiHelper, FormatHelper } from './';
+import { DisplayBox, ServiceInterface, ApiHelper, FormatHelper } from './';
 import { ServiceEdit } from './ServiceEdit';
 import { UserHelper } from '../../Utils';
 
@@ -41,18 +41,18 @@ export const Services: React.FC<Props> = (props) => {
     }
 
     const getRows = () => {
-        var idx = 0;
+        //var idx = 0;
         var rows: JSX.Element[] = [];
         services.forEach(service => {
             rows.push(
-                <tr>
+                <tr key={service.id}>
                     <td>{FormatHelper.prettyDateTime(service.serviceTime)}</td>
                     <td className="text-right">
                         <a href="about:blank" onClick={(e: React.MouseEvent) => { e.preventDefault(); setCurrentService(service); }}><i className="fas fa-pencil-alt"></i></a>
                     </td>
                 </tr>
             );
-            idx++;
+            //idx++;
         })
         return rows;
     }
@@ -64,7 +64,9 @@ export const Services: React.FC<Props> = (props) => {
     else return (
         <DisplayBox headerIcon="far fa-calendar-alt" headerText="Services" editContent={getEditContent()} id="servicesBox" >
             <table className="table table-sm">
-                {getRows()}
+                <tbody>
+                    {getRows()}
+                </tbody>
             </table>
         </DisplayBox>
 

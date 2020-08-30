@@ -12,7 +12,6 @@ export const Authenticated = () => {
     const defaultRedirect = (UserHelper.checkAccess('Settings', 'Edit')) ? <Redirect to="/settings" /> : <Redirect to="/chat" />
     return (
         <>
-            <link rel="stylesheet" href="/css/cp.css" />
             <Header></Header>
             <div className="container">
                 <Switch>

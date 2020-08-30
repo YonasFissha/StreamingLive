@@ -1,5 +1,5 @@
 import React from 'react';
-import { ErrorMessages, ApiHelper, LoginResponseInterface, UserHelper, SettingInterface, SwitchAppRequestInterface, EnvironmentHelper } from './Components';
+import { ErrorMessages, ApiHelper, LoginResponseInterface, UserHelper, EnvironmentHelper } from './Components';
 import UserContext from './UserContext'
 import { Button, FormControl } from 'react-bootstrap'
 import { Redirect } from 'react-router-dom';
