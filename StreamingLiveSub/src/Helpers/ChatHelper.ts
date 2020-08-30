@@ -19,7 +19,6 @@ export class ChatHelper {
 
     static joinRoom(roomName: string) {
         if (ChatHelper.socketConnected) {
-            console.log(JSON.stringify({ 'action': 'joinRoom', 'room': roomName, 'token': ApiHelper.jwt }));
             ChatHelper.socket.send(JSON.stringify({ 'action': 'joinRoom', 'room': roomName, 'token': ApiHelper.jwt }));
         }
     }

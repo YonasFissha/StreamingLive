@@ -4,6 +4,7 @@ import { ConfigHelper } from '../components';
 export class ServicesHelper {
     static currentServiceChangedCallback: (currentService: ServiceInterface | null) => void;
     static currentService: ServiceInterface | null;
+    static timer: NodeJS.Timeout;
 
     static checkService() {
         var cs = ServicesHelper.determineCurrentService(ConfigHelper.current.services);
@@ -15,7 +16,8 @@ export class ServicesHelper {
 
     static initTimer(callback: (currentService: ServiceInterface | null) => void) {
         ServicesHelper.currentServiceChangedCallback = callback;
-        setInterval(ServicesHelper.checkService, 1000);
+        if (ServicesHelper.timer !== undefined) clearInterval(ServicesHelper.timer);
+        ServicesHelper.timer = setInterval(ServicesHelper.checkService, 1000);
     }
 
     static updateServiceTimes(config: ConfigurationInterface) {

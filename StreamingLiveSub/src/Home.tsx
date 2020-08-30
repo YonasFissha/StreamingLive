@@ -62,6 +62,7 @@ export const Home: React.FC = () => {
     setChatUser(ChatHelper.user);
     ServicesHelper.initTimer((cs) => { setCurrentService(cs) });
     loadConfig(true)
+    setCurrentService(ServicesHelper.currentService);
   }, [loadConfig, ApiHelper.jwt]);
 
 
