@@ -30,7 +30,7 @@ export class Delivery {
     static deleteConnection = async (apiUrl: string, connectionId: string) => {
         const rooms = await DB.loadRooms(connectionId);
         const promises: Promise<any>[] = [];
-        rooms.forEach(room => { promises.push(Delivery.deleteRoom(apiUrl, room.room, connectionId, false)); });
+        rooms.forEach(room => { promises.push(Delivery.deleteRoom(apiUrl, room, connectionId, false)); });
         await Promise.all(promises);
     }
 

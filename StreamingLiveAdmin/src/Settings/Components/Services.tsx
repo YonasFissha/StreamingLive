@@ -15,6 +15,7 @@ export const Services: React.FC<Props> = (props) => {
         ApiHelper.apiGet('/services').then(data => {
             data.forEach((s: ServiceInterface) => {
                 s.serviceTime = new Date(Date.parse(s.serviceTime.toString()));
+                s.serviceTime.setMinutes(s.serviceTime.getMinutes() + s.timezoneOffset);
             })
             setServices(data);
         });

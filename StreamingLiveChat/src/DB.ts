@@ -32,15 +32,15 @@ export class DB {
         await DB.storeData(process.env.CATCHUP_TABLE, record);
     }
 
+
     // *** Connections
     static loadRooms = async (connectionId: string) => {
         const data = await DB.scan(process.env.CONNECTIONS_TABLE, "connectionId = :connectionId", { ":connectionId": connectionId }, "room");
         const items = data.Items;
         const result: any[] = [];
-        items.forEach(item => result.push(item));
+        items.forEach(item => result.push(item.room));
         return result;
     }
-
 
     static storeConnection = async (room: string, connectionId: string, name: string) => {
         const record = {
@@ -51,6 +51,13 @@ export class DB {
             prettyJoinTime: Date.now().toString()
         };
         await DB.storeData(process.env.CONNECTIONS_TABLE, record);
+    }
+
+    static checkStoreConnection = async (room: string, connectionId: string) => {
+        const data = await DB.loadData(process.env.CONNECTIONS_TABLE, "room = :room and connectionId = :connectionId", { ":room": room, ":connectionId": connectionId }, "connectionId");
+        const result: any[] = [];
+        data.Items.forEach(item => { result.push(item.connectionId); });
+        return data.Items.length === 0;
     }
 
 
@@ -98,7 +105,7 @@ export class DB {
         return ddb.put(putParams).promise();
     }
 
-    static updateData = async (tableName: string, key: any, expression: string, values: any) => {
+    static updateData = async (tableName: string, key: AWS.DynamoDB.DocumentClient.Key, expression: string, values: any) => {
         const updateParams: UpdateItemInput = {
             TableName: tableName,
             Key: key,
