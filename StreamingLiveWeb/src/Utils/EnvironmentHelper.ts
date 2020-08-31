@@ -21,15 +21,15 @@ export class EnvironmentHelper {
 
     //NOTE: None of these values are secret.
     static initStaging = () => {
-        EnvironmentHelper.AccessManagementApiUrl = "https://vfj29fb54h.execute-api.us-east-2.amazonaws.com/Staging";
-        EnvironmentHelper.StreamingLiveApiUrl = "https://ozok30w9g5.execute-api.us-east-2.amazonaws.com/Staging";
+        EnvironmentHelper.AccessManagementApiUrl = "https://api.staging.livecs.org";
+        EnvironmentHelper.StreamingLiveApiUrl = "https://api.staging.streaminglive.church";
         EnvironmentHelper.AdminUrl = "https://admin.staging.streaminglive.church";
     }
 
     //NOTE: None of these values are secret.
     static initProd = () => {
-        EnvironmentHelper.AccessManagementApiUrl = "https://3dcjx8bln0.execute-api.us-east-2.amazonaws.com/Prod";
-        EnvironmentHelper.StreamingLiveApiUrl = "https://u1xzhc2hy5.execute-api.us-east-2.amazonaws.com/Prod";
+        EnvironmentHelper.AccessManagementApiUrl = "https://api.livecs.org";
+        EnvironmentHelper.StreamingLiveApiUrl = "https://api.streaminglive.church";
         EnvironmentHelper.AdminUrl = "https://admin.streaminglive.church";
     }
 
