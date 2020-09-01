@@ -29,6 +29,11 @@ export class ApiHelper {
         return fetch(this.getUrl(path), requestOptions).then(response => response.json())
     }
 
+    static async apiGetAnonymous(path: string) {
+        const requestOptions = { method: 'GET' };
+        return fetch(this.getUrl(path), requestOptions).then(response => response.json())
+    }
+
     static async apiPost(path: string, data: any[] | {}) {
         const requestOptions = {
             method: 'POST',

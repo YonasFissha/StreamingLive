@@ -13,8 +13,13 @@ export const Appearance: React.FC<Props> = (props) => {
     const handleEdit = () => { setMode("edit"); }
     const handleUpdate = () => { setMode("display"); loadData(); props.updatedFunction(); }
 
+
+
     const getLogoLink = () => {
-        var logoImg = (currentSettings && currentSettings?.logoUrl !== "") ? <img src={EnvironmentHelper.ContentRoot + currentSettings.logoUrl.replace("/data/", "")} alt="logo" className="img-fluid" /> : "No Logo";
+        var logo = (currentSettings?.logoUrl || "").replace("/data/", "");
+        if (logo.indexOf("http") === -1) logo = EnvironmentHelper.ContentRoot + logo;
+
+        var logoImg = (currentSettings && currentSettings?.logoUrl !== "") ? <img src={logo} alt="logo" className="img-fluid" /> : "No Logo";
         return <a href={currentSettings?.homePageUrl} target="_blank" rel="noopener noreferrer" >{logoImg}</a>
     }
 

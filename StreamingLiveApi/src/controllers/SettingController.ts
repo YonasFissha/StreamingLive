@@ -13,6 +13,18 @@ export class SettingController extends CustomBaseController {
         });
     }
 
+    @httpGet("/checkAvailable/:key")
+    public async checkAvailable(@requestParam("key") key: string, req: express.Request<{}, {}, []>, res: express.Response): Promise<any> {
+        try {
+            const settings: Setting = await this.repositories.setting.loadByKey(key);
+            const data = { available: settings === null };
+            return this.json(data, 200);
+        } catch (e) {
+            this.logger.logger.error(e);
+            return this.internalServerError(e);
+        }
+    }
+
     @httpPost("/")
     public async save(req: express.Request<{}, {}, Setting[]>, res: express.Response): Promise<any> {
         return this.actionWrapper(req, res, async (au) => {
@@ -48,33 +60,6 @@ export class SettingController extends CustomBaseController {
         const key = "data/" + setting.keyName + "/logo.png";
         await AwsHelper.S3Upload(key, "image/png", Buffer.from(base64, 'base64'))
     }
-
-    @httpGet("/tmpPublish/:key")
-    public async tmpPublish(@requestParam("key") key: string, req: express.Request<{}, {}, []>, res: express.Response): Promise<any> {
-        try {
-            const settings: Setting = await this.repositories.setting.loadByKey(key);
-            let tabs: Tab[] = null;
-            let links: Link[] = null;
-            let services: Service[] = null;
-
-            let promises: Promise<any>[] = [];
-            promises.push(this.repositories.tab.loadAll(settings.churchId).then(d => tabs = d));
-            promises.push(this.repositories.link.loadAll(settings.churchId).then(d => links = d));
-            promises.push(this.repositories.service.loadAll(settings.churchId).then(d => services = d));
-            await Promise.all(promises);
-
-            promises = [];
-            promises.push(this.publishData(settings, tabs, links, services));
-            promises.push(this.publishCss(settings));
-            await Promise.all(promises);
-
-            return this.json([], 200);
-        } catch (e) {
-            this.logger.logger.error(e);
-            return this.internalServerError(e);
-        }
-    }
-
 
     @httpPost("/publish")
     public async publish(req: express.Request<{}, {}, []>, res: express.Response): Promise<any> {
@@ -114,5 +99,34 @@ export class SettingController extends CustomBaseController {
         const buffer = Buffer.from(result, 'utf8');
         return AwsHelper.S3Upload(path, "text/css", buffer)
     }
+
+
+    /*
+    @httpGet("/tmpPublish/:key")
+    public async tmpPublish(@requestParam("key") key: string, req: express.Request<{}, {}, []>, res: express.Response): Promise<any> {
+        try {
+            const settings: Setting = await this.repositories.setting.loadByKey(key);
+            let tabs: Tab[] = null;
+            let links: Link[] = null;
+            let services: Service[] = null;
+
+            let promises: Promise<any>[] = [];
+            promises.push(this.repositories.tab.loadAll(settings.churchId).then(d => tabs = d));
+            promises.push(this.repositories.link.loadAll(settings.churchId).then(d => links = d));
+            promises.push(this.repositories.service.loadAll(settings.churchId).then(d => services = d));
+            await Promise.all(promises);
+
+            promises = [];
+            promises.push(this.publishData(settings, tabs, links, services));
+            promises.push(this.publishCss(settings));
+            await Promise.all(promises);
+
+            return this.json([], 200);
+        } catch (e) {
+            this.logger.logger.error(e);
+            return this.internalServerError(e);
+        }
+    }
+*/
 
 }
