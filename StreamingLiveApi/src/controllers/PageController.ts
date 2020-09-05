@@ -23,6 +23,7 @@ export class PageController extends CustomBaseController {
         const settings = await this.repositories.setting.loadAll(au.churchId);
         const path = "data/" + settings[0].keyName + '/page' + id + '.html';
         result.content = await AwsHelper.S3Read(path);
+
       }
       return result;
     });

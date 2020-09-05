@@ -1,8 +1,9 @@
 import { controller, httpPost, httpGet, requestParam } from "inversify-express-utils";
-import { Setting, Tab, Link, Service } from "../models";
+import { Setting, } from "../models";
 import express from "express";
 import { CustomBaseController } from "./CustomBaseController";
-import { AwsHelper, ConfigHelper } from "../helpers";
+import { AwsHelper } from "../helpers";
+import { SettingsHelper } from "../helpers";
 
 @controller("/settings")
 export class SettingController extends CustomBaseController {
@@ -64,41 +65,12 @@ export class SettingController extends CustomBaseController {
     @httpPost("/publish")
     public async publish(req: express.Request<{}, {}, []>, res: express.Response): Promise<any> {
         return this.actionWrapper(req, res, async (au) => {
-            let settings: Setting = null;
-            let tabs: Tab[] = null;
-            let links: Link[] = null;
-            let services: Service[] = null;
-
-            let promises: Promise<any>[] = [];
-            promises.push(this.repositories.setting.loadAll(au.churchId).then(d => settings = d[0]));
-            promises.push(this.repositories.tab.loadAll(au.churchId).then(d => tabs = d));
-            promises.push(this.repositories.link.loadAll(au.churchId).then(d => links = d));
-            promises.push(this.repositories.service.loadAll(au.churchId).then(d => services = d));
-            await Promise.all(promises);
-
-            promises = [];
-            promises.push(this.publishData(settings, tabs, links, services));
-            promises.push(this.publishCss(settings));
-            await Promise.all(promises);
+            SettingsHelper.publish(au.churchId, this.repositories);
 
             return this.json([], 200);
         });
     }
 
-    private publishData(settings: Setting, tabs: Tab[], links: Link[], services: Service[]): Promise<any> {
-        const result = ConfigHelper.generateJson(settings, tabs, links, services);
-        const path = "data/" + settings.keyName + '/data.json';
-        const buffer = Buffer.from(JSON.stringify(result), 'utf8');
-        return AwsHelper.S3Upload(path, "application/json", buffer)
-    }
-
-
-    private publishCss(settings: Setting): Promise<any> {
-        const result = ConfigHelper.generateCss(settings);
-        const path = "data/" + settings.keyName + '/data.css';
-        const buffer = Buffer.from(result, 'utf8');
-        return AwsHelper.S3Upload(path, "text/css", buffer)
-    }
 
 
     /*
