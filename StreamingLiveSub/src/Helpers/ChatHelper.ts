@@ -25,6 +25,13 @@ export class ChatHelper {
 
     static init(messageReceived: (state: ChatStateInterface) => void) {
         ChatHelper.state = { rooms: [], callout: '', chatEnabled: false, prayerRequests: [] };
+
+        if (ChatHelper.socket !== undefined) {
+            try {
+                ChatHelper.socket.close();
+            } catch (e) { console.log(e); }
+        }
+
         ChatHelper.socket = new WebSocket(EnvironmentHelper.ChatApiUrl || "");
         ChatHelper.socket.onopen = function (e) {
             ChatHelper.socketConnected = true;
@@ -41,6 +48,8 @@ export class ChatHelper {
             ChatHelper.handleMessage(JSON.parse(event.data));
             messageReceived({ ...ChatHelper.state });
         };
+
+
     }
 
     static setName(name: string) {
