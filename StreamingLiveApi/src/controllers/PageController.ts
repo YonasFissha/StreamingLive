@@ -22,8 +22,11 @@ export class PageController extends CustomBaseController {
       if (this.include(req, 'content')) {
         const settings = await this.repositories.setting.loadAll(au.churchId);
         const path = "data/" + settings[0].keyName + '/page' + id + '.html';
-        result.content = await AwsHelper.S3Read(path);
-
+        const content: string = (await AwsHelper.S3Read(path)).toString();
+        const regEx = /<body>.*<\/body>/igs;
+        const matches: RegExpExecArray = regEx.exec(content);
+        if (matches === null) result.content = content;
+        else result.content = matches[0].replace("<body>", "").replace("</body>", "");
       }
       return result;
     });
@@ -41,8 +44,11 @@ export class PageController extends CustomBaseController {
             this.repositories.page.save(page).then(async (p) => {
               if (page.content !== undefined) {
                 const settings = await this.repositories.setting.loadAll(au.churchId);
+                const wrappedContent = this.wrapContent(settings[0].keyName, page.content);
+                console.log(wrappedContent);
                 const path = "data/" + settings[0].keyName + '/page' + p.id + '.html';
-                const buffer = Buffer.from(page.content, 'binary');
+                console.log(path);
+                const buffer = Buffer.from(wrappedContent, 'binary');
                 await AwsHelper.S3Upload(path, "text/html", buffer)
               }
               return p;
@@ -62,4 +68,10 @@ export class PageController extends CustomBaseController {
       return null;
     });
   }
+
+  private wrapContent(keyName: string, content: string) {
+    const cssLink = "<link href=\"/data/" + keyName + "/data.css\" rel=\"stylesheet\" /><link href=\"/css/page.css\" rel=\"stylesheet\" />";
+    return "<html><head>" + cssLink + "</head><body>" + content + "</body></html>";
+  }
+
 }

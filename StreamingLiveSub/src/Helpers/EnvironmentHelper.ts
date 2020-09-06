@@ -35,7 +35,7 @@ export class EnvironmentHelper {
     //NOTE: None of these values are secret.
     static initProd = () => {
         EnvironmentHelper.AccessManagementApiUrl = "https://api.livecs.org";
-        EnvironmentHelper.StreamingLiveApiUrl = "https://api.staging.streaminglive.church";
+        EnvironmentHelper.StreamingLiveApiUrl = "https://api.streaminglive.church";
         EnvironmentHelper.ChatApiUrl = "wss://chat.streaminglive.church";
         EnvironmentHelper.AdminUrl = "https://admin.streaminglive.church";
         EnvironmentHelper.ContentRoot = "";

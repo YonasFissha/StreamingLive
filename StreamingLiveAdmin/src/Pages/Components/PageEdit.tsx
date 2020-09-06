@@ -3,7 +3,9 @@ import { PageInterface, ApiHelper, InputBox } from '.'
 import { FormGroup } from 'react-bootstrap';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { EditorState, ContentState } from 'draft-js';
+import { EditorState, ContentState, convertToRaw, convertFromRaw } from 'draft-js';
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
 
 interface Props { page: PageInterface, updatedFunction: () => void }
 
@@ -33,7 +35,8 @@ export const PageEdit: React.FC<Props> = (props) => {
     }
 
     const handleSave = () => {
-        //var content = editorState.getCurrentContent();
+        var content = editorState.getCurrentContent();
+        page.content = draftToHtml(convertToRaw(content));
         ApiHelper.apiPost('/pages', [page]).then(props.updatedFunction);
     }
 
@@ -44,8 +47,10 @@ export const PageEdit: React.FC<Props> = (props) => {
     const init = () => {
         setPage(props.page);
         const content = props.page?.content;
-
-        if (content !== undefined && content !== null) setEditorState(EditorState.createWithContent(ContentState.createFromText(content)));
+        if (content !== undefined && content !== null) {
+            const draft = htmlToDraft(props.page?.content)
+            setEditorState(EditorState.createWithContent(ContentState.createFromBlockArray(draft.contentBlocks)));
+        }
         else setEditorState(EditorState.createWithContent(ContentState.createFromText("")));
     }
 
