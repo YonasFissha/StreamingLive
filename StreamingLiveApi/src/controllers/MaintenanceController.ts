@@ -21,7 +21,7 @@ export class MaintenanceController extends CustomBaseController {
 
             promises = [];
             services.forEach(s => {
-                promises.push(SettingsHelper.publish(s.churchId, this.repositories));
+                promises.push(SettingsHelper.publish(s.churchId, this.repositories, this.logger));
             });
             await Promise.all(promises);
             return this.json([], 200);

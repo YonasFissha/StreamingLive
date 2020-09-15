@@ -21,7 +21,7 @@ export class SettingController extends CustomBaseController {
             const data = { available: settings === null };
             return this.json(data, 200);
         } catch (e) {
-            this.logger.logger.error(e);
+            this.logger.error(e);
             return this.internalServerError(e);
         }
     }
@@ -65,8 +65,7 @@ export class SettingController extends CustomBaseController {
     @httpPost("/publish")
     public async publish(req: express.Request<{}, {}, []>, res: express.Response): Promise<any> {
         return this.actionWrapper(req, res, async (au) => {
-            SettingsHelper.publish(au.churchId, this.repositories);
-
+            await SettingsHelper.publish(au.churchId, this.repositories, this.logger);
             return this.json([], 200);
         });
     }

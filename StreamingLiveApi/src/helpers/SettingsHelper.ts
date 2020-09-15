@@ -1,10 +1,11 @@
 import { Repositories } from "../repositories";
 import { Setting, Tab, Link, Service } from "../models";
 import { ConfigHelper, AwsHelper } from "./"
+import { WinstonLogger } from "../logger";
 
 export class SettingsHelper {
 
-    public static async publish(churchId: number, repositories: Repositories) {
+    public static async publish(churchId: number, repositories: Repositories, logger: WinstonLogger) {
         let settings: Setting = null;
         let tabs: Tab[] = null;
         let links: Link[] = null;
@@ -18,14 +19,16 @@ export class SettingsHelper {
         await Promise.all(promises);
 
         promises = [];
-        promises.push(this.publishData(settings, tabs, links, services));
+        promises.push(this.publishData(settings, tabs, links, services, logger));
         promises.push(this.publishCss(settings));
+        logger.info(JSON.stringify(promises));
         await Promise.all(promises);
 
     }
 
 
-    private static publishData(settings: Setting, tabs: Tab[], links: Link[], services: Service[]): Promise<any> {
+    private static publishData(settings: Setting, tabs: Tab[], links: Link[], services: Service[], logger: WinstonLogger): Promise<any> {
+        // console.log("publishing");
         const result = ConfigHelper.generateJson(settings, tabs, links, services);
         const path = "data/" + settings.keyName + '/data.json';
         const buffer = Buffer.from(JSON.stringify(result), 'utf8');

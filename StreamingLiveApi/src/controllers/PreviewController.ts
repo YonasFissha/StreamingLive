@@ -24,7 +24,7 @@ export class PreviewController extends CustomBaseController {
             const result = ConfigHelper.generateJson(settings, tabs, links, services);
             return this.json(result, 200);
         } catch (e) {
-            this.logger.logger.error(e);
+            this.logger.error(e);
             return this.internalServerError(e);
         }
     }
@@ -38,7 +38,7 @@ export class PreviewController extends CustomBaseController {
             resp.content = new StringContent(result, "text/css");
             return resp;
         } catch (e) {
-            this.logger.logger.error(e);
+            this.logger.error(e);
             return this.internalServerError(e);
         }
     }

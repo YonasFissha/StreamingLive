@@ -3,27 +3,66 @@ import "reflect-metadata";
 import winston from "winston";
 import WinstonCloudWatch from "winston-cloudwatch";
 import AWS from 'aws-sdk';
+import { init } from "./app";
 
 @injectable()
 export class WinstonLogger {
-    private _logger: winston.Logger;
+    private _logger: winston.Logger = null;
+    private wc: WinstonCloudWatch;
+    private pendingMessages = false;
 
+    /*
     public get logger(): winston.Logger {
-        return this._logger;
+        return WinstonLogger._logger;
+    }*/
+
+    public error(msg: string | object) {
+        if (this._logger === null) this.init();
+        this.pendingMessages = true;
+        this._logger.error(msg);
     }
 
-    constructor() {
+    public info(msg: string | object) {
+        if (this._logger === null) this.init();
+        this.pendingMessages = true;
+        this._logger.info(msg);
+    }
+
+
+    private init() {
+        this.pendingMessages = false;
         AWS.config.update({ region: 'us-east-2' });
-        if (process.env.NODE_ENV === "dev") this._logger = winston.createLogger({ transports: [new winston.transports.Console()], format: winston.format.json() });
-        else if (process.env.NODE_ENV === "staging") {
-            const wc = new WinstonCloudWatch({ logGroupName: 'StreamingLiveStage', logStreamName: 'API' });
-            this._logger = winston.createLogger({ transports: [wc], format: winston.format.json() });
+        if (process.env.API_ENV === "dev") {
+            // this._logger = winston.createLogger({ transports: [new winston.transports.Console()], format: winston.format.json() });
+            this.wc = new WinstonCloudWatch({ logGroupName: 'StreamingLiveDev', logStreamName: 'API' });
+            this._logger = winston.createLogger({ transports: [this.wc], format: winston.format.json() });
         }
-        else if (process.env.NODE_ENV === "prod") {
-            const wc = new WinstonCloudWatch({ logGroupName: 'StreamingLive', logStreamName: 'API' });
-            this._logger = winston.createLogger({ transports: [wc], format: winston.format.json() });
+        else if (process.env.API_ENV === "staging") {
+            this.wc = new WinstonCloudWatch({ logGroupName: 'StreamingLiveStaging', logStreamName: 'API' });
+            this._logger = winston.createLogger({ transports: [this.wc], format: winston.format.json() });
+        }
+        else if (process.env.API_ENV === "prod") {
+            this.wc = new WinstonCloudWatch({ logGroupName: 'StreamingLive', logStreamName: 'API' });
+            this._logger = winston.createLogger({ transports: [this.wc], format: winston.format.json() });
+        }
+        else {
+            this.wc = new WinstonCloudWatch({ logGroupName: 'StreamingLiveUnknown', logStreamName: 'API' });
+            this._logger = winston.createLogger({ transports: [this.wc], format: winston.format.json() });
         }
         this._logger.info("Logger initialized");
     }
+
+    public flush() {
+        const promise = new Promise((resolve) => {
+            if (this.pendingMessages) {
+                this.wc.kthxbye(() => {
+                    this._logger = null;
+                    resolve();
+                });
+            } else resolve();
+        });
+        return promise;
+    }
+
 
 }

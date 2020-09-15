@@ -16,7 +16,6 @@ export class PageController extends CustomBaseController {
 
   @httpGet("/:id")
   public async load(@requestParam("id") id: number, req: express.Request, res: express.Response): Promise<any> {
-    this.logger.logger.error("Hello world");
     return this.actionWrapper(req, res, async (au) => {
       const result = await this.repositories.page.loadById(id, au.churchId);
       if (this.include(req, 'content')) {

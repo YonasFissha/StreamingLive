@@ -34,13 +34,19 @@ export class CustomBaseController extends BaseHttpController {
 
     public async actionWrapper(req: express.Request, res: express.Response, fetchFunction: (au: AuthenticatedUser) => any): Promise<any> {
         try {
-            return await fetchFunction(this.authUser());
+            const result = await fetchFunction(this.authUser());
+            await this.logger.flush();
+            return result;
         } catch (e) {
-            this.logger.logger.error(e);
+            try {
+                this.logger.error(e);
+                await this.logger.flush();
+            } catch (e) {
+                console.log(e);
+            }
             return this.internalServerError(e);
         }
     }
-
 
 
 }
