@@ -2,6 +2,7 @@
 const { Connection } = require('./dist/Connection');
 const { Delivery } = require('./dist/Delivery');
 const { Message } = require('./dist/Message');
+const { WinstonLogger } = require('./dist/Logger');
 const dotenv = require('dotenv');
 
 
@@ -14,11 +15,19 @@ module.exports.handleMessage = async function handleMessage(event) {
     const apiUrl = rc.domainName;
     dotenv.config();
 
-    if (eventType == "DISCONNECT") await LambdaEntry.routeChat(apiUrl, connectionId, "disconnect", null, null);
-    else {
-        const body = JSON.parse(event.body);
-        await routeChat(apiUrl, connectionId, body.action, body.room, body);
+
+    try {
+        if (eventType == "DISCONNECT") await LambdaEntry.routeChat(apiUrl, connectionId, "disconnect", null, null);
+        else {
+            const body = JSON.parse(event.body);
+            await routeChat(apiUrl, connectionId, body.action, body.room, body);
+        }
+    } catch (e) {
+        const wl = new WinstonLogger();
+        wl.error(e);
+        await wl.flush();
     }
+
     return { statusCode: 200, body: 'success' }
 }
 
