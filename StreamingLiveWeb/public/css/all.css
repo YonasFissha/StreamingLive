@@ -19,6 +19,20 @@ h2 span { color: #24b9ff; }
 #features li { margin-top: 20px; }
 .btn:disabled{opacity: 0.7;}
 
+
+
+
+#navbar {background-color: #FFF !important;height:55px;margin-bottom: 20px;box-shadow: 0px 3px 3px 0px #999;}
+#navbar .nav-item {font-size:14px;}
+#navbar .nav-link {color:#555;height:55px;vertical-align: middle;line-height: 45px; max-width:150px; margin-left:auto; margin-right:auto;}
+#navbar .active {border-bottom: 2px solid #03a9f4;}
+.navbar-brand {padding-top:5px;padding-bottom:0px;}
+.navbar-brand img {max-height:35px;max-width:100%;margin-top:10px;}
+#navRight {white-space: nowrap; overflow: hidden;}
+#navRight img {width:32px;height:24px;margin-top:-3px;margin-right: 8px;}
+#navSpacer {height:57px;margin-bottom: 25px;}
+
+
 @media (max-width: 600px) {
     #logo { height: 25px; margin-top: 2px; margin-bottom: 2px; }
 }

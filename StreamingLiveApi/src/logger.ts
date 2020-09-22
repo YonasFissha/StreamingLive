@@ -11,10 +11,6 @@ export class WinstonLogger {
     private wc: WinstonCloudWatch;
     private pendingMessages = false;
 
-    /*
-    public get logger(): winston.Logger {
-        return WinstonLogger._logger;
-    }*/
 
     public error(msg: string | object) {
         if (this._logger === null) this.init();
