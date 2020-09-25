@@ -30,8 +30,8 @@ export class WinstonLogger {
         AWS.config.update({ region: 'us-east-2' });
         if (process.env.API_ENV === "dev") {
             this._logger = winston.createLogger({ transports: [new winston.transports.Console()], format: winston.format.json() });
-            //this.wc = new WinstonCloudWatch({ logGroupName: 'StreamingLiveDev', logStreamName: 'API' });
-            //this._logger = winston.createLogger({ transports: [this.wc], format: winston.format.json() });
+            // this.wc = new WinstonCloudWatch({ logGroupName: 'StreamingLiveDev', logStreamName: 'API' });
+            // this._logger = winston.createLogger({ transports: [this.wc], format: winston.format.json() });
         }
         else if (process.env.API_ENV === "staging") {
             this.wc = new WinstonCloudWatch({ logGroupName: 'StreamingLiveStaging', logStreamName: 'API' });

@@ -18,8 +18,9 @@ export const ChatMessage: React.FC<Props> = (props) => {
 
     }
 
+    const className = (props.message.displayName.indexOf("Facebook") > -1) ? "message understate" : "message"
     return (
-        <div className="message">
+        <div className={className}>
             {getDeleteLink()}
             <b>{props.message.displayName}:</b> <span dangerouslySetInnerHTML={{ __html: ChatHelper.insertLinks(props.message.message) }}></span>
         </div >

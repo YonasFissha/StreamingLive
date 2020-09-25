@@ -53,6 +53,7 @@ body {margin:0px;padding:0px;background-color:#000;font-family: 'Roboto', sans-s
 .chatContainer, #prayerContainer, #receivePrayerContainer {display:flex;flex-direction:column;background-color:#FFF;flex:1;}
 #chatReceive, #prayerReceive {flex:1 0 0; padding:10px;overflow-y:scroll;}
 #callout {padding-bottom:5px;border-bottom:2px solid #EEE;margin-bottom:5px;padding-left:5px;padding-right:5px;padding-top:5px;background-color: #FFFFD0;}
+#fbComments {padding-bottom:5px;border-bottom:2px solid #EEE;margin-bottom:5px;padding-left:5px;padding-right:5px;padding-top:5px;background-color: #FFFFD0;}
 #prayerContainer {padding-left:25%;padding-right: 25%;padding-top:100px}
 
 #nameBar {flex:0 0 25px; background-color:#DDD;display:block;text-align:center;border-bottom:1px solid #FFF;font-size:16px;}
@@ -64,6 +65,7 @@ body {margin:0px;padding:0px;background-color:#000;font-family: 'Roboto', sans-s
 #attendanceCount:hover {text-decoration:none;}
 #chatSend, prayerSend {flex:0 0 0px;}
 #chatName, #prayerName {flex:0 0 0px;border-top:1px solid #005288;padding:10px;}
+
 
 
 
@@ -94,6 +96,7 @@ body {margin:0px;padding:0px;background-color:#000;font-family: 'Roboto', sans-s
 .altTab.active{color:var(--primaryColor); background-color:var(--contrastColor);}
 
 .message .delete { float:right; }
+.message.understate {color:#777;}
 
 #emojiContent { font-size: 24px; padding-left:20px;padding-right: 20px; border-top:1px solid #999; }
 #emojiContent a:hover { text-decoration:none; }

@@ -94,6 +94,13 @@ export class ChatHelper {
         }
     }
 
+    static sendFacebook(room: string, content: string, name: string) {
+        var c = content.trim();
+        if (c !== '') {
+            ChatHelper.socket.send(JSON.stringify({ 'action': 'sendMessage', 'room': room, 'userGuid': ChatHelper.user.guid, 'name': name, 'msg': c, 'token': ApiHelper.jwt }));
+        }
+    }
+
     static sendDelete(room: string, ts: number) {
         ChatHelper.socket.send(JSON.stringify({ 'action': 'deleteMessage', 'room': room, 'ts': ts, 'token': ApiHelper.jwt }));
     }
