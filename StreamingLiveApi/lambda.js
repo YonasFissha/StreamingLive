@@ -1,9 +1,11 @@
 const { createServer, proxy } = require('aws-serverless-express');
 const { init } = require('./dist/app');
+const pool = require('./dist/pool');
 
 const winston = require("winston");
 const WinstonCloudWatch = require("winston-cloudwatch");
 const AWS = require('aws-sdk');
+
 
 module.exports.universal = function universal(event, context) {
     AWS.config.update({ region: 'us-east-2' });
