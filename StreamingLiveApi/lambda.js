@@ -1,20 +1,16 @@
 const { createServer, proxy } = require('aws-serverless-express');
 const { init } = require('./dist/app');
-const pool = require('./dist/pool');
+const { Pool } = require('./dist/Pool');
 
 const winston = require("winston");
 const WinstonCloudWatch = require("winston-cloudwatch");
 const AWS = require('aws-sdk');
 
+Pool.initPool();
 
 module.exports.universal = function universal(event, context) {
     AWS.config.update({ region: 'us-east-2' });
-    /*
-    let logger = winston.createLogger({
-        transports: [new WinstonCloudWatch({ logGroupName: 'StreamingLiveStage', logStreamName: 'API' })],
-        format: winston.format.json()
-    });
-    logger.info("Lambda Logger initialized");*/
+
 
     init().then(app => {
         const server = createServer(app);

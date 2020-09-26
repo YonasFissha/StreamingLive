@@ -1,11 +1,11 @@
-import { mySQLPool } from "./pool";
+import { Pool } from "./Pool";
 import { PoolConnection, MysqlError } from "mysql";
 
 export class DB {
 
   public static async usePooledConnectionAsync(actionAsync: (connect: PoolConnection) => any) {
     const connection: PoolConnection = await new Promise((resolve, reject) => {
-      mySQLPool.getConnection((ex: MysqlError, conn: PoolConnection) => { if (ex) reject(ex); else resolve(conn); });
+      Pool.current.getConnection((ex: MysqlError, conn: PoolConnection) => { if (ex) reject(ex); else resolve(conn); });
     });
     try {
       return await actionAsync(connection);
