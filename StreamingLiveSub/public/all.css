@@ -66,7 +66,9 @@ body {margin:0px;padding:0px;background-color:#000;font-family: 'Roboto', sans-s
 #chatSend, prayerSend {flex:0 0 0px;}
 #chatName, #prayerName {flex:0 0 0px;border-top:1px solid #005288;padding:10px;}
 
-
+.fbButton {background-color:#3975ea !important; border-color: #3975ea !important;color:#FFF;}
+.fbButton i {font-size:18px;}
+.fbButton:hover {color:#FFF;text-decoration: none;}
 
 
 #chatTabs td {

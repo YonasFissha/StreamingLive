@@ -13,10 +13,14 @@ export const FacebookComments: React.FC<Props> = (props) => {
     const [fbSource, setFbSource]: any = React.useState(null);
 
     const getLoginButton = () => {
-        return (<div>
-            <LoginButton onCompleted={handleLoginCompleted} onError={handleLoginError} className="btn btn-primary btn-sm float-right">Authorize</LoginButton>
-            <div><b>Import Facebook Comments (beta)</b></div>
+        /*
+        <div><b>Import Facebook Comments</b></div>
             <p>If you simulcast your service to Facebook, you can use this feature to make the comments from Facebook show up in this web chat.</p>
+        */
+        return (<div>
+            <LoginButton onCompleted={handleLoginCompleted} onError={handleLoginError} className="btn btn-block fbButton">
+                <i className="fab fa-facebook"></i> &nbsp; Login with Facebook
+            </LoginButton>
         </div>);
     }
 
@@ -42,6 +46,7 @@ export const FacebookComments: React.FC<Props> = (props) => {
         e.preventDefault();
         setRunning(false);
         setVideoId('');
+        setToken('');
     }
 
     const getVideoId = () => {
@@ -49,15 +54,16 @@ export const FacebookComments: React.FC<Props> = (props) => {
             <div className="row" style={{ marginBottom: 10, width: "97%" }}>
                 <div className="col">
                     <div className="formGroup">
-                        <label>FB Video ID</label>
+                        <label>Facebook Live Video ID</label>
                         <input name="videoId" type="text" className="form-control form-control-sm" placeholder="123456789" value={videoId} onChange={handleChange} />
                     </div>
                 </div>
-                <div className="col">
-                    <div className="formGroup">
-                        <label>Exclude From</label>
-                        <input name="excludeName" type="text" className="form-control form-control-sm" placeholder="John Doe" value={excludeName} onChange={handleChange} />
-                    </div>
+
+            </div>
+            <div className="col" style={{ display: "none" }}>
+                <div className="formGroup">
+                    <label>Exclude From</label>
+                    <input name="excludeName" type="text" className="form-control form-control-sm" placeholder="John Doe" value={excludeName} onChange={handleChange} />
                 </div>
             </div>
             <button id="setNameButton" className="btn btn-primary btn-sm btn-block" onClick={handleUpdate}>Update</button>
@@ -68,7 +74,7 @@ export const FacebookComments: React.FC<Props> = (props) => {
         console.log(fbSource);
         if (fbSource !== null) fbSource.close();
 
-        var url = "https://streaming-graph.facebook.com/" + videoId + "/live_comments?fields=from,message&comment_rate=one_per_two_seconds&access_token=" + token;
+        var url = "https://streaming-graph.facebook.com/" + videoId + "/live_comments?access_token=" + token + "&fields=from,message&comment_rate=one_per_two_seconds";
         var source = new EventSource(url);
         source.onmessage = function (event) {
             const data: any = JSON.parse(event.data);
@@ -94,7 +100,7 @@ export const FacebookComments: React.FC<Props> = (props) => {
         else {
             var content = <></>;
             if (token === '') content = getLoginButton();
-            else if (running) content = <>Facebook comment import running. <a href="about:blank" onClick={handleEdit}>Edit</a></>;
+            else if (running) content = <>Facebook comment import running. <a href="about:blank" onClick={handleEdit}>Log out</a></>;
             else content = getVideoId();
             return (<div id="fbComments"><FacebookProvider appId="392436265111502">{content}</FacebookProvider></div>)
         }
