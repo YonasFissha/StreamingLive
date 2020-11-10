@@ -13,11 +13,9 @@ export const FacebookComments: React.FC<Props> = (props) => {
     const [fbSource, setFbSource]: any = React.useState(null);
 
     const getLoginButton = () => {
-        /*
-        <div><b>Import Facebook Comments</b></div>
-            <p>If you simulcast your service to Facebook, you can use this feature to make the comments from Facebook show up in this web chat.</p>
-        */
         return (<div>
+            <div><b>Import Facebook Comments</b></div>
+            <p>If you simulcast your service to Facebook, you can use this feature to make the comments from Facebook show up in this web chat.</p>
             <LoginButton onCompleted={handleLoginCompleted} onError={handleLoginError} className="btn btn-block fbButton">
                 <i className="fab fa-facebook"></i> &nbsp; Login with Facebook
             </LoginButton>

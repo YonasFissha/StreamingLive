@@ -27,7 +27,6 @@ export const Chat: React.FC<Props> = (props) => {
     return (
         <div className={className} style={(props.visible) ? {} : { display: 'none' }} >
             <Attendance viewers={ChatHelper.getOrCreateRoom(props.chatState, "church_" + ConfigHelper.current.churchId).viewers} />
-            <FacebookComments roomName={"church_" + ConfigHelper.current.churchId} />
             <Callout callout={props.chatState?.callout || ''} roomName={"church_" + ConfigHelper.current.churchId} />
             <ChatReceive room={ChatHelper.getOrCreateRoom(props.chatState, "church_" + ConfigHelper.current.churchId) || {}} />
             <ChatSend room={"church_" + ConfigHelper.current.churchId} />
