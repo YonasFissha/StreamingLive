@@ -35,8 +35,10 @@ export const Login: React.FC = (props: any) => {
 
     const init = () => {
         let search = new URLSearchParams(window.location.search);
-        var auth = search.get('auth');; // || getCookieValue('apiKey');
+        var jwt = search.get("jwt");
+        var auth = search.get('auth');; 
         if (auth !== null && auth !== '') login({ authGuid: auth });
+        if (jwt !== "undefined" && jwt !== "") { login({ jwt: jwt }); }
     }
 
     const login = (data: {}) => {
@@ -55,20 +57,13 @@ export const Login: React.FC = (props: any) => {
             window.location.href = '/';
         });
     }
-
+    
     const selectChurch = () => {
-        UserHelper.selectChurch(UserHelper.churches[0].id, context);
-        /*
-        UserHelper.currentChurch = UserHelper.churches[0];
-        const data: SwitchAppRequestInterface = { appName: "StreamingLive", churchId: UserHelper.currentChurch.id };
-        ApiHelper.apiPost(EnvironmentHelper.AccessManagementApiUrl + '/users/switchApp', data).then((resp: LoginResponseInterface) => {
-            ApiHelper.jwt = resp.token;
-            ApiHelper.apiGet('/settings').then((settings: SettingInterface[]) => {
-                UserHelper.currentSettings = settings[0];
-                context.setUserName(UserHelper.user.displayName);
-            });
-        });*/
-    }
+        let search = new URLSearchParams(props.location.search);
+        var churchId:number = parseInt(search.get("churchId"), 0);
+        if (isNaN(churchId) || churchId===0) churchId = UserHelper.churches[0].id;
+        UserHelper.selectChurch(churchId, context);
+    };
 
 
 
