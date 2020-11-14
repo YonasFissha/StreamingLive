@@ -38,7 +38,7 @@ export const Login: React.FC = (props: any) => {
         var jwt = search.get("jwt");
         var auth = search.get('auth');; 
         if (auth !== null && auth !== '') login({ authGuid: auth });
-        if (jwt !== "undefined" && jwt !== "") { login({ jwt: jwt }); }
+        if (jwt !== "undefined" && jwt!==null && jwt !== "") { login({ jwt: jwt }); }
     }
 
     const login = (data: {}) => {
@@ -54,14 +54,18 @@ export const Login: React.FC = (props: any) => {
             });
             selectChurch();
         }).catch((e) => {
-            window.location.href = '/';
+            console.warn(e);
+            setErrors(["Invalid username or password."]);
+            //window.location.href = '/';
         });
     }
     
     const selectChurch = () => {
         let search = new URLSearchParams(props.location.search);
         var churchId:number = parseInt(search.get("churchId"), 0);
+        console.log(churchId);
         if (isNaN(churchId) || churchId===0) churchId = UserHelper.churches[0].id;
+        console.log(churchId);
         UserHelper.selectChurch(churchId, context);
     };
 
@@ -70,7 +74,7 @@ export const Login: React.FC = (props: any) => {
     const context = React.useContext(UserContext)
     React.useEffect(init, []);
 
-    if (context.userName === '' || ApiHelper.jwt === '') {
+    if (context.userName === '' || ApiHelper.jwt === '' || UserHelper.currentChurch === null) {
         return (
 
             <div className="smallCenterBlock">
