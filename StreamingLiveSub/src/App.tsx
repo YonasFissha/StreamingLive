@@ -5,17 +5,16 @@ import { Logout } from './Logout';
 import { ApiHelper } from './helpers';
 import { Unauthenticated } from "./Unauthenticated"
 import { Authenticated } from "./Authenticated"
+import {Routing} from "./Routing";
 
 const App: React.FC = () => {
-    const getHandler = () => { return (ApiHelper.jwt === '') ? <Unauthenticated /> : <Authenticated />; }
+    //const getHandler = () => { return (ApiHelper.jwt === '') ? <Unauthenticated /> : <Authenticated />; }
+    console.log("APP");
 
     return (
         <UserProvider>
             <Router>
-                <Switch>
-                    <Route path="/logout"><Logout /></Route>
-                    <Route path="/">{getHandler()}</Route>
-                </Switch>
+                <Routing />
             </Router>
         </UserProvider>
     );

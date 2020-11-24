@@ -49,11 +49,11 @@ export const Login: React.FC = (props: any) => {
     }
 
     const selectChurch = () => {
-
         UserHelper.churches?.forEach(c => {
             var churchId: string = c.id?.toString() || "";
             if (churchId === ConfigHelper.current.churchId.toString()) UserHelper.currentChurch = c;
         });
+        if (UserHelper.currentChurch === undefined && UserHelper.churches!==undefined && UserHelper.churches.length>0) UserHelper.currentChurch=UserHelper.churches[0];
         if (UserHelper.currentChurch !== undefined) {
             const data: SwitchAppRequestInterface = { appName: "StreamingLive", churchId: UserHelper.currentChurch?.id || 0 };
             ApiHelper.apiPost(EnvironmentHelper.AccessManagementApiUrl + '/users/switchApp', data).then((resp: LoginResponseInterface) => {
