@@ -6,8 +6,14 @@ import { Switch, Route } from "react-router-dom";
 import { Logout } from './Logout';
 import { ApiHelper } from './helpers'
 
-export const ControlPanel = () => {
+export const Routing:React.FC = (props:any) => {
     var user = React.useContext(UserContext)?.userName; //to force rerender on login
-    if (user === null || ApiHelper.jwt === '') <Unauthenticated />;
-    else return <Authenticated />;
+    if (user === null || ApiHelper.jwt === '') {
+        console.warn("UNAUTHENTICATED");
+        return <Unauthenticated />;
+    } 
+    else {
+        console.warn("AUTHENTICATED");
+        return <Authenticated />;
+    }
 }

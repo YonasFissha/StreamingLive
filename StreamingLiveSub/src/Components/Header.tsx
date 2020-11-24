@@ -34,6 +34,11 @@ export const Header: React.FC<Props> = (props) => {
         else return (<Link to="/logout" className="nav-link">Logout</Link>);
     }
 
+    const getProfileLink = () => {
+        if (ApiHelper.jwt === '') return (<li className="nav-item" ><ChatName user={props.user} updateFunction={updateName} /></li>);
+        else return (<li className="nav-item" ><Link to="/profile" className="nav-link">Profile</Link></li>);
+    }
+
     const getUserMenu = () => {
         if (showUserMenu) return (
             <div id="userMenu">
@@ -42,7 +47,7 @@ export const Header: React.FC<Props> = (props) => {
                         <NavItems buttons={props.buttons} />
                     </ul>
                     <ul className="nav flex-column">
-                        <li className="nav-item" ><ChatName user={props.user} updateFunction={updateName} /></li>
+                        {getProfileLink()}
                         <li className="nav-item" >{getLoginLink()}</li>
                     </ul>
                 </div>
