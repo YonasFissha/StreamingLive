@@ -1,4 +1,4 @@
-import { Pool } from "./Pool";
+import { Pool } from "./pool";
 import { PoolConnection, MysqlError } from "mysql";
 
 export class DB {

@@ -1,6 +1,6 @@
 const { createServer, proxy } = require('aws-serverless-express');
 const { init } = require('./dist/app');
-const { Pool } = require('./dist/Pool');
+const { Pool } = require('./dist/pool');
 
 const winston = require("winston");
 const WinstonCloudWatch = require("winston-cloudwatch");
