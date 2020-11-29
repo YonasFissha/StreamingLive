@@ -3,7 +3,8 @@ import { Setting, } from "../models";
 import express from "express";
 import { CustomBaseController } from "./CustomBaseController";
 import { AwsHelper } from "../helpers";
-import { SettingsHelper } from "../helpers";
+import { SettingsHelper, SubDomainHelper } from "../helpers";
+
 
 @controller("/settings")
 export class SettingController extends CustomBaseController {
@@ -14,23 +15,12 @@ export class SettingController extends CustomBaseController {
         });
     }
 
-    @httpGet("/checkAvailable/:key")
-    public async checkAvailable(@requestParam("key") key: string, req: express.Request<{}, {}, []>, res: express.Response): Promise<any> {
-        try {
-            const settings: Setting = await this.repositories.setting.loadByKey(key);
-            const data = { available: settings === null };
-            return this.json(data, 200);
-        } catch (e) {
-            this.logger.error(e);
-            return this.internalServerError(e);
-        }
-    }
-
     @httpPost("/")
     public async save(req: express.Request<{}, {}, Setting[]>, res: express.Response): Promise<any> {
         return this.actionWrapper(req, res, async (au) => {
             if (!au.checkAccess('Settings', 'Edit')) return this.json({}, 401);
             else {
+                const subDomain = await SubDomainHelper.get(au.churchId);
                 let settings: Setting[] = req.body;
                 const promises: Promise<Setting>[] = [];
                 settings.forEach((setting) => {
@@ -38,8 +28,8 @@ export class SettingController extends CustomBaseController {
                         const promise = new Promise<Setting>(async (resolve, reject) => {
                             try {
                                 if (setting.logoUrl.indexOf(',') > -1) {
-                                    await this.saveLogo(setting);
-                                    setting.logoUrl = "/data/" + setting.keyName + "/logo.png";
+                                    await this.saveLogo(subDomain, setting);
+                                    setting.logoUrl = "/data/" + subDomain + "/logo.png";
                                 }
                                 const s = await this.repositories.setting.save(setting);
                                 resolve(s);
@@ -56,9 +46,9 @@ export class SettingController extends CustomBaseController {
         });
     }
 
-    private async saveLogo(setting: Setting) {
+    private async saveLogo(subDomain: string, setting: Setting) {
         const base64 = setting.logoUrl.split(',')[1];
-        const key = "data/" + setting.keyName + "/logo.png";
+        const key = "data/" + subDomain + "/logo.png";
         await AwsHelper.S3Upload(key, "image/png", Buffer.from(base64, 'base64'))
     }
 

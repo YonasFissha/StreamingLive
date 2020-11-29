@@ -59,7 +59,6 @@ CREATE TABLE `tabs` (
 CREATE TABLE `settings` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `churchId` int(11) DEFAULT NULL,
-  `keyName` varchar(255) DEFAULT NULL,
   `homePageUrl` varchar(255) DEFAULT NULL,
   `logoUrl` varchar(255) DEFAULT NULL,
   `primaryColor` varchar(45) DEFAULT NULL,

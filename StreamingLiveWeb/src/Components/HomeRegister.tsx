@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React from 'react';
 import { ApiHelper, RegisterInterface, RoleInterface, LoginResponseInterface, RolePermissionInterface, RoleMemberInterface, LinkInterface, TabInterface, ServiceInterface, SettingInterface, ErrorMessages } from './';
 import { ChurchInterface, UserInterface, EnvironmentHelper } from '../utils';
 
@@ -26,10 +26,11 @@ export const HomeRegister: React.FC = () => {
         if (subDomain === '') errors.push('Please select a subdomain for your site.');
         if (email === '') errors.push('Please enter your email address.');
         if (password === '') errors.push('Please enter a password.');
+        /*
         if (errors.length === 0) {
             const chk: any = await ApiHelper.apiGetAnonymous("/settings/checkAvailable/" + subDomain);
             if (!chk.available) errors.push("Sorry, that sub domain is already in use.");
-        }
+        }*/
         setErrors(errors);
         return errors.length === 0;
 
@@ -43,80 +44,86 @@ export const HomeRegister: React.FC = () => {
             btn.innerHTML = "Registering. Please wait..."
             btn.setAttribute("disabled", "disabled");
 
-
+            var churchId = 0;
 
             //Create Access
-            const churchId = await createAccess();
+            churchId = await createAccess();
+            if (churchId > 0) {
 
 
-            btn.innerHTML = "Configuring..."
-            //Configure initial settings
-            const promises: Promise<any>[] = [];
+                btn.innerHTML = "Configuring..."
+                //Configure initial settings
+                const promises: Promise<any>[] = [];
 
-            //links
-            const links: LinkInterface[] = [];
-            links.push({ churchId: churchId, url: "about:blank", text: "Resources", sort: 1 });
-            links.push({ churchId: churchId, url: "about:blank", text: "Give", sort: 2 });
-            promises.push(ApiHelper.apiPost('/links', links));
+                //links
+                const links: LinkInterface[] = [];
+                links.push({ churchId: churchId, url: "about:blank", text: "Resources", sort: 1 });
+                links.push({ churchId: churchId, url: "about:blank", text: "Give", sort: 2 });
+                promises.push(ApiHelper.apiPost('/links', links));
 
-            //tabs
-            const tabs: TabInterface[] = [];
-            tabs.push({ churchId: churchId, url: "", text: "Chat", sort: 1, icon: "far fa-comment", tabType: "chat", tabData: "" });
-            tabs.push({ churchId: churchId, url: "https://www.bible.com/en-GB/bible/111/GEN.1.NIV", text: "Bible", sort: 2, icon: "fas fa-bible", tabType: "url", tabData: "" });
-            tabs.push({ churchId: churchId, url: "", text: "Prayer", sort: 3, icon: "fas fa-praying-hands", tabType: "prayer", tabData: "" });
-            promises.push(ApiHelper.apiPost('/tabs', tabs));
+                //tabs
+                const tabs: TabInterface[] = [];
+                tabs.push({ churchId: churchId, url: "", text: "Chat", sort: 1, icon: "far fa-comment", tabType: "chat", tabData: "" });
+                tabs.push({ churchId: churchId, url: "https://www.bible.com/en-GB/bible/111/GEN.1.NIV", text: "Bible", sort: 2, icon: "fas fa-bible", tabType: "url", tabData: "" });
+                tabs.push({ churchId: churchId, url: "", text: "Prayer", sort: 3, icon: "fas fa-praying-hands", tabType: "prayer", tabData: "" });
+                promises.push(ApiHelper.apiPost('/tabs', tabs));
 
-            const setting: SettingInterface = {
-                churchId: churchId,
-                keyName: subDomain,
-                homePageUrl: "https://livecs.org",
-                logoUrl: EnvironmentHelper.AdminUrl + "/images/default-site-logo.png",
-                primaryColor: "#24B9FF",
-                contrastColor: "#FFFFF;"
-            };
-            promises.push(ApiHelper.apiPost('/settings', [setting]));
+                const setting: SettingInterface = {
+                    churchId: churchId,
+                    homePageUrl: "https://livecs.org",
+                    logoUrl: EnvironmentHelper.AdminUrl + "/images/default-site-logo.png",
+                    primaryColor: "#24B9FF",
+                    contrastColor: "#FFFFF;"
+                };
+                promises.push(ApiHelper.apiPost('/settings', [setting]));
 
-            //service
-            const service: ServiceInterface = {
-                churchId: churchId,
-                serviceTime: new Date(),
-                earlyStart: 600,
-                duration: 3600,
-                chatBefore: 600,
-                chatAfter: 600,
-                provider: "youtube_watchparty",
-                providerKey: "zFOfmAHFKNw",
-                videoUrl: "https://www.youtube.com/embed/zFOfmAHFKNw?autoplay=1&controls=0&showinfo=0&rel=0&modestbranding=1&disablekb=1",
-                timezoneOffset: 300,
-                recurring: false
-            };
-            promises.push(ApiHelper.apiPost('/services', [service]));
-            await Promise.all(promises);
+                //service
+                const service: ServiceInterface = {
+                    churchId: churchId,
+                    serviceTime: new Date(),
+                    earlyStart: 600,
+                    duration: 3600,
+                    chatBefore: 600,
+                    chatAfter: 600,
+                    provider: "youtube_watchparty",
+                    providerKey: "zFOfmAHFKNw",
+                    videoUrl: "https://www.youtube.com/embed/zFOfmAHFKNw?autoplay=1&controls=0&showinfo=0&rel=0&modestbranding=1&disablekb=1",
+                    timezoneOffset: 300,
+                    recurring: false
+                };
+                promises.push(ApiHelper.apiPost('/services', [service]));
+                await Promise.all(promises);
 
 
-            btn.innerHTML = "Publishing..."
-            await ApiHelper.apiPost("/settings/publish", []);
-            window.location.href = EnvironmentHelper.AdminUrl;
+                btn.innerHTML = "Publishing..."
+                await ApiHelper.apiPost("/settings/publish", []);
+                window.location.href = EnvironmentHelper.AdminUrl;
+            }
         }
         btn.innerHTML = "Register"
     }
 
     const createAccess = async () => {
-        var data: RegisterInterface = { churchName: churchName, displayName: email, email: email, password: password };
+        var data: RegisterInterface = { churchName: churchName, displayName: email, email: email, password: password, subDomain: subDomain };
 
         var resp: LoginResponseInterface = await ApiHelper.apiPostAnonymous(EnvironmentHelper.AccessManagementApiUrl + '/churches/register', data);
-        const church = resp.churches[0];
-        ApiHelper.jwt = resp.token;
+        if (resp.errors !== undefined) {
+            setErrors(resp.errors);
+            return 0;
+        } else {
+            const church = resp.churches[0];
+            ApiHelper.jwt = resp.token;
 
-        const promises = [];
-        promises.push(addAdminRole(church, resp.user));
-        promises.push(addHostRole(church, resp.user));
-        await Promise.all(promises);
+            const promises = [];
+            promises.push(addAdminRole(church, resp.user));
+            promises.push(addHostRole(church, resp.user));
+            await Promise.all(promises);
 
-        resp = await ApiHelper.apiPost(EnvironmentHelper.AccessManagementApiUrl + '/users/switchApp', { churchId: church.id, appName: "StreamingLive" });
-        ApiHelper.jwt = resp.token;
+            resp = await ApiHelper.apiPost(EnvironmentHelper.AccessManagementApiUrl + '/users/switchApp', { churchId: church.id, appName: "StreamingLive" });
+            ApiHelper.jwt = resp.token;
 
-        return church.id;
+            return church.id;
+        }
     }
 
     const addAdminRole = async (church: ChurchInterface, user: UserInterface) => {

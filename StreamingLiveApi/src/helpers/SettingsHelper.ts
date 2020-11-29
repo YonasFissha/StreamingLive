@@ -2,6 +2,7 @@ import { Repositories } from "../repositories";
 import { Setting, Tab, Link, Service } from "../models";
 import { ConfigHelper, AwsHelper } from "./"
 import { WinstonLogger } from "../logger";
+import { SubDomainHelper } from "../helpers";
 
 export class SettingsHelper {
 
@@ -11,6 +12,8 @@ export class SettingsHelper {
         let links: Link[] = null;
         let services: Service[] = null;
 
+        const subDomain = await SubDomainHelper.get(churchId);
+
         let promises: Promise<any>[] = [];
         promises.push(repositories.setting.loadAll(churchId).then(d => settings = d[0]));
         promises.push(repositories.tab.loadAll(churchId).then(d => tabs = d));
@@ -19,26 +22,26 @@ export class SettingsHelper {
         await Promise.all(promises);
 
         promises = [];
-        promises.push(this.publishData(settings, tabs, links, services, logger));
-        promises.push(this.publishCss(settings));
+        promises.push(this.publishData(subDomain, settings, tabs, links, services, logger));
+        promises.push(this.publishCss(subDomain, settings));
         logger.info(JSON.stringify(promises));
         await Promise.all(promises);
 
     }
 
 
-    private static publishData(settings: Setting, tabs: Tab[], links: Link[], services: Service[], logger: WinstonLogger): Promise<any> {
+    private static publishData(subDomain: string, settings: Setting, tabs: Tab[], links: Link[], services: Service[], logger: WinstonLogger): Promise<any> {
         // console.log("publishing");
         const result = ConfigHelper.generateJson(settings, tabs, links, services);
-        const path = "data/" + settings.keyName + '/data.json';
+        const path = "data/" + subDomain + '/data.json';
         const buffer = Buffer.from(JSON.stringify(result), 'utf8');
         return AwsHelper.S3Upload(path, "application/json", buffer)
     }
 
 
-    private static publishCss(settings: Setting): Promise<any> {
+    private static publishCss(subDomain: string, settings: Setting): Promise<any> {
         const result = ConfigHelper.generateCss(settings);
-        const path = "data/" + settings.keyName + '/data.css';
+        const path = "data/" + subDomain + '/data.css';
         const buffer = Buffer.from(result, 'utf8');
         return AwsHelper.S3Upload(path, "text/css", buffer)
     }
