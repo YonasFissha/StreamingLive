@@ -2,7 +2,7 @@ import { controller, httpPost, httpGet, httpDelete, requestParam } from "inversi
 import { Page } from "../models";
 import express from "express";
 import { CustomBaseController } from "./CustomBaseController";
-import { AwsHelper } from "../helpers";
+import { AwsHelper, SubDomainHelper } from "../helpers";
 
 @controller("/pages")
 export class PageController extends CustomBaseController {
@@ -19,8 +19,8 @@ export class PageController extends CustomBaseController {
     return this.actionWrapper(req, res, async (au) => {
       const result = await this.repositories.page.loadById(id, au.churchId);
       if (this.include(req, 'content')) {
-        const settings = await this.repositories.setting.loadAll(au.churchId);
-        const path = "data/" + settings[0].keyName + '/page' + id + '.html';
+        const subDomain = await SubDomainHelper.get(au.churchId);
+        const path = "data/" + subDomain + '/page' + id + '.html';
         const content: string = (await AwsHelper.S3Read(path)).toString();
         const regEx = /<body>.*<\/body>/igs;
         const matches: RegExpExecArray = regEx.exec(content);
@@ -42,11 +42,9 @@ export class PageController extends CustomBaseController {
           if (page.churchId === au.churchId) promises.push(
             this.repositories.page.save(page).then(async (p) => {
               if (page.content !== undefined) {
-                const settings = await this.repositories.setting.loadAll(au.churchId);
-                const wrappedContent = this.wrapContent(settings[0].keyName, page.content);
-                console.log(wrappedContent);
-                const path = "data/" + settings[0].keyName + '/page' + p.id + '.html';
-                console.log(path);
+                const subDomain = await SubDomainHelper.get(au.churchId);
+                const wrappedContent = this.wrapContent(subDomain, page.content);
+                const path = "data/" + subDomain + '/page' + p.id + '.html';
                 const buffer = Buffer.from(wrappedContent, 'binary');
                 await AwsHelper.S3Upload(path, "text/html", buffer)
               }

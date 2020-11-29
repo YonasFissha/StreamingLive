@@ -2,7 +2,7 @@ import { controller, httpGet, requestParam } from "inversify-express-utils";
 import { Setting, Tab, Link, Service } from "../models";
 import express from "express";
 import { CustomBaseController } from "./CustomBaseController";
-import { AwsHelper, ConfigHelper } from "../helpers";
+import { AwsHelper, ConfigHelper, SubDomainHelper } from "../helpers";
 import { HttpResponseMessage, StringContent } from "inversify-express-utils";
 
 @controller("/preview")
@@ -10,7 +10,8 @@ export class PreviewController extends CustomBaseController {
     @httpGet("/data/:key")
     public async loadData(@requestParam("key") key: string, req: express.Request, res: express.Response): Promise<any> {
         try {
-            const settings: Setting = await this.repositories.setting.loadByKey(key);
+            const churchId = await SubDomainHelper.getId(key);
+            const settings: Setting = await this.repositories.setting.loadByChurchId(churchId);
             let tabs: Tab[] = null;
             let links: Link[] = null;
             let services: Service[] = null;
@@ -32,7 +33,8 @@ export class PreviewController extends CustomBaseController {
     @httpGet("/css/:key")
     public async loadCss(@requestParam("key") key: string, req: express.Request, res: express.Response): Promise<any> {
         try {
-            const settings: Setting = await this.repositories.setting.loadByKey(key);
+            const churchId = await SubDomainHelper.getId(key);
+            const settings: Setting = await this.repositories.setting.loadByChurchId(churchId);
             const result = ConfigHelper.generateCss(settings);
             const resp = new HttpResponseMessage(200);
             resp.content = new StringContent(result, "text/css");

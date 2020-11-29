@@ -46,7 +46,7 @@ export class WinstonLogger {
 
     public flush() {
         const promise = new Promise((resolve) => {
-            if (this.pendingMessages) {
+            if (this.pendingMessages && this.wc !== undefined) {
                 this.wc.kthxbye(() => {
                     this._logger = null;
                     resolve();

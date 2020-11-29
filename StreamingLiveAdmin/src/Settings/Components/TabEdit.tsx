@@ -30,7 +30,7 @@ export const TabEdit: React.FC<Props> = (props) => {
     }
 
     const handleSave = () => {
-        if (currentTab.tabType === "page") currentTab.url = '/data/' + UserHelper.currentSettings.keyName + '/page' + currentTab.tabData + '.html';
+        if (currentTab.tabType === "page") currentTab.url = '/data/' + UserHelper.currentChurch.subDomain + '/page' + currentTab.tabData + '.html';
         else if (currentTab.tabType !== "url") currentTab.url = '';
         ApiHelper.apiPost('/tabs', [currentTab]).then(props.updatedFunction);
     }

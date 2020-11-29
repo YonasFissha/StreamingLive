@@ -3,7 +3,7 @@ import { EnvironmentHelper } from "./";
 //AccessManagment
 export interface ApplicationInterface { name: string, permissions: RolePermissionInterface[] }
 export interface ChurchInterface { id?: number, name: string, registrationDate?: Date, apps?: ApplicationInterface[] }
-export interface LoginResponseInterface { user: UserInterface, churches: ChurchInterface[], token: string }
+export interface LoginResponseInterface { user: UserInterface, churches: ChurchInterface[], token: string, errors?: string[] }
 export interface RegisterInterface { churchName?: string, displayName?: string, email?: string, password?: string }
 export interface RoleInterface { id?: number, churchId?: number, appName?: string, name?: string }
 export interface RolePermissionInterface { id?: number, churchId?: number, roleId?: number, appName?: string, contentType?: string, contentId?: number, action?: string }
