@@ -19,7 +19,7 @@ export class SettingRepository {
 
     public async create(setting: Setting) {
         return DB.query(
-            "INSERT INTO settings (churchId, homePageUrl, logoUrl, primaryColor, contrastColor, registrationDate) VALUES (?, ?, ?, ?, ?, ?, NOW());",
+            "INSERT INTO settings (churchId, homePageUrl, logoUrl, primaryColor, contrastColor, registrationDate) VALUES (?, ?, ?, ?, ?, NOW());",
             [setting.churchId, setting.homePageUrl, setting.logoUrl, setting.primaryColor, setting.contrastColor]
         ).then((row: any) => { setting.id = row.insertId; return setting; });
     }
