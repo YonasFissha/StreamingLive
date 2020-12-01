@@ -6,7 +6,7 @@ SERVER_PORT=8081
 
 # MySql configuration
 DB_HOST=localhost
-DB_DATABASE=AccessManagement
+DB_DATABASE=streamingLive
 DB_USER=root
 DB_PASSWORD=
 

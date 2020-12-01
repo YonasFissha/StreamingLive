@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS `StreamingLive2`;
-USE `StreamingLive2`;
+CREATE DATABASE IF NOT EXISTS `streamingLive`;
+USE `streamingLive`;
 DROP TABLE IF EXISTS `links`;
 DROP TABLE IF EXISTS `pages`;
 DROP TABLE IF EXISTS `services`;
