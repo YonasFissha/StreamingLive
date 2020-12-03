@@ -9,7 +9,9 @@ import { ProfilePage } from './Profile/ProfilePage';
 import { UserHelper } from "./Utils"
 import UserContext from "./UserContext";
 
-export const Authenticated = () => {
+interface Props { location: any; }
+
+export const Authenticated: React.FC<Props> = (props) => {
     var user = React.useContext(UserContext)?.userName; //to force rerender on login
     const defaultRedirect = (UserHelper.checkAccess('Settings', 'Edit')) ? <Redirect to="/settings" /> : <Redirect to="/chat" />
     return (
@@ -17,7 +19,7 @@ export const Authenticated = () => {
             <Header></Header>
             <div className="container">
                 <Switch>
-                    <Route path="/login"  >{defaultRedirect}</Route>
+                    <Route path="/login"><Redirect to={props.location} /></Route>
                     <Route path="/settings"><SettingsPage /></Route>
                     <Route path="/pages"><Pages /></Route>
                     <Route path="/profile"><ProfilePage /></Route>

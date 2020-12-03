@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "typeRoots": [
       "./types",
       "node_modules/@types"
@@ -15,6 +15,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
+    "strictNullChecks": false,
     "forceConsistentCasingInFileNames": true,
     "module": "esnext",
     "moduleResolution": "node",
@@ -25,5 +26,8 @@
   },
   "include": [
     "src"
+  ],
+  "exclude": [
+    "types"
   ]
 }

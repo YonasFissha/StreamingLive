@@ -4,8 +4,11 @@ import { Home } from "./Home"
 import { Logout } from './Logout';
 import { ProfilePage } from './profile/ProfilePage';
 
-export const Authenticated: React.FC = () => {
-    console.log("AUTHENTICATED");
+interface Props {
+    location: any;
+}
+
+export const Authenticated: React.FC<Props> = (props) => {
     return (
         <Switch>
             <Route path="/profile"><ProfilePage /></Route>

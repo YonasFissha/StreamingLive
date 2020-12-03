@@ -1,5 +1,5 @@
 # Modify and save this file as ".env"
-NODE_ENV=development
+NODE_ENV=dev
 
 # Node.js server configuration
 SERVER_PORT=8081
