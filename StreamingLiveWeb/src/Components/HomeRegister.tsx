@@ -52,51 +52,11 @@ export const HomeRegister: React.FC = () => {
 
 
                 btn.innerHTML = "Configuring..."
-                //Configure initial settings
-                const promises: Promise<any>[] = [];
-
-                //links
-                const links: LinkInterface[] = [];
-                links.push({ churchId: churchId, url: "about:blank", text: "Resources", sort: 1 });
-                links.push({ churchId: churchId, url: "about:blank", text: "Give", sort: 2 });
-                promises.push(ApiHelper.apiPost('/links', links));
-
-                //tabs
-                const tabs: TabInterface[] = [];
-                tabs.push({ churchId: churchId, url: "", text: "Chat", sort: 1, icon: "far fa-comment", tabType: "chat", tabData: "" });
-                tabs.push({ churchId: churchId, url: "https://www.bible.com/en-GB/bible/111/GEN.1.NIV", text: "Bible", sort: 2, icon: "fas fa-bible", tabType: "url", tabData: "" });
-                tabs.push({ churchId: churchId, url: "", text: "Prayer", sort: 3, icon: "fas fa-praying-hands", tabType: "prayer", tabData: "" });
-                promises.push(ApiHelper.apiPost('/tabs', tabs));
-
-                const setting: SettingInterface = {
-                    churchId: churchId,
-                    homePageUrl: "https://livecs.org",
-                    logoUrl: EnvironmentHelper.AdminUrl + "/images/default-site-logo.png",
-                    primaryColor: "#24B9FF",
-                    contrastColor: "#FFFFF;"
-                };
-                promises.push(ApiHelper.apiPost('/settings', [setting]));
-
-                //service
-                const service: ServiceInterface = {
-                    churchId: churchId,
-                    serviceTime: new Date(),
-                    earlyStart: 600,
-                    duration: 3600,
-                    chatBefore: 600,
-                    chatAfter: 600,
-                    provider: "youtube_watchparty",
-                    providerKey: "zFOfmAHFKNw",
-                    videoUrl: "https://www.youtube.com/embed/zFOfmAHFKNw?autoplay=1&controls=0&showinfo=0&rel=0&modestbranding=1&disablekb=1",
-                    timezoneOffset: 300,
-                    recurring: false
-                };
-                promises.push(ApiHelper.apiPost('/services', [service]));
-                await Promise.all(promises);
-
-
-                btn.innerHTML = "Publishing..."
-                await ApiHelper.apiPost("/settings/publish", []);
+                var resp: LoginResponseInterface = await ApiHelper.apiPost(EnvironmentHelper.StreamingLiveApiUrl + '/churches/init', {});
+                if (resp.errors !== undefined) { setErrors(resp.errors); return 0; }
+                else {
+                    btn.innerHTML = "Configured.";
+                }
                 window.location.href = EnvironmentHelper.AdminUrl;
             }
         }
@@ -107,43 +67,20 @@ export const HomeRegister: React.FC = () => {
         var data: RegisterInterface = { churchName: churchName, displayName: email, email: email, password: password, subDomain: subDomain };
 
         var resp: LoginResponseInterface = await ApiHelper.apiPostAnonymous(EnvironmentHelper.AccessManagementApiUrl + '/churches/register', data);
-        if (resp.errors !== undefined) {
-            setErrors(resp.errors);
-            return 0;
-        } else {
+        if (resp.errors !== undefined) { setErrors(resp.errors); return 0; }
+        else {
             const church = resp.churches[0];
             ApiHelper.jwt = resp.token;
-
-            const promises = [];
-            promises.push(addAdminRole(church, resp.user));
-            promises.push(addHostRole(church, resp.user));
-            await Promise.all(promises);
-
-            resp = await ApiHelper.apiPost(EnvironmentHelper.AccessManagementApiUrl + '/users/switchApp', { churchId: church.id, appName: "StreamingLive" });
-            ApiHelper.jwt = resp.token;
-
-            return church.id;
+            var resp: LoginResponseInterface = await ApiHelper.apiPost(EnvironmentHelper.AccessManagementApiUrl + '/churchApps/register', { appName: "StreamingLive" });
+            if (resp.errors !== undefined) { setErrors(resp.errors); return 0; }
+            else {
+                await addHostRole(church, resp.user)
+                resp = await ApiHelper.apiPost(EnvironmentHelper.AccessManagementApiUrl + '/users/switchApp', { churchId: church.id, appName: "StreamingLive" });
+                ApiHelper.jwt = resp.token;
+                return church.id;
+            }
         }
-    }
 
-    const addAdminRole = async (church: ChurchInterface, user: UserInterface) => {
-        var role: RoleInterface = { appName: "StreamingLive", churchId: church.id, name: "Admins" };
-        role.id = (await ApiHelper.apiPost(EnvironmentHelper.AccessManagementApiUrl + '/roles', [role]))[0].id;
-
-        const member: RoleMemberInterface = { churchId: church.id, roleId: role.id, userId: user.id };
-        member.id = (await ApiHelper.apiPost(EnvironmentHelper.AccessManagementApiUrl + '/rolemembers', [member]))[0].id;
-
-        const permissions: RolePermissionInterface[] = [];
-        permissions.push({ churchId: church.id, contentType: "Roles", action: "View", roleId: role.id });
-        permissions.push({ churchId: church.id, contentType: "RoleMembers", action: "View", roleId: role.id });
-        permissions.push({ churchId: church.id, contentType: "RoleMembers", action: "Edit", roleId: role.id });
-        permissions.push({ churchId: church.id, contentType: "Links", action: "Edit", roleId: role.id });
-        permissions.push({ churchId: church.id, contentType: "Tabs", action: "Edit", roleId: role.id });
-        permissions.push({ churchId: church.id, contentType: "Pages", action: "Edit", roleId: role.id });
-        permissions.push({ churchId: church.id, contentType: "Services", action: "Edit", roleId: role.id });
-        permissions.push({ churchId: church.id, contentType: "Settings", action: "Edit", roleId: role.id });
-        permissions.push({ churchId: church.id, contentType: "Chat", action: "Host", roleId: role.id });
-        await ApiHelper.apiPost(EnvironmentHelper.AccessManagementApiUrl + '/rolepermissions', permissions);
     }
 
     const addHostRole = async (church: ChurchInterface, user: UserInterface) => {

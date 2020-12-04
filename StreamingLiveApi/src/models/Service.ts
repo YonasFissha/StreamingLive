@@ -1,6 +1,6 @@
 
 export class Service {
-    id: number;
+    id?: number;
     churchId: number;
     serviceTime: Date;
     earlyStart: number;

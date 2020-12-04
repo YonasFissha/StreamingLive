@@ -12,6 +12,15 @@ export class CustomBaseController extends BaseHttpController {
     public repositories: Repositories;
     public logger: WinstonLogger;
 
+
+    public error(errors: string[]) {
+        return this.json({ errors }, 500);
+    }
+
+    public denyAccess(errors: string[]) {
+        return this.json({ errors }, 401);
+    }
+
     constructor(@inject(TYPES.Repositories) repositories: Repositories, @inject(TYPES.LoggerService) logger: WinstonLogger) {
         super()
         this.repositories = repositories;
