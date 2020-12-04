@@ -1,6 +1,6 @@
 
 export class Setting {
-    id: number;
+    id?: number;
     churchId: number;
     homePageUrl: string;
     logoUrl: string;

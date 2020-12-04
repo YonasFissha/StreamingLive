@@ -1,3 +1,4 @@
+export { ChurchController } from "./ChurchController";
 export { LinkController } from "./LinkController";
 export { MaintenanceController } from "./MaintenanceController";
 export { PageController } from "./PageController";

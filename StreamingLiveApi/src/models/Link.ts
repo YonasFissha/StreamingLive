@@ -1,6 +1,6 @@
 
 export class Link {
-    id: number;
+    id?: number;
     churchId: number;
     url: string;
     text: string;

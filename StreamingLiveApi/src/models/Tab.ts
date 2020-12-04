@@ -1,6 +1,6 @@
 
 export class Tab {
-    id: number;
+    id?: number;
     churchId: number;
     tabType: string;
     tabData: string;
